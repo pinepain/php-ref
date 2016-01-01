@@ -1,0 +1,8 @@
+// $Id$
+// vim:ft=javascript
+
+ARG_ENABLE("weak", "enable weak support", "no");
+
+if (PHP_WEAK != "no") {
+	EXTENSION("weak", "weak.c php_weak_reference.c php_weak_functions.c", PHP_EXTNAME_SHARED, "/DZEND_ENABLE_STATIC_TSRMLS_CACHE=1");
+}
