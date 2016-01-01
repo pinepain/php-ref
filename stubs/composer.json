@@ -1,0 +1,26 @@
+{
+  "name": "pinepain/php-weak-stubs",
+  "type": "library",
+  "description": "Stub files for pinepain/php-weak php extension",
+  "keywords": [
+    "dev",
+    "stub",
+    "php-weak",
+    "weak",
+    "reference",
+    "weakref",
+    "weakreference"
+  ],
+  "homepage": "https://github.com/pinepain/php-weak-stubs",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Bogdan Padalko",
+      "email": "zaq178miami@gmail.com",
+      "homepage": "https://github.com/pinepain"
+    }
+  ],
+  "require": {
+    "php": "~7.0"
+  }
+}
