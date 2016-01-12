@@ -44,50 +44,23 @@ This extensions provides:
 
 There are no new INI settings, constants, nor exceptions. 
 
-These new classes/functions are implemented through C code, but [PHP stubs with annotations are available](./stubs/weak) for use with IDEs and code-analysis tools. (Also see "Stub files for Composer".)
+These new classes and functions are implemented through C code, but [PHP stubs with annotations are available](./stubs/weak) for use with IDEs and code-analysis tools. (See "Stub files for Composer" for a convenient way to integrate them.)
 
 ### Known issues and limitations
+
+#### The `spl_object_hash()` of an referenced-object will change
+
+The very first time an object is referenced by a `Weak\Reference`, that object's `spl_object_hash()` will change. The problem will [probably be fixed](https://github.com/php/php-src/pull/1724) with a future release of PHP7. 
 
 #### Callbacks will not be triggered if there are uncaught exceptions in the destruction process
 
 A notification callback may fail to be triggered if:
 * The target-object had an unhandled-exception during destruction
-* Any other notification callback for the same object threw an unhandled exception
+* Any other notification-callback for the same object threw an unhandled exception
 
-Internally, `Weak\Reference`'s notification-callback mechanism may be considered as an extension to the target-object's destruction process.
- 
-If you re affected by this limitation and need to catch an exception from object destruction, please [open a github issue](https://github.com/pinepain/php-weak/issues/new) to discuss how it may be resolved.
+If you are affected by this limitation and have an idea how to resolve it, please discuss it in php/php-weak#2.
 
-#### The target-object's `spl_object_hash()` hash will change each time a `Weak\Reference` created with it
-
-Creating a `Weak\Reference` has a side-effect on on the object that you are making the reference to. Because it changes certain internal PHP pointers, it will alter the `spl_object_hash()` of the object. 
-
-This is expected behavior, and only applies when the very first weak-reference is created around the target-object.
-
-#### Loosely-comparing two `Weak\Reference` compares only whether they point to the same target
-
-When you loosely-compare two `Weak\Reference` objects, the content of their noficiation-callback is ignored, and they will be considered equal if they point to the same target-object. For example:
-
-```php
-<?php
-
-use Weak\Reference;
-
-$obj = new stdClass();
-
-$ref1 = new Reference($obj);
-$ref2 = new Reference($obj, function () {});
-
-var_dump($ref1 == $ref2); // bool(true)
-```
-
-Strict comparison should still work as expected:
-
-```php
-var_dump($ref1 === $ref2); // bool(false)
-```
-
-#### Cloning a `Weak\Reference` also clones the notification callback
+#### Cloning a `Weak\Reference` also clones its notification callback
  
 When a `Weak\Reference` is duplicated with `clone`, its callback is also copied, so that when the tracking object is destroyed, the callback will be triggered twice.
 
@@ -104,18 +77,20 @@ $ref2 = clone $ref1;
 $obj = null; // outputs "Object destroyed" twice
 ```
 
-#### Serializing `Weak\Reference` is prohibited
+#### Serializing a `Weak\Reference` is prohibited
 
-`Weak\Reference` serializing/unserializing behavior is not supported. Attempting to implement the `Serializable` interface will lead to a fatal error.
+Weak references only make sense in the context of PHP's memory model, therefore `Weak\Reference` does not support serialization. Attempting to implement the `Serializable` interface will lead to a fatal error. 
 
 
-## Stub files for Composer
+## Additional resources
+
+### Stub files for Composer
 
 If you are also using [Composer](https://getcomposer.org/), it is recommended that you add the `pinepain/php-weak-stubs` package as a dev-mode requirement. This provides skeleton definitions and annotations to enable support for auto-completion in your IDE and other code-analysis tools.
 
     composer require --dev pinepain/php-weak-stubs
 
-## Extra-weak data structures support
+### Extra-weak data structures support
 
 To add weak-map support (and probably other data structures), see [php-weak-lib](https://github.com/pinepain/php-weak-lib)
 project. If using [Composer](https://getcomposer.org/), you can add them with:
@@ -188,7 +163,7 @@ There is a `php7debugzts` directory inside this repo which contains include file
 
 You may also want to try Rasmus'es [php7dev](https://github.com/rlerdorf/php7dev) box with Debian 8 and ability to switch between large variety of PHP versions.
 
-## Reference:
+## References:
  
   [Weak reference on Wikipedia](https://en.wikipedia.org/wiki/Weak_reference)
 
