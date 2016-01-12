@@ -156,8 +156,7 @@ Services available out of the box are:
 
 For debugging memory-related problems, valgrind is already installed. To activate it, execute `export TEST_PHP_ARGS=-m` before running tests.
 
-The test suite may prompt to send results to the PHP QA team, which can be disabled by setting the `NO_INTERACTION=1` environment variable. If you run tests in your
-own environment, the shell command `export NO_INTERACTION=1` will disable it.
+By default, the environment-variable `NO_INTERACTION=1` is set in `.bashrc` which will suppress prompts to send results to the PHP QA team.
 
 There is a `php7debugzts` directory inside this repo which contains include files for the master php branch (which may be out of date sometimes) to support type-hinting inside your IDE in case you don't have PHP7 include files installed. They are provided only as a convenience, and any serious deveopment should use the real files from the exact PHP version you are developing against.
 
