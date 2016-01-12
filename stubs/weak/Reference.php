@@ -13,6 +13,11 @@
 
 namespace Weak;
 
+/**
+ * Stores a weak-reference to an object, and optionally a callback to trigger when the referent is no longer available.
+ *
+ * Two Reference objects are considered loosely-equal if they point to the same referent, regardless of the callback either one was constructed with.
+ */
 class Reference
 {
     /**
