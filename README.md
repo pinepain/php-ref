@@ -1,19 +1,32 @@
 # PHP Weak extension [![Build Status](https://travis-ci.org/pinepain/php-weak.svg)](https://travis-ci.org/pinepain/php-weak)
 
-This extension provides [weak references](https://en.wikipedia.org/wiki/Weak_reference) support for PHP 7 and serves as a toolkit for building other weak data structures.
+This extension provides [weak references](https://en.wikipedia.org/wiki/Weak_reference) support for PHP 7 and serves as a toolkit for building other weak data structures. Weak references are particularly useful for avoiding memory-leaks when dealing with listener/callback relationships and object-pools.
 
-## Usage
+## Basic Usage
 
 ```php
 <?php
 
 use Weak\Reference;
 
+// Create regular target object
 $obj = new stdClass();
 
+// Record a weak-reference to it with a callback
 $ref = new Reference($obj, function () { echo 'Object destroyed', PHP_EOL; });
 
+// Able to use the reference to reach the original object
+assert($ref->isValid();
+assert($ref->get() === $obj);
+
+// Object is not prevented from being garbage-collected by PHP engine
 $obj = null; // outputs "Object destroyed"
+
+// Can tell that object is no longer available
+assert(!$ref->isValid());
+assert($ref->get() === null);
+
+
 ```
 
     
@@ -21,17 +34,17 @@ $obj = null; // outputs "Object destroyed"
 
 This extensions provides:
 
-  - `class Weak\Reference`
-  - `function Weak\refcounted()`
-  - `function Weak\refcount()`
-  - `function Weak\weakrefcounted()`
-  - `function Weak\weakrefcount()`
-  - `function Weak\weakrefs()`
-  - `function Weak\object_handle()`
+  - [`class Weak\Reference`](stubs/weak/Reference.php)
+  - [`function Weak\refcounted()`](stubs/weak/functions.php)
+  - [`function Weak\refcount()`](stubs/weak/functions.php)
+  - [`function Weak\weakrefcounted()`](stubs/weak/functions.php)
+  - [`function Weak\weakrefcount()`](stubs/weak/functions.php)
+  - [`function Weak\weakrefs()`](stubs/weak/functions.php)
+  - [`function Weak\object_handle()`](stubs/weak/functions.php)
 
 There are no new INI settings, constants, nor exceptions. 
 
-These new classes/functions are implemented through C code, but [PHP stubs with annotations are available](./stubs/weak) for use with IDEs and code-analysis tools.
+These new classes/functions are implemented through C code, but [PHP stubs with annotations are available](./stubs/weak) for use with IDEs and code-analysis tools. (Also see "Stub files for Composer".)
 
 ### Known issues and limitations
 
@@ -39,7 +52,7 @@ These new classes/functions are implemented through C code, but [PHP stubs with 
 
 A notification callback may fail to be triggered if:
 * The target-object had an unhandled-exception during destruction
-* Any other notification callback for the same object had an unhandled exception
+* Any other notification callback for the same object threw an unhandled exception
 
 Internally, `Weak\Reference`'s notification-callback mechanism may be considered as an extension to the target-object's destruction process.
  
@@ -76,7 +89,7 @@ var_dump($ref1 === $ref2); // bool(false)
 
 #### Cloning a `Weak\Reference` also clones the notification callback
  
-When a `Weak\Reference` is duplicated with `clone`, its callback is also copied, so that when tracking object destroyed, the callback will be triggered twice.
+When a `Weak\Reference` is duplicated with `clone`, its callback is also copied, so that when the tracking object is destroyed, the callback will be triggered twice.
 
 ```php
 <?php
