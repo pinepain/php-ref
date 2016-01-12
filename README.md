@@ -1,7 +1,6 @@
 # PHP Weak extension [![Build Status](https://travis-ci.org/pinepain/php-weak.svg)](https://travis-ci.org/pinepain/php-weak)
 
-This extension provides [weak references](https://en.wikipedia.org/wiki/Weak_reference) support for PHP 7 and serves
-as a ground for other weak data structures.
+This extension provides [weak references](https://en.wikipedia.org/wiki/Weak_reference) support for PHP 7 and serves as a toolkit for building other weak data structures.
 
 ## Usage
 
@@ -20,14 +19,7 @@ $obj = null; // outputs "Object destroyed"
     
 ## Docs
 
-This extension adds `Weak` namespace and all entities are created inside it.
-
-There are no INI setting, constants or exceptions provided by this extension.
-
-Brief docs about [`Weak\Reference` class](./stubs/weak/Reference.php) and [functions](./stubs/weak/functions.php)
-may be seen in [stub files](./stubs/weak).
-
-Short list if what provided by this extension is:
+This extensions provides:
 
   - `class Weak\Reference`
   - `function Weak\refcounted()`
@@ -37,34 +29,31 @@ Short list if what provided by this extension is:
   - `function Weak\weakrefs()`
   - `function Weak\object_handle()`
 
-### Special cases
+There are no new INI settings, constants, nor exceptions. 
 
-#### Notify callback will not be called if any uncatch exception thrown during object destructing process before it.
+These new classes/functions are implemented through C code, but [PHP stubs with annotations are available](./stubs/weak) for use with IDEs and code-analysis tools.
 
-If any exception in referent object destructor or other weak references notifier callback (if any) during
-object destructing process thrown, next notify callback will not be called.
+### Known issues and limitations
+
+#### Callbacks will not be triggered if there are uncaught exceptions in the destruction process
+
+A notification callback may fail to be triggered if:
+* The target-object had an unhandled-exception during destruction
+* Any other notification callback for the same object had an unhandled exception
+
+Internally, `Weak\Reference`'s notification-callback mechanism may be considered as an extension to the target-object's destruction process.
  
-Internally, `Weak\Reference`'s notify callback may be considered as a destructor extension, something like extending object
-destructor and call notify callbacks one by one in a row, if any. 
+If you re affected by this limitation and need to catch an exception from object destruction, please [open a github issue](https://github.com/pinepain/php-weak/issues/new) to discuss how it may be resolved.
 
-Anyway, we assume that exception in destructors are fatal and the only way they should be handled is fail-fast approach.
- 
-If you fall down under this limitation and have to try-catch object destructing, pleas, fill an issue and we'll discuss
-how this issue may be solved. One of pre-release features was storing destructed object's weak reference in some array
-because storing into array is completely internals process and can not be normally interrupted during standard destructor
-execution (we don't count `die()` before calling notify callback at all.
+#### The target-object's `spl_object_hash()` hash will change each time a `Weak\Reference` created with it
 
-#### Object's `spl_object_hash()` hash changes after `Weak\Reference` created for it.
+Creating a `Weak\Reference` has a side-effect on on the object that you are making the reference to. Because it changes certain internal PHP pointers, it will alter the `spl_object_hash()` of the object. 
 
-Internally `Weak\Reference` changes object handlers pointer, so `spl_object_hash()` function will provide different hash
-for the same object before and after weak reference created for it (actually, hashes will differ only in second part -
-in last 16 characters, first 16 chars is object handle hash, and the last 16 is object handlers pointer hash).
-This is expected and after weak reference for object created it handlers will not be changed by this extension back, so
-hash will not be changed by this extension too.
+This is expected behavior, and only applies when the very first weak-reference is created around the target-object.
 
-#### Comparing two `Weak\Reference` compares only whether they point to the same object.
+#### Loosely-comparing two `Weak\Reference` compares only whether they point to the same target
 
-When you compare two `Weak\Reference` notify callback ignored and only referent objects are compared:
+When you loosely-compare two `Weak\Reference` objects, the content of their noficiation-callback is ignored, and they will be considered equal if they point to the same target-object. For example:
 
 ```php
 <?php
@@ -79,16 +68,15 @@ $ref2 = new Reference($obj, function () {});
 var_dump($ref1 == $ref2); // bool(true)
 ```
 
-Strict comparison works as always:
+Strict comparison should still work as expected:
 
 ```php
 var_dump($ref1 === $ref2); // bool(false)
 ```
 
-#### Cloning `Weak\Reference` clones notify callback too.
+#### Cloning a `Weak\Reference` also clones the notification callback
  
-When `Weak\Reference` cloned, notify callback cloned too, so when tracking object destroyed, both notify callbacks (which 
-will be the same) will be called:
+When a `Weak\Reference` is duplicated with `clone`, its callback is also copied, so that when tracking object destroyed, the callback will be triggered twice.
 
 ```php
 <?php
@@ -103,29 +91,23 @@ $ref2 = clone $ref1;
 $obj = null; // outputs "Object destroyed" twice
 ```
 
-#### Serializing of `Weak\Reference` is not allowed.
+#### Serializing `Weak\Reference` is prohibited
 
-`Weak\Reference` serializing/unserializing behavior is not allow. Implementing `Serializable` interface will lead to 
-fatal error.
-
-
-## Stub files
-
-Stub files provided as a git subsplit into [php-weak-stub](https://github.com/pinepain/php-weak-stubs) read-only
-repository, so you may want to require them with composer to have nice type hinting in your IDE:
-
-    composer require --dev php-weak-stubs
+`Weak\Reference` serializing/unserializing behavior is not supported. Attempting to implement the `Serializable` interface will lead to a fatal error.
 
 
-## Extra weak data structures support
+## Stub files for Composer
 
-To add weak map support (and probably other data structures), see [php-weak-lib](https://github.com/pinepain/php-weak-lib)
-project, or just run
+If you are also using [Composer](https://getcomposer.org/), it is recommended that you add the `pinepain/php-weak-stubs` package as a dev-mode requirement. This provides skeleton definitions and annotations to enable support for auto-completion in your IDE and other code-analysis tools.
 
-    composer require php-weak-lib
+    composer require --dev pinepain/php-weak-stubs
 
-to add it to your project.
+## Extra-weak data structures support
 
+To add weak-map support (and probably other data structures), see [php-weak-lib](https://github.com/pinepain/php-weak-lib)
+project. If using [Composer](https://getcomposer.org/), you can add them with:
+
+    composer require pinepain/php-weak-lib
 
 ## Installation
 
@@ -136,18 +118,20 @@ to add it to your project.
     phpize && ./configure && make
     make test
 
-To install globally your extension run 
+To install the extension globally, run:
     
     # sudo make install
 
-and copy extension config to your php dir, here is example for Ubuntu with PHP 7 from
+You will need to copy the extension config to your php dir, here is example for Ubuntu with PHP 7 from
 [Ondřej Surý's PPA for PHP 7.0](https://launchpad.net/~ondrej/+archive/ubuntu/php-7.0):
    
     # sudo cp provision/php/weak.ini /etc/php/mods-available/
     # sudo phpenmod -v ALL weak
     # sudo service php7.0-fpm restart
 
-You may also want to add php-weak extension as a [composer.json dependency](https://getcomposer.org/doc/02-libraries.md#platform-packages):
+### Configuring your project
+
+Once the extension is installed on your PHP platform, no additional configuration is necessary. However, if you  use [Composer](https://getcomposer.org/) and your code is going to require the `weak` extension, you should mark it as a platform-requirement in your [composer.json dependency](https://getcomposer.org/doc/02-libraries.md#platform-packages):
 
     "require": {
         ...
@@ -158,8 +142,7 @@ You may also want to add php-weak extension as a [composer.json dependency](http
 
 ## Internals
 
-`Weak\Reference` class implemented by storing tracked object handlers and then wrapping it original `dtor_obj` handler 
-with custom one, which meta-code is:
+The `Weak\Reference` class is implemented by storing tracked object handlers and then wrapping their original `dtor_obj` handlers with custom ones, with the meta-code:
 
 ```php
 run_original_dtor_obj($object);
@@ -175,26 +158,22 @@ foreach($weak_references as $weak_ref_object_handle => $weak_reference) {
 
 ## Development and testing
 
-This extension shipped with Vagrant file which provides basic environment for development and testing purposes. 
-To start it, just type `vagrant up` and then `vagrant ssh` in php-weak directory.
+This extension ships with a Vagrant file which provides a basic environment for development and testing purposes. 
+To start it, just type `vagrant up` and then `vagrant ssh` from within the main directory.
 
 Services available out of the box are:
 
  - Apache2 - on [192.168.33.10:8080](http://192.168.33.102:8080)
  - nginx - on [192.168.33.10:80](http://192.168.33.102:80)
 
-For plumbing memory-related problems there are valgrind, to activate it, execute `export TEST_PHP_ARGS=-m` before running tests.
+For debugging memory-related problems, valgrind is already installed. To activate it, execute `export TEST_PHP_ARGS=-m` before running tests.
 
-To prevent asking test suite to send results to PHP QA team, `NO_INTERACTION=1` env variable is set. If run tests in your
-own environment, just execute `export NO_INTERACTION=1` to mute that reporting.
+The test suite may prompt to send results to the PHP QA team, which can be disabled by setting the `NO_INTERACTION=1` environment variable. If you run tests in your
+own environment, the shell command `export NO_INTERACTION=1` will disable it.
 
-There are `php7debugzts` directory inside this repo which contains include files for master php branch (which may be out
-of date sometimes) for type-hinting inside your IDE in case you don't have PHP 7 include files installed. They are
-provided only for typehinting and nothing more. While for quick fixes they are ok, for real development you have to point
-to real file from the same PHP version you are building extension for.
+There is a `php7debugzts` directory inside this repo which contains include files for the master php branch (which may be out of date sometimes) to support type-hinting inside your IDE in case you don't have PHP7 include files installed. They are provided only as a convenience, and any serious deveopment should use the real files from the exact PHP version you are developing against.
 
-You may also want to try Rasmus'es [php7dev](https://github.com/rlerdorf/php7dev) box with Debian 8 and ability to switch
-between large variety of PHP versions.
+You may also want to try Rasmus'es [php7dev](https://github.com/rlerdorf/php7dev) box with Debian 8 and ability to switch between large variety of PHP versions.
 
 ## Reference:
  
