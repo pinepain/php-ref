@@ -44,10 +44,12 @@ try {
     }
 }
 
+$helper->line();
 ?>
 EOF
 --EXPECT--
 WeakTests\TrackingDtor's destructor called
 Callback #0 called
 Exception: Test exception from callback #1
+
 EOF

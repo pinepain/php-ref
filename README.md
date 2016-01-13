@@ -3,6 +3,12 @@
 This extension provides [weak references](https://en.wikipedia.org/wiki/Weak_reference) support for PHP 7 and serves
 as a ground for other weak data structures.
 
+
+#### Requirements
+
+PHP 7.0.0 required, **PHP > 7.0.2 highly recommended** (see [known issues](#known-issues) section).
+
+
 ## Usage
 
 ```php
@@ -37,60 +43,23 @@ Short list if what provided by this extension is:
   - `function Weak\weakrefs()`
   - `function Weak\object_handle()`
 
-### Special cases
 
-#### Notify callback will not be called if any uncatch exception thrown during object destructing process before it.
+### Notifiers
 
-If any exception in referent object destructor or other weak references notifier callback (if any) during
-object destructing process thrown, next notify callback will not be called.
+Notifier can be one of `callable`, `array` or `null` types. `null` notifier denotes no notifier set.
+
+Note that notification happens *after* referent object destruction, so at the time of notification `Weak\Referent::get()` 
+will return `null` (unless rare case when object refcount get incremented in destructor, e.g. by storing destructing value
+somewhere else).
+
+Callback notifier will not be called if referent object destructor or previous notifier callback throws exception, whether
+array notifier get executed even in such cases.
+
+
+### Cloning
  
-Internally, `Weak\Reference`'s notify callback may be considered as a destructor extension, something like extending object
-destructor and call notify callbacks one by one in a row, if any. 
-
-Anyway, we assume that exception in destructors are fatal and the only way they should be handled is fail-fast approach.
- 
-If you fall down under this limitation and have to try-catch object destructing, pleas, fill an issue and we'll discuss
-how this issue may be solved. One of pre-release features was storing destructed object's weak reference in some array
-because storing into array is completely internals process and can not be normally interrupted during standard destructor
-execution (we don't count `die()` before calling notify callback at all.
-
-#### Object's `spl_object_hash()` hash changes after `Weak\Reference` created for it (PHP <= 7.0.2).
-
-Internally `Weak\Reference` changes object handlers pointer, so `spl_object_hash()` function will provide different hash
-for the same object before and after weak reference created for it (actually, hashes will differ only in second part -
-in last 16 characters, first 16 chars is object handle hash, and the last 16 is object handlers pointer hash).
-This is expected and after weak reference for object created it handlers will not be changed by this extension back, so
-hash will not be changed by this extension too.
-
-This has being fixed in PHP > 7.0.2.
-
-#### Comparing two `Weak\Reference` compares only whether they point to the same object.
-
-When you compare two `Weak\Reference` notify callback ignored and only referent objects are compared:
-
-```php
-<?php
-
-use Weak\Reference;
-
-$obj = new stdClass();
-
-$ref1 = new Reference($obj);
-$ref2 = new Reference($obj, function () {});
-
-var_dump($ref1 == $ref2); // bool(true)
-```
-
-Strict comparison works as always:
-
-```php
-var_dump($ref1 === $ref2); // bool(false)
-```
-
-#### Cloning `Weak\Reference` clones notify callback too.
- 
-When `Weak\Reference` cloned, notify callback cloned too, so when tracking object destroyed, both notify callbacks (which 
-will be the same) will be called:
+When `Weak\Reference` cloned, notifier cloned too, so when tracking object destroyed, both notifier will be called, but
+they will be invoked with different `Weak\Reference` objects.
 
 ```php
 <?php
@@ -105,18 +74,50 @@ $ref2 = clone $ref1;
 $obj = null; // outputs "Object destroyed" twice
 ```
 
-#### Serializing of `Weak\Reference` is not allowed.
+To avoid this you may want to change notifier in `__clone()` method:
 
-`Weak\Reference` serializing/unserializing behavior is not allow. Implementing `Serializable` interface will lead to 
+```php
+<?php
+
+class OwnNotifierReference extends Weak\Reference
+{
+    public function __clone()
+    {
+        $this->notifier(function () { echo 'Own notifier called', PHP_EOL;});
+    }
+}
+
+$obj = new stdClass();
+
+$ref1 = new OwnNotifierReference($obj, function () {
+    echo 'Object destroyed', PHP_EOL;
+});
+$ref2 = clone $ref1;
+
+$obj = null; // outputs "Own notifier called" and then "Object destroyed"
+```
+
+
+### Serializing
+
+Serializing `Weak\Reference` is prohibited. Attempting to implement the `Serializable` interface will lead to a
 fatal error.
+
+
+## Known issues
+ 
+In PHP <= 7.0.2 the very first time an object is referenced by a `Weak\Reference`, that object's `spl_object_hash()` will
+change.
 
 
 ## Stub files
 
-Stub files provided as a git subsplit into [php-weak-stub](https://github.com/pinepain/php-weak-stubs) read-only
-repository, so you may want to require them with composer to have nice type hinting in your IDE:
 
-    composer require --dev php-weak-stubs
+If you are also using Composer, it is recommended that you add the [php-weak-stub](https://github.com/pinepain/php-weak-stubs)
+package as a dev-mode requirement. This provides skeleton definitions and annotations to enable support for auto-completion
+in your IDE and other code-analysis tools.
+
+    composer require --dev pinepain/php-weak-stubs
 
 
 ## Extra weak data structures support
@@ -124,7 +125,7 @@ repository, so you may want to require them with composer to have nice type hint
 To add weak map support (and probably other data structures), see [php-weak-lib](https://github.com/pinepain/php-weak-lib)
 project, or just run
 
-    composer require php-weak-lib
+    composer require pinepain/php-weak-lib
 
 to add it to your project.
 
@@ -138,11 +139,11 @@ to add it to your project.
     phpize && ./configure && make
     make test
 
-To install globally your extension run 
+To install extension globally run 
     
     # sudo make install
 
-and copy extension config to your php dir, here is example for Ubuntu with PHP 7 from
+You will need to copy the extension config to your php dir, here is example for Ubuntu with PHP 7 from
 [Ondřej Surý's PPA for PHP 7.0](https://launchpad.net/~ondrej/+archive/ubuntu/php-7.0):
    
     # sudo cp provision/php/weak.ini /etc/php/mods-available/
@@ -160,15 +161,17 @@ You may also want to add php-weak extension as a [composer.json dependency](http
 
 ## Internals
 
-`Weak\Reference` class implemented by storing tracked object handlers and then wrapping it original `dtor_obj` handler 
+`Weak\Reference` class is implemented by storing tracked object handlers and then wrapping it original `dtor_obj` handler 
 with custom one, which meta-code is:
 
 ```php
 run_original_dtor_obj($object);
 
 foreach($weak_references as $weak_ref_object_handle => $weak_reference) {
-    if ($weak_reference->notify_callback && $no_exception_thrown) {
-        $weak_reference->notify_callback($weak_reference);
+    if (is_array($weak_reference->notifier)) {
+        $weak_reference->notifier[] = $weak_reference;
+    } elseif (is_callable($weak_reference->notifier) && $no_exception_thrown) {
+        $weak_reference->notifier($weak_reference);
     }
     
     unset($weak_references[$weak_ref_object_handle]);
