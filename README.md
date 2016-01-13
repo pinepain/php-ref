@@ -54,13 +54,15 @@ how this issue may be solved. One of pre-release features was storing destructed
 because storing into array is completely internals process and can not be normally interrupted during standard destructor
 execution (we don't count `die()` before calling notify callback at all.
 
-#### Object's `spl_object_hash()` hash changes after `Weak\Reference` created for it.
+#### Object's `spl_object_hash()` hash changes after `Weak\Reference` created for it (PHP <= 7.0.2).
 
 Internally `Weak\Reference` changes object handlers pointer, so `spl_object_hash()` function will provide different hash
 for the same object before and after weak reference created for it (actually, hashes will differ only in second part -
 in last 16 characters, first 16 chars is object handle hash, and the last 16 is object handlers pointer hash).
 This is expected and after weak reference for object created it handlers will not be changed by this extension back, so
 hash will not be changed by this extension too.
+
+This has being fixed in PHP > 7.0.2.
 
 #### Comparing two `Weak\Reference` compares only whether they point to the same object.
 
