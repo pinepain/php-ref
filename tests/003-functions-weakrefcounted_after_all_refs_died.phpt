@@ -60,16 +60,18 @@ weakrefcounted($obj): bool(true)
 weakrefcount($obj): int(1)
 weakrefs($obj): array(1) refcount(3){
   [0]=>
-  object(Weak\Reference)#3 (1) refcount(2){
+  object(Weak\Reference)#3 (2) refcount(2){
     ["referent":"Weak\Reference":private]=>
     object(stdClass)#2 (0) refcount(2){
     }
+    ["notifier":"Weak\Reference":private]=>
+    NULL
   }
 }
 
 Test when reference destroyed:
 ------------------------------
-weakrefcounted($obj): bool(true)
+weakrefcounted($obj): bool(false)
 weakrefcount($obj): int(0)
 weakrefs($obj): array(0) refcount(3){
 }

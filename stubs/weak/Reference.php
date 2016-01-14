@@ -16,13 +16,17 @@ namespace Weak;
 class Reference
 {
     /**
-     * @param object        $referent Referent object
-     * @param callable|null $notify   Callback to notify when referent object destroyed.
+     * @param object                  $referent Referent object
+     * @param callable | array | null $notify   Optional notifier to signal when referent object destroyed.
      *
-     * Callback will receive current Weak\Reference object as a first argument. Note, that referent object at that time
-     * will be already destroyed.
+     * If notifier is callback, it will be called with a current Weak\Reference object as a first argument. Note, that
+     * referent object at that time will be already destroyed. Callback will not be called if referent object destructor
+     * or previous notify callback throws exception.
+     *
+     * If notifier is array, current Weak\Reference object will be appended to it regardless any exception thrown by
+     * referent object destructor or previous notify callback.
      */
-    public function __construct(object $referent, callable $notify = null)
+    public function __construct(object $referent, $notify = null)
     {
     }
 
@@ -41,6 +45,19 @@ class Reference
      * @return bool
      */
     public function valid() : bool
+    {
+    }
+
+    /**
+     * Get notifier
+     *
+     * @param callable | array | null $notify Notifier to replace existent notifier with. Same as in constructor.
+     *
+     * If any value provided, any existent notifier will be replaced and returned.
+     *
+     * @return callable | array | null Current notifier or the old one when replacing it with provided value.
+     */
+    public function notifier($notify = null)
     {
     }
 }

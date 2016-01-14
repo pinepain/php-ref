@@ -51,9 +51,23 @@ $helper->line();
 EOF
 --EXPECT--
 weakrefcount($obj): integer: 1
-object(Weak\Reference)#4 (1) refcount(3){
+object(Weak\Reference)#4 (2) refcount(3){
   ["referent":"Weak\Reference":private]=>
   object(stdClass)#2 (0) refcount(2){
+  }
+  ["notifier":"Weak\Reference":private]=>
+  object(Closure)#3 (2) refcount(3){
+    ["static"]=>
+    array(1) refcount(1){
+      ["helper"]=>
+      object(Testsuite)#1 (0) refcount(4){
+      }
+    }
+    ["parameter"]=>
+    array(1) refcount(1){
+      ["$ref"]=>
+      string(10) "<required>" refcount(1)
+    }
   }
 }
 
@@ -61,21 +75,63 @@ Cloned weak reference matches original: ok
 Cloned weak reference does not match original weak reference strictly: ok
 
 weakrefcount($obj): integer: 2
-object(Weak\Reference)#5 (1) refcount(3){
+object(Weak\Reference)#5 (2) refcount(3){
   ["referent":"Weak\Reference":private]=>
   object(stdClass)#2 (0) refcount(2){
+  }
+  ["notifier":"Weak\Reference":private]=>
+  object(Closure)#3 (2) refcount(4){
+    ["static"]=>
+    array(1) refcount(1){
+      ["helper"]=>
+      object(Testsuite)#1 (0) refcount(4){
+      }
+    }
+    ["parameter"]=>
+    array(1) refcount(1){
+      ["$ref"]=>
+      string(10) "<required>" refcount(1)
+    }
   }
 }
 
 Weak references reported with cloned reference: ok
 
-Notified: object(Weak\Reference)#5 (1) refcount(6){
+Notified: object(Weak\Reference)#5 (2) refcount(6){
   ["referent":"Weak\Reference":private]=>
   NULL
+  ["notifier":"Weak\Reference":private]=>
+  object(Closure)#3 (2) refcount(5){
+    ["static"]=>
+    array(1) refcount(1){
+      ["helper"]=>
+      object(Testsuite)#1 (0) refcount(5){
+      }
+    }
+    ["parameter"]=>
+    array(1) refcount(1){
+      ["$ref"]=>
+      string(10) "<required>" refcount(1)
+    }
+  }
 }
-Notified: object(Weak\Reference)#4 (1) refcount(6){
+Notified: object(Weak\Reference)#4 (2) refcount(6){
   ["referent":"Weak\Reference":private]=>
   NULL
+  ["notifier":"Weak\Reference":private]=>
+  object(Closure)#3 (2) refcount(5){
+    ["static"]=>
+    array(1) refcount(1){
+      ["helper"]=>
+      object(Testsuite)#1 (0) refcount(5){
+      }
+    }
+    ["parameter"]=>
+    array(1) refcount(1){
+      ["$ref"]=>
+      string(10) "<required>" refcount(1)
+    }
+  }
 }
 
 Cloned weak reference matches original: ok

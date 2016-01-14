@@ -10,7 +10,7 @@ $helper = require '.testsuite.php';
 
 $obj = new stdClass();
 
-$wr = new Weak\Reference($obj, function (Weak\Reference $reference) {});
+$wr = new Weak\Reference($obj);
 
 $helper->header('When referent object alive');
 $helper->assert('Referent object alive', $wr->get() === $obj);
@@ -25,6 +25,7 @@ $helper->header('When referent object dead');
 $helper->assert('Referent object dead', $wr->get() === null);
 $helper->assert('Referent object invalid', $wr->valid(), false);
 $helper->dump($wr);
+$helper->line();
 ?>
 EOF
 --EXPECT--
@@ -32,10 +33,12 @@ When referent object alive:
 ---------------------------
 Referent object alive: ok
 Referent object valid: ok
-object(Weak\Reference)#3 (1) refcount(3){
+object(Weak\Reference)#3 (2) refcount(3){
   ["referent":"Weak\Reference":private]=>
   object(stdClass)#2 (0) refcount(2){
   }
+  ["notifier":"Weak\Reference":private]=>
+  NULL
 }
 
 
@@ -43,8 +46,11 @@ When referent object dead:
 --------------------------
 Referent object dead: ok
 Referent object invalid: ok
-object(Weak\Reference)#3 (1) refcount(3){
+object(Weak\Reference)#3 (2) refcount(3){
   ["referent":"Weak\Reference":private]=>
   NULL
+  ["notifier":"Weak\Reference":private]=>
+  NULL
 }
+
 EOF

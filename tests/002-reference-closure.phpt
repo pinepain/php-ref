@@ -25,18 +25,28 @@ $helper->header('When referent object dead');
 $helper->assert('Referent object dead', $wr->get() === null);
 
 $helper->dump($wr);
+
+$helper->line();
 ?>
 EOF
 --EXPECT--
 When referent object alive:
 ---------------------------
 Referent object alive: ok
-object(Weak\Reference)#3 (1) refcount(3){
+object(Weak\Reference)#3 (2) refcount(3){
   ["referent":"Weak\Reference":private]=>
   object(Closure)#2 (1) refcount(2){
     ["parameter"]=>
     array(1) refcount(1){
       ["$greeting"]=>
+      string(10) "<required>" refcount(1)
+    }
+  }
+  ["notifier":"Weak\Reference":private]=>
+  object(Closure)#4 (1) refcount(2){
+    ["parameter"]=>
+    array(1) refcount(1){
+      ["$reference"]=>
       string(10) "<required>" refcount(1)
     }
   }
@@ -46,8 +56,17 @@ object(Weak\Reference)#3 (1) refcount(3){
 When referent object dead:
 --------------------------
 Referent object dead: ok
-object(Weak\Reference)#3 (1) refcount(3){
+object(Weak\Reference)#3 (2) refcount(3){
   ["referent":"Weak\Reference":private]=>
   NULL
+  ["notifier":"Weak\Reference":private]=>
+  object(Closure)#4 (1) refcount(2){
+    ["parameter"]=>
+    array(1) refcount(1){
+      ["$reference"]=>
+      string(10) "<required>" refcount(1)
+    }
+  }
 }
+
 EOF

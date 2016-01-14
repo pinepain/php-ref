@@ -51,6 +51,29 @@ $helper->assert('References to the different object of the different kind after 
 $helper->assert('References to the different object of the different kind after one\' death do not match strictly', $wr1a !== $wr3);
 $helper->line();
 
+
+$obj1 = new stdClass();
+
+$wr1 = new Weak\Reference($obj1, ['first']);
+$wr2 = new Weak\Reference($obj1, ['second']);
+
+$helper->assert('References to the same object with different notifiers do not match', $wr1 != $wr2);
+
+$wr1 = new Weak\Reference($obj1, []);
+$wr2 = new Weak\Reference($obj1, []);
+
+$helper->assert('References to the same object with same notifiers match', $wr1 == $wr2);
+
+$wr2->property = 'changed';
+
+$helper->assert('References to the same object with same notifiers but different properties do not match', $wr1 != $wr2);
+
+$wr3 = new class($obj1, []) extends Weak\Reference {};
+
+$helper->assert('References to the same object with same notifiers do not match if they are instances of different classes', $wr2 != $wr3);
+
+$helper->line();
+
 ?>
 EOF
 --EXPECT--
@@ -75,5 +98,10 @@ References to the different object same of a kind after one' death do not match 
 
 References to the different object of the different kind after one' death do not match: ok
 References to the different object of the different kind after one' death do not match strictly: ok
+
+References to the same object with different notifiers do not match: ok
+References to the same object with same notifiers match: ok
+References to the same object with same notifiers but different properties do not match: ok
+References to the same object with same notifiers do not match if they are instances of different classes: ok
 
 EOF
