@@ -21,7 +21,7 @@ extern zend_module_entry php_weak_module_entry;
 #define phpext_weak_ptr &php_weak_module_entry
 
 #ifndef PHP_WEAK_VERSION
-#define PHP_WEAK_VERSION "0.1.0"
+#define PHP_WEAK_VERSION "0.2.0"
 #endif
 
 #ifndef PHP_WEAK_REVISION
