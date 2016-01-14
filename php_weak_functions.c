@@ -14,6 +14,8 @@
 
 #include "php_weak_functions.h"
 #include "php_weak_reference.h"
+#include "php_weak.h"
+#include "ext/spl/php_spl.h"
 
 PHP_FUNCTION(refcounted) /* {{{ */
 {
@@ -129,6 +131,32 @@ PHP_FUNCTION(object_handle) /* {{{ */
     RETURN_LONG((uint32_t)Z_OBJ_HANDLE_P(zv));
 }  /* }}} */
 
+#ifdef PHP_WEAK_PATCH_SPL_OBJECT_HASH
+PHP_FUNCTION(spl_object_hash_patched)
+{
+    zval *obj;
+    zend_string *hash = NULL;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "o", &obj) == FAILURE) {
+        return;
+    }
+
+    php_weak_referent_t *referent = php_weak_referent_find_ptr((zend_ulong)Z_OBJ_HANDLE_P(obj));
+
+    if (NULL != referent) {
+        Z_OBJ_P(obj)->handlers = referent->original_handlers;
+        hash = php_spl_object_hash(obj);
+        Z_OBJ_P(obj)->handlers = &referent->custom_handlers;
+    }
+
+    if (NULL == hash) {
+        hash = php_spl_object_hash(obj);
+    }
+
+    RETURN_NEW_STR(hash);
+} /* }}} */
+#endif
+
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(refcounted_arg, 0, 1, _IS_BOOL, NULL, 0)
                 ZEND_ARG_INFO(0, value)
@@ -154,6 +182,13 @@ ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(object_handle_arg, 0, 1, IS_LONG, NULL, 
                 ZEND_ARG_TYPE_INFO(0, object, IS_OBJECT, 0)
 ZEND_END_ARG_INFO()
 
+#ifdef PHP_WEAK_PATCH_SPL_OBJECT_HASH
+ZEND_BEGIN_ARG_INFO_EX(arginfo_spl_object_hash, 0, 0, 1)
+    ZEND_ARG_INFO(0, obj)
+ZEND_END_ARG_INFO()
+#endif
+
+
 const zend_function_entry php_weak_functions[] = { /* {{{ */
     PHP_NAMED_FE(Weak\\refcounted, PHP_FN(refcounted), refcounted_arg)
     PHP_NAMED_FE(Weak\\refcount, PHP_FN(refcount), refcount_arg)
@@ -164,9 +199,12 @@ const zend_function_entry php_weak_functions[] = { /* {{{ */
 
     PHP_NAMED_FE(Weak\\object_handle, PHP_FN(object_handle), object_handle_arg)
 
+#ifdef PHP_WEAK_PATCH_SPL_OBJECT_HASH
+    PHP_NAMED_FE(Weak\\spl_object_hash, PHP_FN(spl_object_hash_patched), arginfo_spl_object_hash)
+#endif
+
     PHP_FE_END
-};
-/* }}} */
+}; /* }}} */
 
 
 /*

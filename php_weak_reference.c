@@ -38,6 +38,36 @@ php_weak_referent_t *php_weak_referent_find_ptr(zend_ulong h) /* {{{ */
     return (php_weak_referent_t *) zend_hash_index_find_ptr(PHP_WEAK_G(referents), h);
 } /* }}} */
 
+#ifdef PHP_WEAK_PATCH_SPL_OBJECT_HASH
+static void php_weak_patch_spl_hash() /* {{{ */
+{
+    if (PHP_WEAK_G(spl_hash_replaced)) {
+        return;
+    }
+
+    EG(function_table)->pDestructor = NULL;
+
+    zend_function *php_weak_spl_object_hash = zend_hash_str_find_ptr(EG(function_table), "weak\\spl_object_hash", sizeof("Weak\\spl_object_hash")-1);
+    zend_function *spl_object_hash          = zend_hash_str_find_ptr(EG(function_table), "spl_object_hash",       sizeof("spl_object_hash")-1);
+
+
+    if (NULL == php_weak_spl_object_hash) {
+        fprintf(stderr, "NULL == php_weak_spl_object_hash\n");
+    }
+
+    if (NULL == spl_object_hash) {
+        fprintf(stderr, "NULL == spl_object_hash\n");
+    }
+
+    zend_hash_str_update_ptr(EG(function_table), "spl_object_hash",       sizeof("spl_object_hash")-1,       php_weak_spl_object_hash);
+    zend_hash_str_update_ptr(EG(function_table), "weak\\spl_object_hash", sizeof("weak\\spl_object_hash")-1, spl_object_hash);
+
+    EG(function_table)->pDestructor = ZEND_FUNCTION_DTOR;
+
+    PHP_WEAK_G(spl_hash_replaced) = 1;
+} /* }}} */
+#endif
+
 
 void php_weak_reference_call_notifier(zval *reference, zval *notifier) /* {{{ */
 {
@@ -163,6 +193,10 @@ php_weak_referent_t *php_weak_referent_get_or_create(zval *referent_zv) /* {{{ *
     if (referent != NULL) {
         return referent;
     }
+
+#ifdef PHP_WEAK_PATCH_SPL_OBJECT_HASH
+    php_weak_patch_spl_hash();
+#endif
 
     referent = (php_weak_referent_t *) ecalloc(1, sizeof(php_weak_referent_t));
 

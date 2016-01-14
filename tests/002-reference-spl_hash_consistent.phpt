@@ -1,9 +1,7 @@
 --TEST--
-Weak\Reference - spl object hash changes after wrapping into reference and then back
+Weak\Reference - spl_object_hash still consisten before and after wa
 --SKIPIF--
-<?php if (!extension_loaded("weak")) print "skip";
-if (PHP_VERSION_ID <= 70002) print "skip spl_object_hash() use object handlers in PHP <= 7.0.2";
-?>
+<?php if (!extension_loaded("weak")) print "skip";  ?>
 --FILE--
 <?php
 

@@ -28,6 +28,9 @@ extern zend_module_entry php_weak_module_entry;
 #define PHP_WEAK_REVISION "release"
 #endif
 
+#if PHP_VERSION_ID <= 70002
+#define PHP_WEAK_PATCH_SPL_OBJECT_HASH
+#endif
 
 #ifdef PHP_WIN32
 #    define PHP_WEAK_API __declspec(dllexport)
@@ -43,6 +46,9 @@ extern zend_module_entry php_weak_module_entry;
 
 ZEND_BEGIN_MODULE_GLOBALS(weak)
     HashTable *referents;
+#ifdef PHP_WEAK_PATCH_SPL_OBJECT_HASH
+    zend_bool spl_hash_replaced;
+#endif
 ZEND_END_MODULE_GLOBALS(weak)
 
 ZEND_EXTERN_MODULE_GLOBALS(weak);

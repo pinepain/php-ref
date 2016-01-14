@@ -4,11 +4,6 @@ This extension provides [weak references](https://en.wikipedia.org/wiki/Weak_ref
 as a ground for other weak data structures.
 
 
-#### Requirements
-
-PHP 7.0.0 required, **PHP > 7.0.2 highly recommended** (see [known issues](#known-issues) section).
-
-
 ## Usage
 
 ```php
@@ -104,14 +99,7 @@ Serializing `Weak\Reference` is prohibited. Attempting to implement the `Seriali
 fatal error.
 
 
-## Known issues
- 
-In PHP <= 7.0.2 the very first time an object is referenced by a `Weak\Reference`, that object's `spl_object_hash()` will
-change.
-
-
 ## Stub files
-
 
 If you are also using Composer, it is recommended that you add the [php-weak-stub](https://github.com/pinepain/php-weak-stubs)
 package as a dev-mode requirement. This provides skeleton definitions and annotations to enable support for auto-completion
