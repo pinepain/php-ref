@@ -7,11 +7,13 @@ This is a git subtree split of [php-weak](https://github.com/pinepain/php-weak) 
 
 ## Installation
 
-If you already have php-weak extension installed, you may want to require stub files with composer to have nice
-type hinting in your IDE:
+If you are also using Composer, it is recommended that you add the [php-weak-stub](https://github.com/pinepain/php-weak-stubs)
+package as a dev-mode requirement. This provides skeleton definitions and annotations to enable support for auto-completion
+in your IDE and other code-analysis tools.
 
-    composer require --dev php-weak-stubs
-    
+    composer require --dev pinepain/php-weak-stubs
+
+
 ## License
 
 [php-weak](https://github.com/pinepain/php-weak) PHP extension is a free software licensed under the [MIT license](http://opensource.org/licenses/MIT).
