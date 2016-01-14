@@ -71,7 +71,7 @@ weakrefs($obj): array(1) refcount(3){
 
 Test when reference destroyed:
 ------------------------------
-weakrefcounted($obj): bool(true)
+weakrefcounted($obj): bool(false)
 weakrefcount($obj): int(0)
 weakrefs($obj): array(0) refcount(3){
 }

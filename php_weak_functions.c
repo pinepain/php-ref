@@ -52,7 +52,7 @@ PHP_FUNCTION(weakrefcounted) /* {{{ */
     if (IS_OBJECT == Z_TYPE_P(zv)) {
         php_weak_referent_t *referent = php_weak_referent_find_ptr((zend_ulong)Z_OBJ_HANDLE_P(zv));
 
-        RETURN_BOOL(NULL != referent);
+        RETURN_BOOL(NULL != referent && zend_hash_num_elements(&referent->weak_references));
     }
 
     RETURN_BOOL(0);

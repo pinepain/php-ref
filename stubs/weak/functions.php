@@ -33,7 +33,7 @@ function refcounted(mixed $value) : bool {}
 function refcount(mixed $value) : int {}
 
 /**
- * Check whether object has weak references or ever had them
+ * Check whether object has weak references
  *
  * @param object $value
  *
