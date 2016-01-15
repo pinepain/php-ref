@@ -609,6 +609,8 @@ static const zend_function_entry php_weak_reference_methods[] = { /* {{{ */
         PHP_ME(WeakReference, valid, arginfo_weak_reference_valid, ZEND_ACC_PUBLIC)
         PHP_ME(WeakReference, notifier, arginfo_weak_reference_notifier, ZEND_ACC_PUBLIC)
 
+        PHP_MALIAS(WeakReference, __invoke, get, arginfo_weak_reference_get, ZEND_ACC_PUBLIC)
+        
         PHP_FE_END
 }; /* }}} */
 
