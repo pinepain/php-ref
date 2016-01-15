@@ -32,6 +32,9 @@ static zend_object_get_debug_info_t spl_object_storage_get_debug_info_orig_handl
 
 php_weak_reference_t *php_weak_reference_init(zval *this_ptr, zval *referent_zv, zval *notifier_zv);
 
+static int php_weak_reference_check_notifier(zval *notifier, zval *this);
+
+
 php_weak_reference_t *php_weak_reference_fetch_object(zend_object *obj) /* {{{ */
 {
     return (php_weak_reference_t *) ((char *) obj - XtOffsetOf(php_weak_reference_t, std));
@@ -210,39 +213,34 @@ void php_weak_referent_object_dtor_obj(zend_object *object) /* {{{ */
     assert(NULL != referent);
     assert(NULL != PHP_WEAK_G(referents));
 
-    zend_ulong hashIndex;
-    zval *hashData;
-    zend_string *hashKey;
-
+    zend_ulong handle;
     php_weak_reference_t *reference;
 
     referent->original_handlers->dtor_obj(object);
 
-    ZEND_HASH_REVERSE_FOREACH_KEY_VAL(&referent->weak_references, hashIndex, hashKey, hashData)
-            {
-                reference = (php_weak_reference_t *) Z_PTR_P(hashData);
-                reference->referent = NULL;
+    ZEND_HASH_REVERSE_FOREACH_PTR(&referent->weak_references, reference) {
+        handle = _p->h;
+        reference->referent = NULL;
 
-                switch (Z_TYPE(reference->notifier)) {
-                    case IS_NULL:
-                        /* no notifier */
-                        break;
-                    case IS_ARRAY:
-                        /* array notifier */
-                        add_next_index_zval(&reference->notifier, &reference->this_ptr);
-                        Z_ADDREF(reference->this_ptr);
-                        break;
-                    default:
-                        /* callback notifier */
-                        if (!EG(exception)) {
-                            php_weak_reference_call_notifier(&reference->this_ptr, &reference->notifier);
-                        }
-
-                        break;
+        switch (reference->notifier_type) {
+            case PHP_WEAK_NOTIFIER_ARRAY:
+                /* array notifier */
+                add_next_index_zval(&reference->notifier, &reference->this_ptr);
+                Z_ADDREF(reference->this_ptr);
+                break;
+            case PHP_WEAK_NOTIFIER_CALLBACK:
+                /* callback notifier */
+                if (!EG(exception)) {
+                    php_weak_reference_call_notifier(&reference->this_ptr, &reference->notifier);
                 }
+                break;
 
-                zend_hash_index_del(&referent->weak_references, hashIndex);
-            }ZEND_HASH_FOREACH_END();
+            default:
+                break;
+        }
+
+        zend_hash_index_del(&referent->weak_references, handle);
+    } ZEND_HASH_FOREACH_END();
 
     zend_hash_index_del(PHP_WEAK_G(referents), referent->handle);
 } /* }}} */
@@ -327,6 +325,13 @@ php_weak_reference_t *php_weak_reference_init(zval *this_ptr, zval *referent_zv,
     php_weak_referent_t *referent;
 
     PHP_WEAK_REFERENCE_FETCH_INTO(this_ptr, reference);
+
+    int notifier_type = php_weak_reference_check_notifier(notifier_zv, this_ptr);
+
+    if (PHP_WEAK_NOTIFIER_INVALID == notifier_type) {
+        return reference;
+    }
+
     ZVAL_COPY_VALUE(&reference->this_ptr, this_ptr);
 
     referent = php_weak_referent_get_or_create(referent_zv);
@@ -339,31 +344,40 @@ php_weak_reference_t *php_weak_reference_init(zval *this_ptr, zval *referent_zv,
         ZVAL_NULL(&reference->notifier);
     }
 
+    reference->notifier_type = notifier_type;
+
     return reference;
 } /* }}} */
 
-static void php_weak_reference_check_notifier(zval *notifier, zval *this) /* {{{ */
+
+static int php_weak_reference_check_notifier(zval *notifier, zval *this) /* {{{ */
 {
-    if (NULL != notifier) {
-        switch (Z_TYPE_P(notifier)) {
-            case IS_NULL:
-                /* no notifier */
-                break;
-            case IS_ARRAY:
-                /* array notifier */
-                break;
-            default:
-                /* maybe callback notifier */
-                if (!zend_is_callable(notifier, 0, NULL)) {
-
-                    zend_throw_error(zend_ce_type_error,
-                                     "Argument 2 passed to %s::%s() must be callable, array or null, %s given",
-                                     ZSTR_VAL(Z_OBJCE_P(this)->name), get_active_function_name(), zend_zval_type_name(notifier));
-
-                    return;
-                }
-        }
+    if (NULL == notifier) {
+        /* no value provided at all, nothing to check */
+        return PHP_WEAK_NOTIFIER_NULL;
     }
+
+    if (IS_NULL == Z_TYPE_P(notifier)) {
+        /* no notifier */
+        return PHP_WEAK_NOTIFIER_NULL;
+    }
+
+    /* maybe callback notifier */
+    if (!zend_is_callable(notifier, 0, NULL)) {
+
+        if (IS_ARRAY == Z_TYPE_P(notifier)) {
+            /* array notifier */
+            return PHP_WEAK_NOTIFIER_ARRAY;
+        }
+
+        zend_throw_error(zend_ce_type_error,
+                         "Argument 2 passed to %s::%s() must be callable, array or null, %s given",
+                         ZSTR_VAL(Z_OBJCE_P(this)->name), get_active_function_name(), zend_zval_type_name(notifier));
+
+        return PHP_WEAK_NOTIFIER_INVALID;
+    }
+
+    return PHP_WEAK_NOTIFIER_CALLBACK;
 } /* }}} */
 
 static HashTable *php_weak_reference_gc(zval *object, zval **table, int *n) /* {{{ */
@@ -432,6 +446,7 @@ static zend_object *php_weak_reference_clone_obj(zval *object) /* {{{ */
 
     ZVAL_OBJ(&new_reference->this_ptr, new_object);
     ZVAL_COPY(&new_reference->notifier, &old_reference->notifier);
+    new_reference->notifier_type = old_reference->notifier_type;
 
     if (old_reference->referent) {
         php_weak_reference_attach(new_reference, old_reference->referent);
@@ -526,10 +541,7 @@ static PHP_METHOD(WeakReference, __construct)  /* {{{ */
         return;
     }
 
-    php_weak_reference_check_notifier(notifier_zv, getThis());
-
     php_weak_reference_init(getThis(), referent_zv, notifier_zv);
-
 } /* }}} */
 
 static PHP_METHOD(WeakReference, get)  /* {{{ */
@@ -573,7 +585,12 @@ static PHP_METHOD(WeakReference, notifier)  /* {{{ */
     }
 
     /* Change existent notifier */
-    php_weak_reference_check_notifier(notifier_zv, getThis());
+
+    int notifier_type = php_weak_reference_check_notifier(notifier_zv, getThis());
+
+    if (PHP_WEAK_NOTIFIER_INVALID == notifier_type) {
+        return;
+    }
 
     RETVAL_ZVAL(&reference->notifier, 1, 1);
 
@@ -582,6 +599,8 @@ static PHP_METHOD(WeakReference, notifier)  /* {{{ */
     } else {
         ZVAL_COPY(&reference->notifier, notifier_zv);
     }
+
+    reference->notifier_type = notifier_type;
 
 } /* }}} */
 
