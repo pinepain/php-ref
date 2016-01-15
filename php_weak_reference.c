@@ -17,10 +17,18 @@
 #include "zend_exceptions.h"
 #include "zend_interfaces.h"
 
+#ifdef PHP_WEAK_PATCH_SPL_OBJECT_HASH
+#include "ext/spl/spl_observer.h"
+#endif
+
 zend_class_entry *php_weak_reference_class_entry;
 #define this_ce php_weak_reference_class_entry
 
 zend_object_handlers php_weak_reference_object_handlers;
+
+#ifdef PHP_WEAK_PATCH_SPL_OBJECT_HASH
+static zend_object_get_debug_info_t spl_object_storage_get_debug_info_orig_handler;
+#endif
 
 php_weak_reference_t *php_weak_reference_init(zval *this_ptr, zval *referent_zv, zval *notifier_zv);
 
@@ -39,35 +47,108 @@ php_weak_referent_t *php_weak_referent_find_ptr(zend_ulong h) /* {{{ */
 } /* }}} */
 
 #ifdef PHP_WEAK_PATCH_SPL_OBJECT_HASH
+static HashTable* spl_object_storage_debug_info(zval *obj, int *is_temp) /* {{{ */
+{
+    HashTable* debug_info;
+    zend_string *md5str;
+    zend_string *zname;
+    zval *val;
+    zval *val_obj;
+
+    zval tmp_storage;
+
+    zname = zend_mangle_property_name(ZSTR_VAL(spl_ce_SplObjectStorage->name), ZSTR_LEN(spl_ce_SplObjectStorage->name), "storage", sizeof("storage")-1, 0);
+
+    debug_info = spl_object_storage_get_debug_info_orig_handler(obj, is_temp);
+
+    zval *storage = zend_hash_find(debug_info, zname);
+
+    assert(NULL != storage);
+    array_init(&tmp_storage);
+
+    ZEND_HASH_FOREACH_VAL(Z_ARR_P(storage), val) {
+        val_obj = zend_hash_str_find(Z_ARR_P(val), "obj", sizeof("obj") - 1);
+        assert(NULL != val_obj);
+
+        php_weak_referent_t *referent = php_weak_referent_find_ptr((zend_ulong)Z_OBJ_HANDLE_P(val_obj));
+
+        if (NULL != referent) {
+            Z_OBJ_P(val_obj)->handlers = referent->original_handlers;
+            md5str = php_spl_object_hash(val_obj);
+            Z_OBJ_P(val_obj)->handlers = &referent->custom_handlers;
+        } else {
+            md5str = php_spl_object_hash(val_obj);
+        }
+
+        zend_hash_update(Z_ARRVAL(tmp_storage), md5str, val);
+        zval_add_ref(val);
+        zend_string_release(md5str);
+    } ZEND_HASH_FOREACH_END();
+
+    zend_symtable_update(debug_info, zname, &tmp_storage);
+    zend_string_release(zname);
+
+    return debug_info;
+} /* }}} */
+#endif
+
+#ifdef PHP_WEAK_PATCH_SPL_OBJECT_HASH
+static PHP_FUNCTION(spl_object_hash_patched)
+{
+    zval *obj;
+    zend_string *hash = NULL;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "o", &obj) == FAILURE) {
+        return;
+    }
+
+    php_weak_referent_t *referent = php_weak_referent_find_ptr((zend_ulong)Z_OBJ_HANDLE_P(obj));
+
+    if (NULL != referent) {
+        Z_OBJ_P(obj)->handlers = referent->original_handlers;
+        hash = php_spl_object_hash(obj);
+        Z_OBJ_P(obj)->handlers = &referent->custom_handlers;
+    }
+
+    if (NULL == hash) {
+        hash = php_spl_object_hash(obj);
+    }
+
+    RETURN_NEW_STR(hash);
+} /* }}} */
+#endif
+
+#ifdef PHP_WEAK_PATCH_SPL_OBJECT_HASH
 static void php_weak_patch_spl_hash() /* {{{ */
 {
     if (PHP_WEAK_G(spl_hash_replaced)) {
         return;
     }
 
-    EG(function_table)->pDestructor = NULL;
+    /* Replace spl_object_hash() */
+    zend_function *spl_object_hash = zend_hash_str_find_ptr(EG(function_table), "spl_object_hash", sizeof("spl_object_hash")-1);
+    assert(NULL != spl_object_hash);
+    spl_object_hash->internal_function.handler = zif_spl_object_hash_patched;
 
-    zend_function *php_weak_spl_object_hash = zend_hash_str_find_ptr(EG(function_table), "weak\\spl_object_hash", sizeof("Weak\\spl_object_hash")-1);
-    zend_function *spl_object_hash          = zend_hash_str_find_ptr(EG(function_table), "spl_object_hash",       sizeof("spl_object_hash")-1);
+    /* Replace SplObjectStorage::getHash() */
 
+    zend_function *spl_object_storage_getHash =  zend_hash_str_find_ptr(&spl_ce_SplObjectStorage->function_table, "gethash", sizeof("gethash") - 1);
+    assert(NULL != spl_object_storage_getHash);
+    spl_object_storage_getHash->internal_function.handler = zif_spl_object_hash_patched;
 
-    if (NULL == php_weak_spl_object_hash) {
-        fprintf(stderr, "NULL == php_weak_spl_object_hash\n");
-    }
+    /* Replace SplObjectStorage get_debug_info object handler */
+    zval tmp;
+    object_init_ex(&tmp, spl_ce_SplObjectStorage);
 
-    if (NULL == spl_object_hash) {
-        fprintf(stderr, "NULL == spl_object_hash\n");
-    }
+    spl_object_storage_get_debug_info_orig_handler = Z_OBJ(tmp)->handlers->get_debug_info;
+    /* Casting const to non-const type is undefined behavior by C standard, but it should works in our case */
+    ((zend_object_handlers *) Z_OBJ(tmp)->handlers)->get_debug_info = spl_object_storage_debug_info;
 
-    zend_hash_str_update_ptr(EG(function_table), "spl_object_hash",       sizeof("spl_object_hash")-1,       php_weak_spl_object_hash);
-    zend_hash_str_update_ptr(EG(function_table), "weak\\spl_object_hash", sizeof("weak\\spl_object_hash")-1, spl_object_hash);
-
-    EG(function_table)->pDestructor = ZEND_FUNCTION_DTOR;
+    zval_ptr_dtor(&tmp);
 
     PHP_WEAK_G(spl_hash_replaced) = 1;
 } /* }}} */
 #endif
-
 
 void php_weak_reference_call_notifier(zval *reference, zval *notifier) /* {{{ */
 {
