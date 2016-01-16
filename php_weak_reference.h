@@ -32,6 +32,10 @@ extern void php_weak_globals_referents_ht_dtor(zval *zv);
 #define PHP_WEAK_REFERENCE_FETCH(zv) php_weak_reference_fetch_object(Z_OBJ_P(zv))
 #define PHP_WEAK_REFERENCE_FETCH_INTO(pzval, into) php_weak_reference_t *(into) = PHP_WEAK_REFERENCE_FETCH((pzval));
 
+#define PHP_WEAK_NOTIFIER_INVALID    0
+#define PHP_WEAK_NOTIFIER_NULL       1
+#define PHP_WEAK_NOTIFIER_ARRAY      2
+#define PHP_WEAK_NOTIFIER_CALLBACK   3
 
 struct _php_weak_referent_t {
     zval this_ptr;
@@ -47,6 +51,7 @@ struct _php_weak_reference_t {
     php_weak_referent_t *referent;
 
     zval notifier;
+    int notifier_type;
 
     zval this_ptr;
     zend_object std;

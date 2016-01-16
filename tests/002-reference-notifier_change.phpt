@@ -46,6 +46,18 @@ $helper->assert('Notifier is null', $wr->notifier(), null);
 $obj = null;
 $helper->line();
 
+$notifier = 'var_dump';
+$wr->notifier($notifier);
+
+try {
+    $wr->notifier('nonexistent');
+} catch (Error $e) {
+    $helper->exception_export($e);
+}
+
+$helper->assert('Notifier stays the same', $wr->notifier(), $notifier);
+$helper->line();
+
 ?>
 EOF
 --EXPECT--
@@ -62,5 +74,8 @@ Callback notified
 Notifier is callback by default: ok
 Notifier was callback: ok
 Notifier is null: ok
+
+TypeError: Argument 2 passed to Weak\Reference::notifier() must be callable, array or null, string given
+Notifier stays the same: ok
 
 EOF
