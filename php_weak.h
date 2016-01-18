@@ -32,6 +32,8 @@ extern zend_module_entry php_weak_module_entry;
 #define PHP_WEAK_PATCH_SPL_OBJECT_HASH
 #endif
 
+#define PHP_WEAK_NS "Weak"
+
 #ifdef PHP_WIN32
 #    define PHP_WEAK_API __declspec(dllexport)
 #elif defined(__GNUC__) && __GNUC__ >= 4

@@ -158,14 +158,14 @@ ZEND_END_ARG_INFO()
 
 
 const zend_function_entry php_weak_functions[] = { /* {{{ */
-    PHP_NAMED_FE(Weak\\refcounted, PHP_FN(refcounted), refcounted_arg)
-    PHP_NAMED_FE(Weak\\refcount, PHP_FN(refcount), refcount_arg)
+    ZEND_NS_FE(PHP_WEAK_NS, refcounted, refcounted_arg)
+    ZEND_NS_FE(PHP_WEAK_NS, refcount, refcount_arg)
 
-    PHP_NAMED_FE(Weak\\weakrefcounted, PHP_FN(weakrefcounted), weakrefcounted_arg)
-    PHP_NAMED_FE(Weak\\weakrefcount, PHP_FN(weakrefcount), weakrefcount_arg)
-    PHP_NAMED_FE(Weak\\weakrefs, PHP_FN(weakrefs), weakrefs_arg)
+    ZEND_NS_FE(PHP_WEAK_NS, weakrefcounted, weakrefcounted_arg)
+    ZEND_NS_FE(PHP_WEAK_NS, weakrefcount, weakrefcount_arg)
+    ZEND_NS_FE(PHP_WEAK_NS, weakrefs, weakrefs_arg)
 
-    PHP_NAMED_FE(Weak\\object_handle, PHP_FN(object_handle), object_handle_arg)
+    ZEND_NS_FE(PHP_WEAK_NS, object_handle, object_handle_arg)
 
     PHP_FE_END
 }; /* }}} */
