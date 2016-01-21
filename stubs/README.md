@@ -16,4 +16,4 @@ in your IDE and other code-analysis tools.
 
 ## License
 
-[php-weak](https://github.com/pinepain/php-weak) PHP extension is a free software licensed under the [MIT license](http://opensource.org/licenses/MIT).
+[php-weak](https://github.com/pinepain/php-weak) PHP extension is licensed under the [MIT license](http://opensource.org/licenses/MIT).
