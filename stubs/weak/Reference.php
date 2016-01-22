@@ -60,4 +60,13 @@ class Reference
     public function notifier($notify = null)
     {
     }
+
+    /**
+     * Get referent object. This method is alias of Reference::get().
+     *
+     * @return object | null
+     */
+    public function __invoke()
+    {
+    }
 }
