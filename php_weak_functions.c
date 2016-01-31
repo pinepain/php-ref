@@ -85,10 +85,6 @@ PHP_FUNCTION(weakrefs) /* {{{ */
     zval *zv;
     zval  weakrefs;
 
-    zend_ulong   hashIndex;
-    zval        *hashData;
-    zend_string *hashKey;
-
     php_weak_reference_t *reference;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "z", &zv) == FAILURE) {
@@ -103,9 +99,7 @@ PHP_FUNCTION(weakrefs) /* {{{ */
         if (NULL != referent) {
             array_init_size(&weakrefs, zend_hash_num_elements(&referent->weak_references));
 
-            ZEND_HASH_FOREACH_KEY_VAL(&referent->weak_references, hashIndex, hashKey, hashData) {
-                reference = (php_weak_reference_t *) Z_PTR_P(hashData);
-
+            ZEND_HASH_FOREACH_PTR(&referent->weak_references, reference) {
                 add_next_index_zval(&weakrefs, &reference->this_ptr);
                 Z_ADDREF(reference->this_ptr);
             } ZEND_HASH_FOREACH_END();
@@ -118,7 +112,6 @@ PHP_FUNCTION(weakrefs) /* {{{ */
 
     RETURN_ZVAL(&weakrefs, 1, 1);
 } /* }}} */
-
 
 PHP_FUNCTION(object_handle) /* {{{ */
 {
@@ -141,19 +134,19 @@ ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(refcount_arg, 0, 1, IS_LONG, NULL, 0)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(weakrefcounted_arg, 0, 1, _IS_BOOL, NULL, 0)
-                ZEND_ARG_TYPE_INFO(0, object, IS_OBJECT, 0)
+                ZEND_ARG_INFO(0, object)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(weakrefcount_arg, 0, 1, IS_LONG, NULL, 0)
-                ZEND_ARG_TYPE_INFO(0, object, IS_OBJECT, 0)
+                ZEND_ARG_INFO(0, object)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(weakrefs_arg, 0, 1, IS_ARRAY, NULL, 0)
-                ZEND_ARG_TYPE_INFO(0, object, IS_OBJECT, 0)
+                ZEND_ARG_INFO(0, object)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(object_handle_arg, 0, 1, IS_LONG, NULL, 0)
-                ZEND_ARG_TYPE_INFO(0, object, IS_OBJECT, 0)
+                ZEND_ARG_INFO(0, object)
 ZEND_END_ARG_INFO()
 
 

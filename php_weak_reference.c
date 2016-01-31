@@ -606,11 +606,11 @@ static PHP_METHOD(WeakReference, notifier)  /* {{{ */
 
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_weak_reference___construct, ZEND_SEND_BY_VAL, ZEND_RETURN_VALUE, 1)
-                ZEND_ARG_TYPE_INFO(0, referent, IS_OBJECT, 0)
+                ZEND_ARG_INFO(0, referent)
                 ZEND_ARG_INFO(0, notify)
 ZEND_END_ARG_INFO()
 
-ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_weak_reference_get, ZEND_SEND_BY_VAL, ZEND_RETURN_VALUE, IS_OBJECT, NULL, 1)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_weak_reference_get, ZEND_SEND_BY_VAL, ZEND_RETURN_VALUE, 0)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_weak_reference_valid, ZEND_SEND_BY_VAL, ZEND_RETURN_VALUE, _IS_BOOL, NULL, 0)
