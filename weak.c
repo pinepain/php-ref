@@ -62,9 +62,10 @@ PHP_RSHUTDOWN_FUNCTION(weak) /* {{{ */
 PHP_MINFO_FUNCTION(weak) /* {{{ */
 {
     php_info_print_table_start();
-    php_info_print_table_header(2, "Version",   PHP_WEAK_VERSION);
-    php_info_print_table_header(2, "Revision",  PHP_WEAK_REVISION);
-    php_info_print_table_header(2, "Compiled",  __DATE__ " @ "  __TIME__);
+    php_info_print_table_header(2, "Weak references support", "enabled");
+    php_info_print_table_row(2, "Version",   PHP_WEAK_VERSION);
+    php_info_print_table_row(2, "Revision",  PHP_WEAK_REVISION);
+    php_info_print_table_row(2, "Compiled",  __DATE__ " @ "  __TIME__);
 
     php_info_print_table_end();
 } /* }}} */
