@@ -166,19 +166,10 @@ void php_weak_reference_call_notifier(zval *reference, zval *notifier) /* {{{ */
     if (UNEXPECTED(zend_fcall_info_init(notifier, 0, &fci, &fci_cache, NULL, &errstr))) {
         if (errstr) {
             zend_throw_error(zend_ce_type_error, "Notifier should be a valid callback, %s", errstr);
+            efree(errstr);
         } else {
             zend_throw_error(zend_ce_type_error, "Notifier should be a valid callback");
-            free(errstr);
         }
-
-        return;
-    }
-
-    zend_fcall_info_init(notifier, 0, &fci, &fci_cache, NULL, &errstr);
-
-    if (UNEXPECTED(errstr != NULL)) {
-        zend_throw_error(zend_ce_type_error, "Notifier should be to be a valid callback, %s", errstr);
-        free(errstr);
 
         return;
     }
