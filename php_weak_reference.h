@@ -17,6 +17,10 @@
 
 #include "php.h"
 
+#ifdef ZTS
+#include "TSRM.h"
+#endif
+
 extern zend_class_entry *php_weak_reference_class_entry;
 
 
