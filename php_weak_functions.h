@@ -17,6 +17,10 @@
 
 #include "php.h"
 
+#ifdef ZTS
+#include "TSRM.h"
+#endif
+
 extern const zend_function_entry php_weak_functions[];
 
 #endif /* PHP_WEAK_FUNCTIONS_H */

@@ -1,4 +1,8 @@
-# PHP Weak extension [![Build Status](https://travis-ci.org/pinepain/php-weak.svg)](https://travis-ci.org/pinepain/php-weak)
+# PHP Weak extension
+
+[![Build Status](https://travis-ci.org/pinepain/php-weak.svg)](https://travis-ci.org/pinepain/php-weak)
+[![Windows Build status](https://ci.appveyor.com/api/projects/status/7r07eydi6c3lj36a/branch/master?svg=true)](https://ci.appveyor.com/project/pinepain/php-weak)
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/pinepain/php-weak/master/LICENSE)
 
 This extension provides [weak references](https://en.wikipedia.org/wiki/Weak_reference) support for PHP 7 and serves
 as a ground for other weak data structures.
@@ -132,7 +136,7 @@ To install extension globally run
     # sudo make install
 
 You will need to copy the extension config to your php dir, here is example for Ubuntu with PHP 7 from
-[Ondřej Surý's PPA for PHP 7.0](https://launchpad.net/~ondrej/+archive/ubuntu/php-7.0):
+[Ondřej Surý's PPA for PHP](https://launchpad.net/~ondrej/+archive/ubuntu/php):
    
     # sudo cp provision/php/weak.ini /etc/php/mods-available/
     # sudo phpenmod -v ALL weak
