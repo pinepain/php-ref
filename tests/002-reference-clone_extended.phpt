@@ -20,71 +20,59 @@ $helper = require '.testsuite.php';
 $obj = new \stdClass();
 
 
-$notifier = function (Weak\Reference $ref) use ($helper) {
+$notifier = function (Weak\Reference $ref) {
     echo 'Notified: ';
-    $helper->dump($ref);
+    var_dump($ref);
 };
 
 $wr = new ExtendedReference($obj, $notifier, [42]);
 
-$helper->dump($wr);
+var_dump($wr);
 $helper->line();
 
 $wr2 = clone $wr;
 
-$helper->dump($wr2);
+var_dump($wr2);
 $helper->line();
 
 
 ?>
 EOF
 --EXPECT--
-object(WeakTests\ExtendedReference)#4 (3) refcount(3){
+object(WeakTests\ExtendedReference)#4 (3) {
   ["test":"WeakTests\ExtendedReference":private]=>
-  array(1) refcount(2){
+  array(1) {
     [0]=>
     int(42)
   }
   ["referent":"Weak\Reference":private]=>
-  object(stdClass)#2 (0) refcount(2){
+  object(stdClass)#2 (0) {
   }
   ["notifier":"Weak\Reference":private]=>
-  object(Closure)#3 (2) refcount(3){
-    ["static"]=>
-    array(1) refcount(1){
-      ["helper"]=>
-      object(Testsuite)#1 (0) refcount(4){
-      }
-    }
+  object(Closure)#3 (1) {
     ["parameter"]=>
-    array(1) refcount(1){
+    array(1) {
       ["$ref"]=>
-      string(10) "<required>" refcount(1)
+      string(10) "<required>"
     }
   }
 }
 
-object(WeakTests\ExtendedReference)#5 (3) refcount(3){
+object(WeakTests\ExtendedReference)#5 (3) {
   ["test":"WeakTests\ExtendedReference":private]=>
-  array(1) refcount(3){
+  array(1) {
     [0]=>
     int(42)
   }
   ["referent":"Weak\Reference":private]=>
-  object(stdClass)#2 (0) refcount(2){
+  object(stdClass)#2 (0) {
   }
   ["notifier":"Weak\Reference":private]=>
-  object(Closure)#3 (2) refcount(4){
-    ["static"]=>
-    array(1) refcount(1){
-      ["helper"]=>
-      object(Testsuite)#1 (0) refcount(4){
-      }
-    }
+  object(Closure)#3 (1) {
     ["parameter"]=>
-    array(1) refcount(1){
+    array(1) {
       ["$ref"]=>
-      string(10) "<required>" refcount(1)
+      string(10) "<required>"
     }
   }
 }

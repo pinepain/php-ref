@@ -16,49 +16,49 @@ $obj = new stdClass();
 
 $wr = new ExtendedReference($obj, function (Weak\Reference $reference) {}, [42]);
 
-$helper->dump($wr);
+var_dump($wr);
 $helper->line();
 
 $obj = null;
 
-$helper->dump($wr);
+var_dump($wr);
 $helper->line();
 ?>
 EOF
 --EXPECT--
-object(WeakTests\ExtendedReference)#3 (3) refcount(3){
+object(WeakTests\ExtendedReference)#3 (3) {
   ["test":"WeakTests\ExtendedReference":private]=>
-  array(1) refcount(2){
+  array(1) {
     [0]=>
     int(42)
   }
   ["referent":"Weak\Reference":private]=>
-  object(stdClass)#2 (0) refcount(2){
+  object(stdClass)#2 (0) {
   }
   ["notifier":"Weak\Reference":private]=>
-  object(Closure)#4 (1) refcount(2){
+  object(Closure)#4 (1) {
     ["parameter"]=>
-    array(1) refcount(1){
+    array(1) {
       ["$reference"]=>
-      string(10) "<required>" refcount(1)
+      string(10) "<required>"
     }
   }
 }
 
-object(WeakTests\ExtendedReference)#3 (3) refcount(3){
+object(WeakTests\ExtendedReference)#3 (3) {
   ["test":"WeakTests\ExtendedReference":private]=>
-  array(1) refcount(2){
+  array(1) {
     [0]=>
     int(42)
   }
   ["referent":"Weak\Reference":private]=>
   NULL
   ["notifier":"Weak\Reference":private]=>
-  object(Closure)#4 (1) refcount(2){
+  object(Closure)#4 (1) {
     ["parameter"]=>
-    array(1) refcount(1){
+    array(1) {
       ["$reference"]=>
-      string(10) "<required>" refcount(1)
+      string(10) "<required>"
     }
   }
 }
