@@ -5,7 +5,6 @@ Weak\Reference - exception thrown in callback
 --FILE--
 <?php
 
-gc_disable();
 /** @var \Testsuite $helper */
 $helper = require '.testsuite.php';
 

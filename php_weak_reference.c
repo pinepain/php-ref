@@ -215,10 +215,12 @@ void php_weak_referent_object_dtor_obj(zend_object *object) /* {{{ */
     zend_ulong handle;
     php_weak_reference_t *reference;
 
-    referent->original_handlers->dtor_obj(object);
+    if (referent->original_handlers->dtor_obj) {
+        referent->original_handlers->dtor_obj(object);
 
-    if (EG(exception)) {
-        php_weak_store_exceptions(&exceptions, &tmp);
+        if (EG(exception)) {
+            php_weak_store_exceptions(&exceptions, &tmp);
+        }
     }
 
     ZEND_HASH_REVERSE_FOREACH_PTR(&referent->weak_references, reference) {
