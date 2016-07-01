@@ -662,10 +662,10 @@ PHP_MINIT_FUNCTION (php_weak_reference) /* {{{ */
     zend_class_entry ce;
 
     INIT_NS_CLASS_ENTRY(ce, PHP_WEAK_NS, "Reference", php_weak_reference_methods);
-    ce.serialize = zend_class_serialize_deny;
-    ce.unserialize = zend_class_unserialize_deny;
     this_ce = zend_register_internal_class(&ce);
     this_ce->create_object = php_weak_reference_ctor;
+    this_ce->serialize = zend_class_serialize_deny;
+    this_ce->unserialize = zend_class_unserialize_deny;
 
     memcpy(&php_weak_reference_object_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
 
