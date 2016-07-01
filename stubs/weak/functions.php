@@ -60,7 +60,7 @@ function weakrefcount(object $value) : int {}
 function weakrefs(object $value) : array {}
 
 /**
- * Get object's weak references
+ * Get object's handle id
  *
  * @param object $value
  *
