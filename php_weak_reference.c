@@ -13,6 +13,7 @@
 */
 
 #include "php_weak_reference.h"
+#include "php_weak_notifier_exception.h"
 #include "php_weak.h"
 #include "zend_exceptions.h"
 #include "zend_interfaces.h"
@@ -32,6 +33,7 @@ static zend_object_get_debug_info_t spl_object_storage_get_debug_info_orig_handl
 
 php_weak_reference_t *php_weak_reference_init(zval *this_ptr, zval *referent_zv, zval *notifier_zv);
 
+static inline void php_weak_store_exceptions(zval *exceptions, zval *tmp);
 static int php_weak_reference_check_notifier(zval *notifier, zval *this);
 
 
@@ -197,9 +199,15 @@ void php_weak_reference_call_notifier(zval *reference, zval *notifier) /* {{{ */
 
 } /* }}} */
 
+
 void php_weak_referent_object_dtor_obj(zend_object *object) /* {{{ */
 {
     php_weak_referent_t *referent = php_weak_referent_find_ptr(object->handle);
+
+    zval exceptions;
+    zval tmp;
+
+    ZVAL_UNDEF(&exceptions);
 
     assert(NULL != referent);
     assert(NULL != PHP_WEAK_G(referents));
@@ -208,6 +216,10 @@ void php_weak_referent_object_dtor_obj(zend_object *object) /* {{{ */
     php_weak_reference_t *reference;
 
     referent->original_handlers->dtor_obj(object);
+
+    if (EG(exception)) {
+        php_weak_store_exceptions(&exceptions, &tmp);
+    }
 
     ZEND_HASH_REVERSE_FOREACH_PTR(&referent->weak_references, reference) {
         handle = _p->h;
@@ -221,11 +233,12 @@ void php_weak_referent_object_dtor_obj(zend_object *object) /* {{{ */
                 break;
             case PHP_WEAK_NOTIFIER_CALLBACK:
                 /* callback notifier */
-                if (!EG(exception)) {
-                    php_weak_reference_call_notifier(&reference->this_ptr, &reference->notifier);
+                php_weak_reference_call_notifier(&reference->this_ptr, &reference->notifier);
+
+                if (EG(exception)) {
+                    php_weak_store_exceptions(&exceptions, &tmp);
                 }
                 break;
-
             default:
                 break;
         }
@@ -234,6 +247,13 @@ void php_weak_referent_object_dtor_obj(zend_object *object) /* {{{ */
     } ZEND_HASH_FOREACH_END();
 
     zend_hash_index_del(PHP_WEAK_G(referents), referent->handle);
+
+    if (!Z_ISUNDEF(exceptions)) {
+        zval exception;
+        php_weak_create_notifier_exception(&exception, "One or more exceptions thrown during notifiers calling", &exceptions);
+
+        zend_throw_exception_object(&exception);
+    }
 } /* }}} */
 
 void php_weak_globals_referents_ht_dtor(zval *zv) /* {{{ */
@@ -340,6 +360,18 @@ php_weak_reference_t *php_weak_reference_init(zval *this_ptr, zval *referent_zv,
     return reference;
 } /* }}} */
 
+static inline void php_weak_store_exceptions(zval *exceptions, zval *tmp)
+{
+    if (Z_ISUNDEF_P(exceptions)) {
+        array_init(exceptions);
+    }
+
+    ZVAL_OBJ(tmp, EG(exception));
+    Z_ADDREF_P(tmp);
+    add_next_index_zval(exceptions, tmp);
+
+    zend_clear_exception();
+}
 
 static int php_weak_reference_check_notifier(zval *notifier, zval *this) /* {{{ */
 {

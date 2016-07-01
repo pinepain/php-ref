@@ -21,18 +21,14 @@ $wr = new Weak\Reference($obj, $callback);
 
 try {
     $obj = null;
-} catch(\Exception $e) {
-    $helper->exception_export($e);
-
-    if ($e->getPrevious()) {
-        echo 'previous:';
-        $helper->exception_export($e->getPrevious());
-    }
+} catch(\Weak\NotifierException $e) {
+    $helper->weak_exception_export($e);
 }
 
 ?>
 EOF
 --EXPECT--
 WeakTests\TrackingDtor's destructor called
-Exception: Test exception from callback
+Weak\NotifierException: One or more exceptions thrown during notifiers calling
+    Exception: Test exception from callback
 EOF

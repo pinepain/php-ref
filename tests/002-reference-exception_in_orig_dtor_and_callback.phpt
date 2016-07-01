@@ -11,6 +11,8 @@ $helper = require '.testsuite.php';
 class BadDtor {
     function __destruct()
     {
+        echo 'Dtor called', PHP_EOL;
+
         throw new Exception('Test exception from dtor');
     }
 }
@@ -18,6 +20,8 @@ class BadDtor {
 $obj = new BadDtor();
 
 $callback = function (Weak\Reference $reference) {
+    echo 'Callback called', PHP_EOL;
+
     throw new \Exception('Test exception from callback');
 };
 
@@ -27,17 +31,16 @@ $wr = new Weak\Reference($obj, $callback);
 
 try {
     $obj = null;
-} catch(\Exception $e) {
-    $helper->exception_export($e);
-
-    if ($e->getPrevious()) {
-        echo 'previous:';
-        $helper->exception_export($e->getPrevious());
-    }
+} catch(\Weak\NotifierException $e) {
+    $helper->weak_exception_export($e);
 }
 
 ?>
 EOF
 --EXPECT--
-Exception: Test exception from dtor
+Dtor called
+Callback called
+Weak\NotifierException: One or more exceptions thrown during notifiers calling
+    Exception: Test exception from dtor
+    Exception: Test exception from callback
 EOF

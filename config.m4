@@ -27,9 +27,10 @@ if test "$PHP_WEAK" != "no"; then
         fi
     fi
 
-    PHP_NEW_EXTENSION(weak, [   \
-        weak.c                  \
-        php_weak_reference.c    \
-        php_weak_functions.c    \
+    PHP_NEW_EXTENSION(weak, [           \
+        weak.c                          \
+        php_weak_notifier_exception.c   \
+        php_weak_reference.c            \
+        php_weak_functions.c            \
     ], $ext_shared,, -DZEND_ENABLE_STATIC_TSRMLS_CACHE=1)
 fi

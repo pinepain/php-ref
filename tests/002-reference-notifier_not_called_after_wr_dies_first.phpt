@@ -25,8 +25,8 @@ $wr = new Weak\Reference($obj, $callback);
 
 try {
     $obj = null;
-} catch(Exception $e) {
-    $helper->exception_export($e);
+} catch(\Weak\NotifierException $e) {
+    $helper->weak_exception_export($e);
     $helper->line();
 }
 
@@ -37,7 +37,9 @@ $helper->line();
 ?>
 EOF
 --EXPECT--
-Exception: Destructor throws exception
+Weak notifier called
+Weak\NotifierException: One or more exceptions thrown during notifiers calling
+    Exception: Destructor throws exception
 
 Referent object dead: ok
 Referent object invalid: ok
