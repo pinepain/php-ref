@@ -27,7 +27,7 @@ $obj = null; // outputs "Object destroyed"
 
 This extension adds `Weak` namespace and all entities are created inside it.
 
-There are no INI setting, constants or exceptions provided by this extension.
+There are no INI setting or constants provided by this extension.
 
 Brief docs about [`Weak\Reference` class](./stubs/weak/Reference.php) and [functions](./stubs/weak/functions.php)
 may be seen in [stub files](./stubs/weak).
@@ -35,6 +35,7 @@ may be seen in [stub files](./stubs/weak).
 Short list if what provided by this extension is:
 
   - `class Weak\Reference`
+  - `class Weak\NotifierException extend Exception`
   - `function Weak\refcounted()`
   - `function Weak\refcount()`
   - `function Weak\weakrefcounted()`
@@ -51,8 +52,9 @@ Note that notification happens *after* referent object destruction, so at the ti
 will return `null` (unless rare case when object refcount get incremented in destructor, e.g. by storing destructing value
 somewhere else).
 
-Callback notifier will not be called if referent object destructor or previous notifier callback throws exception, whether
-array notifier get executed even in such cases.
+If object destructor or one or more notifiers throw exception, all further notifier callbacks will be called as if
+that exception was thrown inside `try-catch` block. In case one or more exception was thrown, `Weak\NotifierException`
+will be thrown and all thrown exceptions will be available via `Weak\NotifierException::getExceptions()` method.
 
 
 ### Cloning
@@ -157,16 +159,28 @@ You may also want to add php-weak extension as a [composer.json dependency](http
 with custom one, which meta-code is:
 
 ```php
-run_original_dtor_obj($object);
+$exceptions = [];
+
+try {
+    run_original_dtor_obj($object);
+} catch(Throwable $e) {
+    $exceptions[] = $e;
+}
 
 foreach($weak_references as $weak_ref_object_handle => $weak_reference) {
     if (is_array($weak_reference->notifier)) {
         $weak_reference->notifier[] = $weak_reference;
-    } elseif (is_callable($weak_reference->notifier) && $no_exception_thrown) {
-        $weak_reference->notifier($weak_reference);
+    } elseif (is_callable($weak_reference->notifier)) {
+        try {
+            $weak_reference->notifier($weak_reference);
+        } catch(Throwable $e) {
+            $exceptions[] = $e;
+        }
     }
-    
-    unset($weak_references[$weak_ref_object_handle]);
+}
+
+if ($exceptions) {
+    throw new Weak\NotifierException('One or more exceptions thrown during notifiers calling', $exceptions);
 }
 ```
 
