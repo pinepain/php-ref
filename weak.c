@@ -18,6 +18,7 @@
 
 #include "php_weak_functions.h"
 #include "php_weak_reference.h"
+#include "php_weak_notifier_exception.h"
 #include "php_weak.h"
 
 #include "ext/standard/info.h"
@@ -29,6 +30,7 @@ static int le_weak;
 
 PHP_MINIT_FUNCTION(weak) /* {{{ */
 {
+    PHP_MINIT(php_weak_notifier_exception)(INIT_FUNC_ARGS_PASSTHRU);
     PHP_MINIT(php_weak_reference)(INIT_FUNC_ARGS_PASSTHRU);
 
     return SUCCESS;

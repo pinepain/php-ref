@@ -15,231 +15,91 @@ $wr = new Weak\Reference($obj, $notifier);
 
 $wr2 = clone $wr;
 
-$helper->dump($notifier);
+var_dump($notifier);
 
 $obj = null;
 
-$helper->dump($notifier);
+var_dump($notifier);
 
 $wr = null;
 
-$helper->dump($notifier);
+var_dump($notifier);
 
 $helper->line();
 ?>
 EOF
 --EXPECT--
-array(0) refcount(5){
+array(0) {
 }
-array(2) refcount(5){
+array(2) {
   [0]=>
-  object(Weak\Reference)#4 (2) refcount(2){
+  object(Weak\Reference)#4 (2) {
     ["referent":"Weak\Reference":private]=>
     NULL
     ["notifier":"Weak\Reference":private]=>
-    array(2) refcount(6){
+    array(2) {
       [0]=>
-      object(Weak\Reference)#4 (2) refcount(2){
-        ["referent":"Weak\Reference":private]=>
-        NULL
-        ["notifier":"Weak\Reference":private]=>
-        array(2) refcount(7){
-          [0]=>
-          object(Weak\Reference)#4 (2) refcount(2){
-            ["referent":"Weak\Reference":private]=>
-            NULL
-            ["notifier":"Weak\Reference":private]=>
-            *RECURSION*
-          }
-          [1]=>
-          object(Weak\Reference)#3 (2) refcount(2){
-            ["referent":"Weak\Reference":private]=>
-            NULL
-            ["notifier":"Weak\Reference":private]=>
-            *RECURSION*
-          }
-        }
-      }
+      *RECURSION*
       [1]=>
-      object(Weak\Reference)#3 (2) refcount(2){
+      object(Weak\Reference)#3 (2) {
         ["referent":"Weak\Reference":private]=>
         NULL
         ["notifier":"Weak\Reference":private]=>
-        array(2) refcount(7){
-          [0]=>
-          object(Weak\Reference)#4 (2) refcount(2){
-            ["referent":"Weak\Reference":private]=>
-            NULL
-            ["notifier":"Weak\Reference":private]=>
-            *RECURSION*
-          }
-          [1]=>
-          object(Weak\Reference)#3 (2) refcount(2){
-            ["referent":"Weak\Reference":private]=>
-            NULL
-            ["notifier":"Weak\Reference":private]=>
-            *RECURSION*
-          }
-        }
+        *RECURSION*
       }
     }
   }
   [1]=>
-  object(Weak\Reference)#3 (2) refcount(2){
+  object(Weak\Reference)#3 (2) {
     ["referent":"Weak\Reference":private]=>
     NULL
     ["notifier":"Weak\Reference":private]=>
-    array(2) refcount(6){
+    array(2) {
       [0]=>
-      object(Weak\Reference)#4 (2) refcount(2){
+      object(Weak\Reference)#4 (2) {
         ["referent":"Weak\Reference":private]=>
         NULL
         ["notifier":"Weak\Reference":private]=>
-        array(2) refcount(7){
-          [0]=>
-          object(Weak\Reference)#4 (2) refcount(2){
-            ["referent":"Weak\Reference":private]=>
-            NULL
-            ["notifier":"Weak\Reference":private]=>
-            *RECURSION*
-          }
-          [1]=>
-          object(Weak\Reference)#3 (2) refcount(2){
-            ["referent":"Weak\Reference":private]=>
-            NULL
-            ["notifier":"Weak\Reference":private]=>
-            *RECURSION*
-          }
-        }
+        *RECURSION*
       }
       [1]=>
-      object(Weak\Reference)#3 (2) refcount(2){
-        ["referent":"Weak\Reference":private]=>
-        NULL
-        ["notifier":"Weak\Reference":private]=>
-        array(2) refcount(7){
-          [0]=>
-          object(Weak\Reference)#4 (2) refcount(2){
-            ["referent":"Weak\Reference":private]=>
-            NULL
-            ["notifier":"Weak\Reference":private]=>
-            *RECURSION*
-          }
-          [1]=>
-          object(Weak\Reference)#3 (2) refcount(2){
-            ["referent":"Weak\Reference":private]=>
-            NULL
-            ["notifier":"Weak\Reference":private]=>
-            *RECURSION*
-          }
-        }
-      }
+      *RECURSION*
     }
   }
 }
-array(2) refcount(5){
+array(2) {
   [0]=>
-  object(Weak\Reference)#4 (2) refcount(2){
+  object(Weak\Reference)#4 (2) {
     ["referent":"Weak\Reference":private]=>
     NULL
     ["notifier":"Weak\Reference":private]=>
-    array(2) refcount(6){
+    array(2) {
       [0]=>
-      object(Weak\Reference)#4 (2) refcount(2){
-        ["referent":"Weak\Reference":private]=>
-        NULL
-        ["notifier":"Weak\Reference":private]=>
-        array(2) refcount(7){
-          [0]=>
-          object(Weak\Reference)#4 (2) refcount(2){
-            ["referent":"Weak\Reference":private]=>
-            NULL
-            ["notifier":"Weak\Reference":private]=>
-            *RECURSION*
-          }
-          [1]=>
-          object(Weak\Reference)#3 (2) refcount(1){
-            ["referent":"Weak\Reference":private]=>
-            NULL
-            ["notifier":"Weak\Reference":private]=>
-            *RECURSION*
-          }
-        }
-      }
+      *RECURSION*
       [1]=>
-      object(Weak\Reference)#3 (2) refcount(1){
+      object(Weak\Reference)#3 (2) {
         ["referent":"Weak\Reference":private]=>
         NULL
         ["notifier":"Weak\Reference":private]=>
-        array(2) refcount(7){
-          [0]=>
-          object(Weak\Reference)#4 (2) refcount(2){
-            ["referent":"Weak\Reference":private]=>
-            NULL
-            ["notifier":"Weak\Reference":private]=>
-            *RECURSION*
-          }
-          [1]=>
-          object(Weak\Reference)#3 (2) refcount(1){
-            ["referent":"Weak\Reference":private]=>
-            NULL
-            ["notifier":"Weak\Reference":private]=>
-            *RECURSION*
-          }
-        }
+        *RECURSION*
       }
     }
   }
   [1]=>
-  object(Weak\Reference)#3 (2) refcount(1){
+  object(Weak\Reference)#3 (2) {
     ["referent":"Weak\Reference":private]=>
     NULL
     ["notifier":"Weak\Reference":private]=>
-    array(2) refcount(6){
+    array(2) {
       [0]=>
-      object(Weak\Reference)#4 (2) refcount(2){
+      object(Weak\Reference)#4 (2) {
         ["referent":"Weak\Reference":private]=>
         NULL
         ["notifier":"Weak\Reference":private]=>
-        array(2) refcount(7){
-          [0]=>
-          object(Weak\Reference)#4 (2) refcount(2){
-            ["referent":"Weak\Reference":private]=>
-            NULL
-            ["notifier":"Weak\Reference":private]=>
-            *RECURSION*
-          }
-          [1]=>
-          object(Weak\Reference)#3 (2) refcount(1){
-            ["referent":"Weak\Reference":private]=>
-            NULL
-            ["notifier":"Weak\Reference":private]=>
-            *RECURSION*
-          }
-        }
+        *RECURSION*
       }
       [1]=>
-      object(Weak\Reference)#3 (2) refcount(1){
-        ["referent":"Weak\Reference":private]=>
-        NULL
-        ["notifier":"Weak\Reference":private]=>
-        array(2) refcount(7){
-          [0]=>
-          object(Weak\Reference)#4 (2) refcount(2){
-            ["referent":"Weak\Reference":private]=>
-            NULL
-            ["notifier":"Weak\Reference":private]=>
-            *RECURSION*
-          }
-          [1]=>
-          object(Weak\Reference)#3 (2) refcount(1){
-            ["referent":"Weak\Reference":private]=>
-            NULL
-            ["notifier":"Weak\Reference":private]=>
-            *RECURSION*
-          }
-        }
-      }
+      *RECURSION*
     }
   }
 }

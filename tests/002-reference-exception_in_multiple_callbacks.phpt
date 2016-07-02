@@ -15,6 +15,7 @@ $obj = new \WeakTests\TrackingDtor(0);
 function callback_throws($id)
 {
     return function (Weak\Reference $reference) use ($id) {
+        echo 'Callback #' . $id, ' called', PHP_EOL;
         throw new \Exception('Test exception from callback #' . $id);
     };
 }
@@ -22,27 +23,24 @@ function callback_throws($id)
 function callback_ok($id)
 {
     return function (Weak\Reference $reference) use ($id) {
-
         echo 'Callback #' . $id, ' called', PHP_EOL;
     };
 }
 
 
-$wr3 = new Weak\Reference($obj, callback_ok(3));
-$wr2 = new Weak\Reference($obj, callback_throws(2));
+$wr5 = new Weak\Reference($obj, callback_ok(5));
+$wr4 = new Weak\Reference($obj, callback_ok(4));
+$wr3 = new Weak\Reference($obj, callback_throws(3));
+$wr2 = new Weak\Reference($obj, callback_ok(2));
 $wr1 = new Weak\Reference($obj, callback_throws(1));
 $wr0 = new Weak\Reference($obj, callback_ok(0));
 
 try {
     $obj = null;
-} catch(\Exception $e) {
-    $helper->exception_export($e);
-
-    if ($e->getPrevious()) {
-        echo 'previous:';
-        $helper->exception_export($e->getPrevious());
-    }
+} catch(\Weak\NotifierException $e) {
+    $helper->weak_exception_export($e);
 }
+
 
 $helper->line();
 ?>
@@ -50,6 +48,13 @@ EOF
 --EXPECT--
 WeakTests\TrackingDtor's destructor called
 Callback #0 called
-Exception: Test exception from callback #1
+Callback #1 called
+Callback #2 called
+Callback #3 called
+Callback #4 called
+Callback #5 called
+Weak\NotifierException: One or more exceptions thrown during notifiers calling
+    Exception: Test exception from callback #1
+    Exception: Test exception from callback #3
 
 EOF

@@ -32,6 +32,21 @@ class Testsuite
         echo get_class($e), ': ', $e->getMessage(), PHP_EOL;
     }
 
+    public function weak_exception_export(\Weak\NotifierException $e)
+    {
+        $this->exception_export($e);
+
+        if ($e->getPrevious()) {
+            echo 'previous: ';
+            $this->exception_export($e->getPrevious());
+        }
+
+        foreach ($e->getExceptions() as $thrown) {
+            echo '    ';
+            $this->exception_export($thrown);
+        }
+    }
+
     public function export($value)
     {
         echo gettype($value), ': ', var_export($value, true), PHP_EOL;
