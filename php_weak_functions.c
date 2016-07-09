@@ -15,7 +15,6 @@
 #include "php_weak_functions.h"
 #include "php_weak_reference.h"
 #include "php_weak.h"
-#include "ext/spl/php_spl.h"
 
 PHP_FUNCTION(refcounted) /* {{{ */
 {

@@ -78,7 +78,7 @@ $helper->dump(weakrefs($obj3));
 $helper->line();
 
 
-$helper->header('Test Weak\refcount');
+$helper->header('Test Weak\object_handle');
 $helper->export_annotated('object_handle($obj1)', object_handle($obj1));
 $helper->export_annotated('object_handle($obj2)', object_handle($obj2));
 $helper->line();
@@ -155,8 +155,8 @@ No weak refs reported for object with weakrefs(): ok
 array(0) refcount(2){
 }
 
-Test Weak\refcount:
--------------------
+Test Weak\object_handle:
+------------------------
 object_handle($obj1): integer: 2
 object_handle($obj2): integer: 3
 
