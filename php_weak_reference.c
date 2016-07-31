@@ -385,7 +385,7 @@ php_weak_reference_t *php_weak_reference_init(zval *this_ptr, zval *referent_zv,
 
     referent = php_weak_referent_get_or_create(referent_zv);
 
-    php_weak_reference_attach(reference, referent);
+    reference->register_reference(reference, referent);
 
     if (NULL != notifier_zv) {
         ZVAL_COPY(&reference->notifier, notifier_zv);
@@ -494,6 +494,9 @@ static zend_object *php_weak_reference_ctor(zend_class_entry *ce)  /* {{{ */
 
     reference->std.handlers = &php_weak_reference_object_handlers;
 
+    reference->register_reference = php_weak_reference_attach;
+    reference->unregister_reference = php_weak_reference_maybe_unregister;
+
     return &reference->std;
 } /* }}} */
 
@@ -514,7 +517,7 @@ static zend_object *php_weak_reference_clone_obj(zval *object) /* {{{ */
     new_reference->notifier_type = old_reference->notifier_type;
 
     if (old_reference->referent) {
-        php_weak_reference_attach(new_reference, old_reference->referent);
+        old_reference->register_reference(new_reference, old_reference->referent);
     }
 
     zend_objects_clone_members(new_object, old_object);
