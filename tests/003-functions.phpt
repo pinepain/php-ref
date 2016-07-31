@@ -151,18 +151,18 @@ Multiple weak refs reported for object with weakrefs(): ok
 array(2) refcount(2){
   [0]=>
   object(Weak\Reference)#5 (2) refcount(2){
-    ["referent":"Weak\Reference":private]=>
+    ["referent":"Weak\AbstractReference":private]=>
     object(stdClass)#2 (0) refcount(3){
     }
-    ["notifier":"Weak\Reference":private]=>
+    ["notifier":"Weak\AbstractReference":private]=>
     NULL
   }
   [1]=>
   object(Weak\Reference)#6 (2) refcount(2){
-    ["referent":"Weak\Reference":private]=>
+    ["referent":"Weak\AbstractReference":private]=>
     object(stdClass)#2 (0) refcount(3){
     }
-    ["notifier":"Weak\Reference":private]=>
+    ["notifier":"Weak\AbstractReference":private]=>
     NULL
   }
 }
@@ -171,10 +171,10 @@ Single weak ref reported for object with weakrefs(): ok
 array(1) refcount(2){
   [0]=>
   object(Weak\Reference)#7 (2) refcount(2){
-    ["referent":"Weak\Reference":private]=>
+    ["referent":"Weak\AbstractReference":private]=>
     object(stdClass)#3 (0) refcount(2){
     }
-    ["notifier":"Weak\Reference":private]=>
+    ["notifier":"Weak\AbstractReference":private]=>
     NULL
   }
 }

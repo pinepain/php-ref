@@ -1,5 +1,5 @@
 --TEST--
-Weak\Reference - clone reference
+Weak\SoftReference - clone reference
 --SKIPIF--
 <?php if (!extension_loaded("weak")) print "skip"; ?>
 --FILE--
@@ -7,11 +7,11 @@ Weak\Reference - clone reference
 
 require '.stubs.php';
 
-use WeakTests\ExtendedReference;
+use WeakTests\ExtendedSoftReference;
 
 use function \Weak\{
-    weakrefcount,
-    weakrefs
+    softrefcount,
+    softrefs
 };
 
 /** @var \Testsuite $helper */
@@ -20,27 +20,27 @@ $helper = require '.testsuite.php';
 $obj = new \stdClass();
 
 
-$notifier = function (Weak\Reference $ref) {
+$notifier = function (Weak\SoftReference $ref) {
     echo 'Notified: ';
     var_dump($ref);
 };
 
-$wr = new ExtendedReference($obj, $notifier, [42]);
+$ref = new ExtendedSoftReference($obj, $notifier, [42]);
 
-var_dump($wr);
+var_dump($ref);
 $helper->line();
 
-$wr2 = clone $wr;
+$ref2 = clone $ref;
 
-var_dump($wr2);
+var_dump($ref2);
 $helper->line();
 
 
 ?>
 EOF
 --EXPECT--
-object(WeakTests\ExtendedReference)#4 (3) {
-  ["test":"WeakTests\ExtendedReference":private]=>
+object(WeakTests\ExtendedSoftReference)#4 (3) {
+  ["test":"WeakTests\ExtendedSoftReference":private]=>
   array(1) {
     [0]=>
     int(42)
@@ -58,8 +58,8 @@ object(WeakTests\ExtendedReference)#4 (3) {
   }
 }
 
-object(WeakTests\ExtendedReference)#5 (3) {
-  ["test":"WeakTests\ExtendedReference":private]=>
+object(WeakTests\ExtendedSoftReference)#5 (3) {
+  ["test":"WeakTests\ExtendedSoftReference":private]=>
   array(1) {
     [0]=>
     int(42)

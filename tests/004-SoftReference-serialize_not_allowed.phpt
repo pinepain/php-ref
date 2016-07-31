@@ -1,5 +1,5 @@
 --TEST--
-Weak\Reference - serialize reference
+Weak\SoftReference - serialize reference
 --SKIPIF--
 <?php if (!extension_loaded("weak")) print "skip"; ?>
 --FILE--
@@ -9,12 +9,12 @@ $helper = require '.testsuite.php';
 
 $obj = new \stdClass();
 
-$wr = new \Weak\Reference($obj, function (\Weak\Reference $reference) {});
+$sr = new \Weak\SoftReference($obj, function (\Weak\SoftReference $reference) {});
 
-$helper->dump($wr);
+$helper->dump($sr);
 
 try {
-    $serialized = serialize($wr);
+    $serialized = serialize($sr);
     $helper->dump($serialized);
 } catch (\Throwable $e) {
     $helper->exception_export($e);
@@ -25,7 +25,7 @@ $helper->line();
 ?>
 EOF
 --EXPECT--
-object(Weak\Reference)#3 (2) refcount(3){
+object(Weak\SoftReference)#3 (2) refcount(3){
   ["referent":"Weak\AbstractReference":private]=>
   object(stdClass)#2 (0) refcount(2){
   }
@@ -38,6 +38,6 @@ object(Weak\Reference)#3 (2) refcount(3){
     }
   }
 }
-Exception: Serialization of 'Weak\Reference' is not allowed
+Exception: Serialization of 'Weak\SoftReference' is not allowed
 
 EOF

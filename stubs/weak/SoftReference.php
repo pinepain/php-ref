@@ -13,6 +13,6 @@
 
 namespace Weak;
 
-class Reference extends AbstractReference
+class SoftReference extends AbstractReference
 {
 }

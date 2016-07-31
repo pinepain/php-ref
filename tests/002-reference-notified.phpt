@@ -14,7 +14,8 @@ $wr = new Weak\Reference($obj, function ($reference = null) use ($helper, &$obj)
     $helper->assert('Notifier called', true);
     $helper->assert('Notifier get 1 argument', sizeof(func_get_args()) === 1);
     $helper->assert('Notifier get weak reference as it argument', $reference instanceof Weak\Reference);
-    $helper->assert('Weak reference in notifier points to null', null === $reference->get());
+    $helper->assert('Original object is null', null === $obj);
+    $helper->assert('Weak reference in notifier is null', null === $reference->get());
 });
 
 $obj = null;
@@ -25,5 +26,6 @@ EOF
 Notifier called: ok
 Notifier get 1 argument: ok
 Notifier get weak reference as it argument: ok
-Weak reference in notifier points to null: ok
+Original object is null: ok
+Weak reference in notifier is null: ok
 EOF

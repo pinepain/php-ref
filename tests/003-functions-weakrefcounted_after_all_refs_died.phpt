@@ -61,10 +61,10 @@ weakrefcount($obj): int(1)
 weakrefs($obj): array(1) refcount(3){
   [0]=>
   object(Weak\Reference)#3 (2) refcount(2){
-    ["referent":"Weak\Reference":private]=>
+    ["referent":"Weak\AbstractReference":private]=>
     object(stdClass)#2 (0) refcount(2){
     }
-    ["notifier":"Weak\Reference":private]=>
+    ["notifier":"Weak\AbstractReference":private]=>
     NULL
   }
 }

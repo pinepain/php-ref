@@ -1,5 +1,5 @@
 --TEST--
-Weak\Reference - clone reference
+Weak\SoftReference - dump representation of extended reference class
 --SKIPIF--
 <?php if (!extension_loaded("weak")) print "skip"; ?>
 --FILE--
@@ -7,40 +7,27 @@ Weak\Reference - clone reference
 
 require '.stubs.php';
 
-use WeakTests\ExtendedReference;
-
-use function \Weak\{
-    weakrefcount,
-    weakrefs
-};
+use WeakTests\ExtendedSoftReference;
 
 /** @var \Testsuite $helper */
 $helper = require '.testsuite.php';
 
-$obj = new \stdClass();
+$obj = new stdClass();
 
+$sr = new ExtendedSoftReference($obj, function (Weak\SoftReference $reference) {}, [42]);
 
-$notifier = function (Weak\Reference $ref) {
-    echo 'Notified: ';
-    var_dump($ref);
-};
-
-$wr = new ExtendedReference($obj, $notifier, [42]);
-
-var_dump($wr);
+var_dump($sr);
 $helper->line();
 
-$wr2 = clone $wr;
+$obj = null;
 
-var_dump($wr2);
+var_dump($sr);
 $helper->line();
-
-
 ?>
 EOF
 --EXPECT--
-object(WeakTests\ExtendedReference)#4 (3) {
-  ["test":"WeakTests\ExtendedReference":private]=>
+object(WeakTests\ExtendedSoftReference)#3 (3) {
+  ["test":"WeakTests\ExtendedSoftReference":private]=>
   array(1) {
     [0]=>
     int(42)
@@ -49,29 +36,28 @@ object(WeakTests\ExtendedReference)#4 (3) {
   object(stdClass)#2 (0) {
   }
   ["notifier":"Weak\AbstractReference":private]=>
-  object(Closure)#3 (1) {
+  object(Closure)#4 (1) {
     ["parameter"]=>
     array(1) {
-      ["$ref"]=>
+      ["$reference"]=>
       string(10) "<required>"
     }
   }
 }
 
-object(WeakTests\ExtendedReference)#5 (3) {
-  ["test":"WeakTests\ExtendedReference":private]=>
+object(WeakTests\ExtendedSoftReference)#3 (3) {
+  ["test":"WeakTests\ExtendedSoftReference":private]=>
   array(1) {
     [0]=>
     int(42)
   }
   ["referent":"Weak\AbstractReference":private]=>
-  object(stdClass)#2 (0) {
-  }
+  NULL
   ["notifier":"Weak\AbstractReference":private]=>
-  object(Closure)#3 (1) {
+  object(Closure)#4 (1) {
     ["parameter"]=>
     array(1) {
-      ["$ref"]=>
+      ["$reference"]=>
       string(10) "<required>"
     }
   }

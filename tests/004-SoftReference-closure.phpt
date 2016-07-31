@@ -1,5 +1,5 @@
 --TEST--
-Weak\Reference - referencing closure
+Weak\SoftReference - referencing closure
 --SKIPIF--
 <?php if (!extension_loaded("weak")) print "skip"; ?>
 --FILE--
@@ -12,19 +12,19 @@ $obj = function($greeting) {
     echo 'Hello, ', $greeting, '!', PHP_EOL;
 };
 
-$wr = new Weak\Reference($obj, function (Weak\Reference $reference) {});
+$sr = new Weak\SoftReference($obj, function (Weak\SoftReference $reference) {});
 
 $helper->header('When referent object alive');
-$helper->assert('Referent object alive', $wr->get() === $obj);
-$helper->dump($wr);
+$helper->assert('Referent object alive', $sr->get() === $obj);
+$helper->dump($sr);
 $helper->space();
 
 $obj = null;
 
 $helper->header('When referent object dead');
-$helper->assert('Referent object dead', $wr->get() === null);
+$helper->assert('Referent object dead', $sr->get() === null);
 
-$helper->dump($wr);
+$helper->dump($sr);
 
 $helper->line();
 ?>
@@ -33,7 +33,7 @@ EOF
 When referent object alive:
 ---------------------------
 Referent object alive: ok
-object(Weak\Reference)#3 (2) refcount(3){
+object(Weak\SoftReference)#3 (2) refcount(3){
   ["referent":"Weak\AbstractReference":private]=>
   object(Closure)#2 (1) refcount(2){
     ["parameter"]=>
@@ -56,7 +56,7 @@ object(Weak\Reference)#3 (2) refcount(3){
 When referent object dead:
 --------------------------
 Referent object dead: ok
-object(Weak\Reference)#3 (2) refcount(3){
+object(Weak\SoftReference)#3 (2) refcount(3){
   ["referent":"Weak\AbstractReference":private]=>
   NULL
   ["notifier":"Weak\AbstractReference":private]=>

@@ -1,5 +1,5 @@
 --TEST--
-Weak\Reference - dump representation, get() and valid() methods
+Weak\SoftReference - dump representation, get() and valid() methods
 --SKIPIF--
 <?php if (!extension_loaded("weak")) print "skip"; ?>
 --FILE--
@@ -10,21 +10,21 @@ $helper = require '.testsuite.php';
 
 $obj = new stdClass();
 
-$wr = new Weak\Reference($obj);
+$ref = new Weak\SoftReference($obj);
 
 $helper->header('When referent object alive');
-$helper->assert('Referent object alive', $wr->get() === $obj);
-$helper->assert('Referent object valid', $wr->valid());
-$helper->dump($wr);
+$helper->assert('Referent object alive', $ref->get() === $obj);
+$helper->assert('Referent object valid', $ref->valid());
+$helper->dump($ref);
 $helper->space();
 
 $obj = null;
 
 
 $helper->header('When referent object dead');
-$helper->assert('Referent object dead', $wr->get() === null);
-$helper->assert('Referent object invalid', $wr->valid(), false);
-$helper->dump($wr);
+$helper->assert('Referent object dead', $ref->get() === null);
+$helper->assert('Referent object invalid', $ref->valid(), false);
+$helper->dump($ref);
 $helper->line();
 ?>
 EOF
@@ -33,7 +33,7 @@ When referent object alive:
 ---------------------------
 Referent object alive: ok
 Referent object valid: ok
-object(Weak\Reference)#3 (2) refcount(3){
+object(Weak\SoftReference)#3 (2) refcount(3){
   ["referent":"Weak\AbstractReference":private]=>
   object(stdClass)#2 (0) refcount(2){
   }
@@ -46,7 +46,7 @@ When referent object dead:
 --------------------------
 Referent object dead: ok
 Referent object invalid: ok
-object(Weak\Reference)#3 (2) refcount(3){
+object(Weak\SoftReference)#3 (2) refcount(3){
   ["referent":"Weak\AbstractReference":private]=>
   NULL
   ["notifier":"Weak\AbstractReference":private]=>

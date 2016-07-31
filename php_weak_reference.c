@@ -22,8 +22,11 @@
 #include "ext/spl/spl_observer.h"
 #endif
 
-zend_class_entry *php_weak_reference_class_entry;
-#define this_ce php_weak_reference_class_entry
+zend_class_entry *php_weak_abstract_reference_class_entry;
+zend_class_entry *php_weak_soft_reference_class_entry;
+zend_class_entry *php_weak_weak_reference_class_entry;
+
+#define this_ce php_weak_abstract_reference_class_entry
 
 zend_object_handlers php_weak_reference_object_handlers;
 
@@ -349,6 +352,26 @@ php_weak_referent_t *php_weak_referent_get_or_create(zval *referent_zv) /* {{{ *
     return referent;
 } /* }}} */
 
+void php_weak_soft_reference_attach(php_weak_reference_t *reference, php_weak_referent_t *referent) /* {{{ */
+{
+    reference->referent = referent;
+    zend_hash_index_add_ptr(&referent->soft_references, (zend_ulong) Z_OBJ_HANDLE_P(&reference->this_ptr), reference);
+} /* }}} */
+
+void php_weak_soft_reference_unregister(php_weak_reference_t *reference) /* {{{ */
+{
+    zend_hash_index_del(&reference->referent->soft_references, (zend_ulong) Z_OBJ_HANDLE_P(&reference->this_ptr));
+} /* }}} */
+
+void php_weak_soft_reference_maybe_unregister(php_weak_reference_t *reference) /* {{{ */
+{
+    if (NULL == reference->referent) {
+        return;
+    }
+
+    php_weak_soft_reference_unregister(reference);
+} /* }}} */
+
 void php_weak_reference_attach(php_weak_reference_t *reference, php_weak_referent_t *referent) /* {{{ */
 {
     reference->referent = referent;
@@ -483,7 +506,43 @@ static void php_weak_reference_dtor(zend_object *object) /* {{{ */
     zend_objects_destroy_object(object);
 } /* }}} */
 
-static zend_object *php_weak_reference_ctor(zend_class_entry *ce)  /* {{{ */
+static zend_object *php_weak_abstract_reference_ctor(zend_class_entry *ce)  /* {{{ */
+{
+    php_weak_reference_t *reference;
+
+    reference = (php_weak_reference_t *) ecalloc(1, sizeof(php_weak_reference_t) + zend_object_properties_size(ce));
+
+    zend_object_std_init(&reference->std, ce);
+    object_properties_init(&reference->std, ce);
+
+    reference->std.handlers = &php_weak_reference_object_handlers;
+
+    reference->register_reference = NULL;
+    reference->unregister_reference = NULL;
+
+    zend_throw_error(NULL, "%s class may not be subclassed directly", ZSTR_VAL(this_ce->name));
+
+    return &reference->std;
+} /* }}} */
+
+static zend_object *php_weak_soft_reference_ctor(zend_class_entry *ce)  /* {{{ */
+{
+    php_weak_reference_t *reference;
+
+    reference = (php_weak_reference_t *) ecalloc(1, sizeof(php_weak_reference_t) + zend_object_properties_size(ce));
+
+    zend_object_std_init(&reference->std, ce);
+    object_properties_init(&reference->std, ce);
+
+    reference->std.handlers = &php_weak_reference_object_handlers;
+
+    reference->register_reference = php_weak_soft_reference_attach;
+    reference->unregister_reference = php_weak_soft_reference_maybe_unregister;
+
+    return &reference->std;
+} /* }}} */
+
+static zend_object *php_weak_weak_reference_ctor(zend_class_entry *ce)  /* {{{ */
 {
     php_weak_reference_t *reference;
 
@@ -507,7 +566,7 @@ static zend_object *php_weak_reference_clone_obj(zval *object) /* {{{ */
 
     old_object = Z_OBJ_P(object);
 
-    new_object = php_weak_reference_ctor(old_object->ce);
+    new_object = old_object->ce->create_object(old_object->ce);
 
     php_weak_reference_t *old_reference = php_weak_reference_fetch_object(old_object);
     php_weak_reference_t *new_reference = php_weak_reference_fetch_object(new_object);
@@ -689,7 +748,7 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_weak_reference_notifier, ZEND_SEND_BY_VAL, ZEND_R
 ZEND_END_ARG_INFO()
 
 
-static const zend_function_entry php_weak_reference_methods[] = { /* {{{ */
+static const zend_function_entry php_weak_abstract_reference_methods[] = { /* {{{ */
         PHP_ME(WeakReference, __construct, arginfo_weak_reference___construct, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
 
         PHP_ME(WeakReference, get, arginfo_weak_reference_get, ZEND_ACC_PUBLIC)
@@ -699,14 +758,23 @@ static const zend_function_entry php_weak_reference_methods[] = { /* {{{ */
         PHP_FE_END
 }; /* }}} */
 
+static const zend_function_entry php_weak_weak_reference_methods[] = { /* {{{ */
+        PHP_FE_END
+}; /* }}} */
+
+static const zend_function_entry php_weak_soft_reference_methods[] = { /* {{{ */
+        PHP_FE_END
+}; /* }}} */
+
 
 PHP_MINIT_FUNCTION (php_weak_reference) /* {{{ */
 {
     zend_class_entry ce;
 
-    INIT_NS_CLASS_ENTRY(ce, PHP_WEAK_NS, "Reference", php_weak_reference_methods);
+    INIT_NS_CLASS_ENTRY(ce, PHP_WEAK_NS, "AbstractReference", php_weak_abstract_reference_methods);
     this_ce = zend_register_internal_class(&ce);
-    this_ce->create_object = php_weak_reference_ctor;
+    this_ce->ce_flags |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS;
+    this_ce->create_object = php_weak_abstract_reference_ctor;
     this_ce->serialize = zend_class_serialize_deny;
     this_ce->unserialize = zend_class_unserialize_deny;
 
@@ -719,6 +787,14 @@ PHP_MINIT_FUNCTION (php_weak_reference) /* {{{ */
     php_weak_reference_object_handlers.clone_obj = php_weak_reference_clone_obj;
     php_weak_reference_object_handlers.get_debug_info = php_weak_get_debug_info;
     php_weak_reference_object_handlers.compare_objects = php_weak_compare_objects;
+
+    INIT_NS_CLASS_ENTRY(ce, PHP_WEAK_NS, "SoftReference", php_weak_weak_reference_methods);
+    php_weak_soft_reference_class_entry = zend_register_internal_class_ex(&ce, php_weak_abstract_reference_class_entry);
+    php_weak_soft_reference_class_entry->create_object = php_weak_soft_reference_ctor;
+
+    INIT_NS_CLASS_ENTRY(ce, PHP_WEAK_NS, "Reference", php_weak_weak_reference_methods);
+    php_weak_weak_reference_class_entry = zend_register_internal_class_ex(&ce, php_weak_abstract_reference_class_entry);
+    php_weak_weak_reference_class_entry->create_object = php_weak_weak_reference_ctor;
 
     return SUCCESS;
 } /* }}} */

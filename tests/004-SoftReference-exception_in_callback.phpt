@@ -1,5 +1,5 @@
 --TEST--
-Weak\Reference - exception thrown in callback
+Weak\SoftReference - exception thrown in callback
 --SKIPIF--
 <?php if (!extension_loaded("weak")) print "skip"; ?>
 --FILE--
@@ -12,12 +12,12 @@ require '.stubs.php';
 
 $obj = new \WeakTests\TrackingDtor();
 
-$callback = function (Weak\Reference $reference) {
+$callback = function (Weak\SoftReference $reference) {
     throw new \Exception('Test exception from callback');
 };
 
 
-$wr = new Weak\Reference($obj, $callback);
+$sr = new Weak\SoftReference($obj, $callback);
 
 try {
     $obj = null;

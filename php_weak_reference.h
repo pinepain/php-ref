@@ -21,7 +21,9 @@
 #include "TSRM.h"
 #endif
 
-extern zend_class_entry *php_weak_reference_class_entry;
+extern zend_class_entry *php_weak_abstract_reference_class_entry;
+extern zend_class_entry *php_weak_soft_reference_class_entry;
+extern zend_class_entry *php_weak_weak_reference_class_entry;
 
 
 typedef struct _php_weak_referent_t php_weak_referent_t;

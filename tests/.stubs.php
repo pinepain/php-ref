@@ -83,3 +83,16 @@ class ExtendedReference extends \Weak\Reference {
         $this->test = $test;
     }
 }
+
+class ExtendedSoftReference extends \Weak\SoftReference {
+    /**
+     * @var
+     */
+    private $test = [];
+
+    public function __construct($referent, $notify, $test)
+    {
+        parent::__construct($referent, $notify);
+        $this->test = $test;
+    }
+}

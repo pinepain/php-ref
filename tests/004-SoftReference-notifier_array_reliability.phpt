@@ -1,5 +1,5 @@
 --TEST--
-Weak\Reference - array notifier
+Weak\SoftReference - array notifier
 --SKIPIF--
 <?php if (!extension_loaded("weak")) {
     print "skip";
@@ -13,11 +13,11 @@ $helper = require '.testsuite.php';
 $obj = new stdClass();
 
 $notifier = [];
-$wr1 = new Weak\Reference($obj, $notifier);
-$wr2 = new Weak\Reference($obj, function () {
+$sr1 = new Weak\SoftReference($obj, $notifier);
+$sr2 = new Weak\SoftReference($obj, function () {
     throw new Exception('Testing array notifier reliability');
 });
-$wr2 = new Weak\Reference($obj, $notifier);
+$sr2 = new Weak\SoftReference($obj, $notifier);
 
 
 var_dump($notifier);
@@ -30,7 +30,7 @@ try {
 
 var_dump($notifier);
 
-$wr1 = null;
+$sr1 = null;
 
 var_dump($notifier);
 
@@ -42,7 +42,7 @@ array(0) {
 }
 array(2) {
   [0]=>
-  object(Weak\Reference)#6 (2) {
+  object(Weak\SoftReference)#6 (2) {
     ["referent":"Weak\AbstractReference":private]=>
     NULL
     ["notifier":"Weak\AbstractReference":private]=>
@@ -50,7 +50,7 @@ array(2) {
       [0]=>
       *RECURSION*
       [1]=>
-      object(Weak\Reference)#3 (2) {
+      object(Weak\SoftReference)#3 (2) {
         ["referent":"Weak\AbstractReference":private]=>
         NULL
         ["notifier":"Weak\AbstractReference":private]=>
@@ -59,13 +59,13 @@ array(2) {
     }
   }
   [1]=>
-  object(Weak\Reference)#3 (2) {
+  object(Weak\SoftReference)#3 (2) {
     ["referent":"Weak\AbstractReference":private]=>
     NULL
     ["notifier":"Weak\AbstractReference":private]=>
     array(2) {
       [0]=>
-      object(Weak\Reference)#6 (2) {
+      object(Weak\SoftReference)#6 (2) {
         ["referent":"Weak\AbstractReference":private]=>
         NULL
         ["notifier":"Weak\AbstractReference":private]=>
@@ -78,7 +78,7 @@ array(2) {
 }
 array(2) {
   [0]=>
-  object(Weak\Reference)#6 (2) {
+  object(Weak\SoftReference)#6 (2) {
     ["referent":"Weak\AbstractReference":private]=>
     NULL
     ["notifier":"Weak\AbstractReference":private]=>
@@ -86,7 +86,7 @@ array(2) {
       [0]=>
       *RECURSION*
       [1]=>
-      object(Weak\Reference)#3 (2) {
+      object(Weak\SoftReference)#3 (2) {
         ["referent":"Weak\AbstractReference":private]=>
         NULL
         ["notifier":"Weak\AbstractReference":private]=>
@@ -95,13 +95,13 @@ array(2) {
     }
   }
   [1]=>
-  object(Weak\Reference)#3 (2) {
+  object(Weak\SoftReference)#3 (2) {
     ["referent":"Weak\AbstractReference":private]=>
     NULL
     ["notifier":"Weak\AbstractReference":private]=>
     array(2) {
       [0]=>
-      object(Weak\Reference)#6 (2) {
+      object(Weak\SoftReference)#6 (2) {
         ["referent":"Weak\AbstractReference":private]=>
         NULL
         ["notifier":"Weak\AbstractReference":private]=>
