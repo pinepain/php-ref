@@ -199,14 +199,30 @@ void php_weak_reference_call_notifier(zval *reference, zval *notifier) /* {{{ */
 
 } /* }}} */
 
-static void php_weak_call_notifiers(HashTable *weak_references, php_weak_referent_t *referent, zval *exceptions, zval *tmp)  /* {{{ */
+static void php_weak_nullify_referents(HashTable *references)  /* {{{ */
 {
     zend_ulong handle;
     php_weak_reference_t *reference;
 
-    ZEND_HASH_REVERSE_FOREACH_PTR(weak_references, reference) {
+    ZEND_HASH_REVERSE_FOREACH_PTR(references, reference) {
         handle = _p->h;
         reference->referent = NULL;
+
+        zend_hash_index_del(references, handle);
+    } ZEND_HASH_FOREACH_END();
+} /* }}} */
+
+static void php_weak_call_notifiers(HashTable *references, zval *exceptions, zval *tmp, zend_bool nullify_referent)  /* {{{ */
+{
+    zend_ulong handle;
+    php_weak_reference_t *reference;
+
+    ZEND_HASH_REVERSE_FOREACH_PTR(references, reference) {
+        handle = _p->h;
+
+        if (nullify_referent) {
+            reference->referent = NULL;
+        }
 
         switch (reference->notifier_type) {
             case PHP_WEAK_NOTIFIER_ARRAY:
@@ -226,7 +242,9 @@ static void php_weak_call_notifiers(HashTable *weak_references, php_weak_referen
                 break;
         }
 
-        zend_hash_index_del(references, handle);
+        if (nullify_referent) {
+            zend_hash_index_del(references, handle);
+        }
     } ZEND_HASH_FOREACH_END();
 
 } /* }}} */
@@ -243,17 +261,26 @@ void php_weak_referent_object_dtor_obj(zend_object *object) /* {{{ */
     assert(NULL != referent);
     assert(NULL != PHP_WEAK_G(referents));
 
-    if (referent->original_handlers->dtor_obj) {
-        referent->original_handlers->dtor_obj(object);
+    php_weak_call_notifiers(&referent->soft_references, &exceptions, &tmp, 0);
 
-        if (EG(exception)) {
-            php_weak_store_exceptions(&exceptions, &tmp);
+    if (Z_REFCOUNT(referent->this_ptr) == 1) {
+        if (referent->original_handlers->dtor_obj) {
+            referent->original_handlers->dtor_obj(object);
+
+            if (EG(exception)) {
+                php_weak_store_exceptions(&exceptions, &tmp);
+            }
         }
+
+        php_weak_nullify_referents(&referent->soft_references);
+
+        php_weak_call_notifiers(&referent->weak_references, &exceptions, &tmp, 1);
+
+        zend_hash_index_del(PHP_WEAK_G(referents), referent->handle);
+    } else {
+        zend_object *obj = Z_OBJ(referent->this_ptr);
+        GC_FLAGS(obj) = GC_FLAGS(obj) & ~IS_OBJ_DESTRUCTOR_CALLED;
     }
-
-    php_weak_call_notifiers(&referent->weak_references, referent, &exceptions, &tmp);
-
-    zend_hash_index_del(PHP_WEAK_G(referents), referent->handle);
 
     if (!Z_ISUNDEF(exceptions)) {
         zval exception;
@@ -269,7 +296,9 @@ void php_weak_globals_referents_ht_dtor(zval *zv) /* {{{ */
 
     assert(NULL != referent);
 
+    zend_hash_destroy(&referent->soft_references);
     zend_hash_destroy(&referent->weak_references);
+
     Z_OBJ(referent->this_ptr)->handlers = referent->original_handlers;
 
     efree(referent);
@@ -297,7 +326,9 @@ php_weak_referent_t *php_weak_referent_get_or_create(zval *referent_zv) /* {{{ *
 
     referent = (php_weak_referent_t *) ecalloc(1, sizeof(php_weak_referent_t));
 
+    zend_hash_init(&referent->soft_references, 0, NULL, NULL, 0);
     zend_hash_init(&referent->weak_references, 0, NULL, php_weak_referent_weak_references_ht_dtor, 0);
+
     referent->original_handlers = Z_OBJ_P(referent_zv)->handlers;
 
     ZVAL_COPY_VALUE(&referent->this_ptr, referent_zv);
@@ -425,7 +456,9 @@ static void php_weak_reference_free(zend_object *object) /* {{{ */
     php_weak_reference_t *reference = php_weak_reference_fetch_object(object);
 
     /* unregister weak reference from tracking object, if not done already before at some place (e.g. obj dtored) */
-    php_weak_reference_maybe_unregister(reference);
+    if (reference->unregister_reference) {
+        reference->unregister_reference(reference);
+    }
 
     zval_ptr_dtor(&reference->notifier);
     ZVAL_UNDEF(&reference->notifier);
@@ -439,7 +472,9 @@ static void php_weak_reference_dtor(zend_object *object) /* {{{ */
     php_weak_reference_t *reference = php_weak_reference_fetch_object(object);
 
     /* unregister weak reference from tracking object, if not done already before at some place (e.g. obj dtored) */
-    php_weak_reference_maybe_unregister(reference);
+    if (reference->unregister_reference) {
+        reference->unregister_reference(reference);
+    }
 
     zval_ptr_dtor(&reference->notifier);
     ZVAL_UNDEF(&reference->notifier);

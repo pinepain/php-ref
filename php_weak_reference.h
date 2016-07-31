@@ -49,6 +49,7 @@ struct _php_weak_referent_t {
     const zend_object_handlers *original_handlers;
 
     HashTable weak_references;
+    HashTable soft_references;
 };
 
 struct _php_weak_reference_t {
