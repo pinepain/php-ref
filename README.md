@@ -38,6 +38,9 @@ Short list if what provided by this extension is:
   - `class Weak\NotifierException extend Exception`
   - `function Weak\refcounted()`
   - `function Weak\refcount()`
+  - `function Weak\softrefcounted()`
+  - `function Weak\softrefcount()`
+  - `function Weak\softrefs()`
   - `function Weak\weakrefcounted()`
   - `function Weak\weakrefcount()`
   - `function Weak\weakrefs()`

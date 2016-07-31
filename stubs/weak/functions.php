@@ -33,6 +33,33 @@ function refcounted(mixed $value) : bool {}
 function refcount(mixed $value) : int {}
 
 /**
+ * Check whether object has soft references
+ *
+ * @param object $value
+ *
+ * @return bool
+ */
+function softrefcounted(object $value) : bool {}
+
+/**
+ * Get object's soft references count
+
+ * @param object $value
+ *
+ * @return int
+ */
+function softrefcount(object $value) : int {}
+
+/**
+ * Get object's soft references
+ *
+ * @param object $value
+ *
+ * @return mixed
+ */
+function softrefs(object $value) : array {}
+
+/**
  * Check whether object has weak references
  *
  * @param object $value

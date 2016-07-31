@@ -8,6 +8,9 @@ Weak\functions - test functions
 use function Weak\{
     refcounted,
     refcount,
+    softrefcounted,
+    softrefcount,
+    softrefs,
     weakrefcounted,
     weakrefcount,
     weakrefs,
@@ -16,6 +19,7 @@ use function Weak\{
 };
 
 use Weak\Reference;
+use Weak\SoftReference;
 
 /** @var \Testsuite $helper */
 $helper = require '.testsuite.php';
@@ -46,9 +50,9 @@ $helper->line();
 
 
 
-$ref1a = new Reference($obj1);
-$ref1b = new Reference($obj1);
-$ref2 = new Reference($obj2);
+$weak_ref1a = new Reference($obj1);
+$weak_ref1b = new Reference($obj1);
+$weak_ref2 = new Reference($obj2);
 
 
 $helper->header('Test Weak\weakrefcounted');
@@ -66,11 +70,11 @@ $helper->line();
 
 $helper->header('Test Weak\weakrefs');
 
-$helper->assert('Multiple weak refs reported for object with weakrefs()', weakrefs($obj1), [$ref1a, $ref1b]);
+$helper->assert('Multiple weak refs reported for object with weakrefs()', weakrefs($obj1), [$weak_ref1a, $weak_ref1b]);
 $helper->dump(weakrefs($obj1));
 $helper->line();
 
-$helper->assert('Single weak refs reported for object with weakrefs()', weakrefs($obj2), [$ref2]);
+$helper->assert('Single weak ref reported for object with weakrefs()', weakrefs($obj2), [$weak_ref2]);
 $helper->dump(weakrefs($obj2));
 $helper->line();
 
@@ -163,7 +167,7 @@ array(2) refcount(2){
   }
 }
 
-Single weak refs reported for object with weakrefs(): ok
+Single weak ref reported for object with weakrefs(): ok
 array(1) refcount(2){
   [0]=>
   object(Weak\Reference)#7 (2) refcount(2){
