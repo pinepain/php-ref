@@ -118,10 +118,25 @@ PHP_FUNCTION(object_handle) /* {{{ */
     zval *zv;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "o", &zv) == FAILURE) {
-        RETURN_NULL();
+        return;
     }
 
     RETURN_LONG((uint32_t)Z_OBJ_HANDLE_P(zv));
+}  /* }}} */
+
+PHP_FUNCTION(is_obj_destructor_called) /* {{{ */
+{
+    zval *zv;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "o", &zv) == FAILURE) {
+        return;
+    }
+
+    zend_object *obj = Z_OBJ_P(zv);
+
+    uint32_t flags = GC_FLAGS(obj);
+
+    RETURN_BOOL(flags & IS_OBJ_DESTRUCTOR_CALLED);
 }  /* }}} */
 
 
@@ -149,6 +164,9 @@ ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(object_handle_arg, ZEND_RETURN_VALUE, 1,
                 ZEND_ARG_INFO(0, object)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(is_obj_destructor_called_arg, ZEND_RETURN_VALUE, 1, _IS_BOOL, NULL, 0)
+                ZEND_ARG_INFO(0, object)
+ZEND_END_ARG_INFO()
 
 const zend_function_entry php_weak_functions[] = { /* {{{ */
     ZEND_NS_FE(PHP_WEAK_NS, refcounted, refcounted_arg)
@@ -159,6 +177,7 @@ const zend_function_entry php_weak_functions[] = { /* {{{ */
     ZEND_NS_FE(PHP_WEAK_NS, weakrefs, weakrefs_arg)
 
     ZEND_NS_FE(PHP_WEAK_NS, object_handle, object_handle_arg)
+    ZEND_NS_FE(PHP_WEAK_NS, is_obj_destructor_called, is_obj_destructor_called_arg)
 
     PHP_FE_END
 }; /* }}} */

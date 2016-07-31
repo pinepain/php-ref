@@ -42,6 +42,7 @@ Short list if what provided by this extension is:
   - `function Weak\weakrefcount()`
   - `function Weak\weakrefs()`
   - `function Weak\object_handle()`
+  - `function Weak\is_obj_destructor_called()`
 
 
 ### Notifiers

@@ -67,3 +67,11 @@ function weakrefs(object $value) : array {}
  * @return int
  */
 function object_handle(object $value) : int {}
+
+/**
+ * Check whether object's destructor was called
+ * @param object $value
+ *
+ * @return bool
+ */
+function is_obj_destructor_called(object $value) : bool {}

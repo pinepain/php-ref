@@ -11,7 +11,8 @@ use function Weak\{
     weakrefcounted,
     weakrefcount,
     weakrefs,
-    object_handle
+    object_handle,
+    is_obj_destructor_called
 };
 
 use Weak\Reference;
@@ -78,14 +79,37 @@ $helper->dump(weakrefs($obj3));
 $helper->line();
 
 
-$helper->header('Test Weak\refcount');
+$helper->header('Test Weak\object_handle');
 $helper->export_annotated('object_handle($obj1)', object_handle($obj1));
 $helper->export_annotated('object_handle($obj2)', object_handle($obj2));
 $helper->line();
 
-$helper->export_annotated('spl_object_hash($obj1)', spl_object_hash($obj1));
-$helper->export_annotated('spl_object_hash($obj2)', spl_object_hash($obj2));
-$helper->line();
+
+$helper->header('Test Weak\is_obj_destructor_called');
+
+class ObjectWithSoftDestructor {
+
+  private $external;
+
+  public function __construct(&$external)
+  {
+    $this->external = &$external;
+  }
+
+  public function __destruct()
+  {
+    echo __METHOD__ . ' called', PHP_EOL;
+    $this->external = $this;
+  }
+}
+
+$external = null;
+$obj = new ObjectWithSoftDestructor($external);
+
+$helper->export_annotated('is_obj_destructor_called($obj)', is_obj_destructor_called($obj));
+$obj = null;
+$helper->assert('Object stored to external value during destructor call', is_object($external));
+$helper->export_annotated('is_obj_destructor_called($external)', is_obj_destructor_called($external));
 
 ?>
 --EXPECTF--
@@ -155,10 +179,14 @@ No weak refs reported for object with weakrefs(): ok
 array(0) refcount(2){
 }
 
-Test Weak\refcount:
--------------------
+Test Weak\object_handle:
+------------------------
 object_handle($obj1): integer: 2
 object_handle($obj2): integer: 3
 
-spl_object_hash($obj1): string: '%s'
-spl_object_hash($obj2): string: '%s'
+Test Weak\is_obj_destructor_called:
+-----------------------------------
+is_obj_destructor_called($obj): boolean: false
+ObjectWithSoftDestructor::__destruct called
+Object stored to external value during destructor call: ok
+is_obj_destructor_called($external): boolean: true
