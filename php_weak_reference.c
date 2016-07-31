@@ -199,31 +199,12 @@ void php_weak_reference_call_notifier(zval *reference, zval *notifier) /* {{{ */
 
 } /* }}} */
 
-
-void php_weak_referent_object_dtor_obj(zend_object *object) /* {{{ */
+static void php_weak_call_notifiers(HashTable *weak_references, php_weak_referent_t *referent, zval *exceptions, zval *tmp)  /* {{{ */
 {
-    php_weak_referent_t *referent = php_weak_referent_find_ptr(object->handle);
-
-    zval exceptions;
-    zval tmp;
-
-    ZVAL_UNDEF(&exceptions);
-
-    assert(NULL != referent);
-    assert(NULL != PHP_WEAK_G(referents));
-
     zend_ulong handle;
     php_weak_reference_t *reference;
 
-    if (referent->original_handlers->dtor_obj) {
-        referent->original_handlers->dtor_obj(object);
-
-        if (EG(exception)) {
-            php_weak_store_exceptions(&exceptions, &tmp);
-        }
-    }
-
-    ZEND_HASH_REVERSE_FOREACH_PTR(&referent->weak_references, reference) {
+    ZEND_HASH_REVERSE_FOREACH_PTR(weak_references, reference) {
         handle = _p->h;
         reference->referent = NULL;
 
@@ -238,15 +219,39 @@ void php_weak_referent_object_dtor_obj(zend_object *object) /* {{{ */
                 php_weak_reference_call_notifier(&reference->this_ptr, &reference->notifier);
 
                 if (EG(exception)) {
-                    php_weak_store_exceptions(&exceptions, &tmp);
+                    php_weak_store_exceptions(exceptions, tmp);
                 }
                 break;
             default:
                 break;
         }
 
-        zend_hash_index_del(&referent->weak_references, handle);
+        zend_hash_index_del(references, handle);
     } ZEND_HASH_FOREACH_END();
+
+} /* }}} */
+
+void php_weak_referent_object_dtor_obj(zend_object *object) /* {{{ */
+{
+    php_weak_referent_t *referent = php_weak_referent_find_ptr(object->handle);
+
+    zval exceptions;
+    zval tmp;
+
+    ZVAL_UNDEF(&exceptions);
+
+    assert(NULL != referent);
+    assert(NULL != PHP_WEAK_G(referents));
+
+    if (referent->original_handlers->dtor_obj) {
+        referent->original_handlers->dtor_obj(object);
+
+        if (EG(exception)) {
+            php_weak_store_exceptions(&exceptions, &tmp);
+        }
+    }
+
+    php_weak_call_notifiers(&referent->weak_references, referent, &exceptions, &tmp);
 
     zend_hash_index_del(PHP_WEAK_G(referents), referent->handle);
 
