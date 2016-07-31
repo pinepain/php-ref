@@ -30,7 +30,3 @@ addons:
   apt:
     packages:
       - valgrind
-
-#notifications:
-#  email:
-#    - zaq178miami@gmail.com
