@@ -70,3 +70,17 @@ test_script:
   - set NO_INTERACTION=1
   - set REPORT_EXIT_STATUS=1
   - "%OUTDIR%\\php.exe run-tests.php -p %OUTDIR%\\php.exe ext/ref/tests/ -d extension=php_ref.dll -d extension_dir=%OUTDIR%\\"
+
+on_failure:
+  - cd c:\projects\php-sdk\php-ref-ci\vc14\x86\php-%PHP_VERSION%\ext\ref\tests
+  - ps: |
+      $Result = Get-ChildItem .\* -Include *.diff, *.out, *.mem | sort $Name | ForEach-Object {
+        Write-Output "FILE: $_"
+        Get-Content $_
+        Write-Output " "
+      }
+
+      If ($Result.length) {
+        Write-Output $Result
+        exit 1
+      }
