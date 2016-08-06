@@ -352,6 +352,14 @@ php_ref_referent_t *php_ref_referent_get_or_create(zval *referent_zv) /* {{{ */
     return referent;
 } /* }}} */
 
+void php_ref_abstract_reference_attach(php_ref_reference_t *reference, php_ref_referent_t *referent) /* {{{ */
+{
+} /* }}} */
+
+void php_ref_abstract_reference_maybe_unregister(php_ref_reference_t *reference) /* {{{ */
+{
+} /* }}} */
+
 void php_ref_soft_reference_attach(php_ref_reference_t *reference, php_ref_referent_t *referent) /* {{{ */
 {
     reference->referent = referent;
@@ -517,10 +525,8 @@ static zend_object *php_ref_abstract_reference_ctor(zend_class_entry *ce)  /* {{
 
     reference->std.handlers = &php_ref_reference_object_handlers;
 
-    reference->register_reference = NULL;
-    reference->unregister_reference = NULL;
-
-    zend_throw_error(NULL, "%s class may not be subclassed directly", ZSTR_VAL(this_ce->name));
+    reference->register_reference = php_ref_abstract_reference_attach;
+    reference->unregister_reference = php_ref_abstract_reference_maybe_unregister;
 
     return &reference->std;
 } /* }}} */

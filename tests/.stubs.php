@@ -96,3 +96,7 @@ class ExtendedSoftReference extends \Ref\SoftReference {
         $this->test = $test;
     }
 }
+
+class TestAbstractReference extends \Ref\AbstractReference
+{
+}
