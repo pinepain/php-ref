@@ -15,7 +15,7 @@ matrix:
   fast_finish: true
 
 os: Windows Server 2012
-clone_folder: c:\projects\php-sdk\php-weak-ci\vc14\x86\php\ext\weak
+clone_folder: c:\projects\php-sdk\php-ref-ci\vc14\x86\php\ext\ref
 
 init:
   - ps: |
@@ -32,15 +32,15 @@ init:
 
       $env:PHP="$($env:PHP_VERSION.Substring(0, $env:PHP_VERSION.indexOf('.', 2)))"
 
-      $env:ARTIFACT_NAME="php_weak-$($env:PHP)-$($env:TS_OR_NTS)-vc14-$($env:PLATFORM).zip"
+      $env:ARTIFACT_NAME="php_ref-$($env:PHP)-$($env:TS_OR_NTS)-vc14-$($env:PLATFORM).zip"
 
 install:
   - cd %PHP_SDK%
   - curl -fSL -o php-sdk-binary-tools-20110915.zip 'http://windows.php.net/downloads/php-sdk/php-sdk-binary-tools-20110915.zip'
   - 7z.exe x php-sdk-binary-tools-20110915.zip
   - call bin\phpsdk_setvars.bat
-  - call bin\phpsdk_buildtree.bat php-weak-ci
-  - cd php-weak-ci\vc14\x86
+  - call bin\phpsdk_buildtree.bat php-ref-ci
+  - cd php-ref-ci\vc14\x86
   - curl -fSL -o 'php-%PHP_VERSION%.tar.gz' 'http://us1.php.net/distributions/php-%PHP_VERSION%.tar.gz'
   - ren php php-%PHP_VERSION%
   - 7z.exe x php-%PHP_VERSION%.tar.gz -y
@@ -54,19 +54,19 @@ build_script:
   - echo Building PHP [%PHP_VERSION%]
   - '%PHP_SDK%\bin\phpsdk_setvars'
   - buildconf
-  - configure --disable-all --enable-cli --enable-weak=shared %ENABLE_DISABLE_THREAD_SAFETY%
+  - configure --disable-all --enable-cli --enable-ref=shared %ENABLE_DISABLE_THREAD_SAFETY%
   - nmake
 
 after_build:
   - cd %OUTDIR%
   - dir
   - dir ext
-  - dir ext\weak
-  - 7z a %ARTIFACT_NAME% php_weak.dll
+  - dir ext\ref
+  - 7z a %ARTIFACT_NAME% php_ref.dll
   - appveyor PushArtifact %ARTIFACT_NAME%
 
 test_script:
-  - cd c:\projects\php-sdk\php-weak-ci\vc14\x86\php-%PHP_VERSION%
+  - cd c:\projects\php-sdk\php-ref-ci\vc14\x86\php-%PHP_VERSION%
   - set NO_INTERACTION=1
   - set REPORT_EXIT_STATUS=1
-  - "%OUTDIR%\\php.exe run-tests.php -p %OUTDIR%\\php.exe ext/weak/tests/ -d extension=php_weak.dll -d extension_dir=%OUTDIR%\\"
+  - "%OUTDIR%\\php.exe run-tests.php -p %OUTDIR%\\php.exe ext/ref/tests/ -d extension=php_ref.dll -d extension_dir=%OUTDIR%\\"

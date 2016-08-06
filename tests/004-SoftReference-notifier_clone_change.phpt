@@ -1,7 +1,7 @@
 --TEST--
-Weak\SoftReference - change notifier on cloned object
+Ref\SoftReference - change notifier on cloned object
 --SKIPIF--
-<?php if (!extension_loaded("weak")) print "skip"; ?>
+<?php if (!extension_loaded("ref")) print "skip"; ?>
 --FILE--
 <?php
 
@@ -12,7 +12,7 @@ $callback_notifier = [$helper, 'dump'];
 
 $obj = new stdClass();
 $array_notifier = [];
-$sr = new Weak\SoftReference($obj, $array_notifier);
+$sr = new Ref\SoftReference($obj, $array_notifier);
 
 $helper->assert('Notifier is array', $sr->notifier(), $array_notifier);
 

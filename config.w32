@@ -1,8 +1,8 @@
 // $Id$
 // vim:ft=javascript
 
-ARG_ENABLE("weak", "enable weak support", "no");
+ARG_ENABLE("ref", "enable ref support", "no");
 
-if (PHP_WEAK != "no") {
-	EXTENSION("weak", "weak.c php_weak_notifier_exception.c php_weak_reference.c php_weak_functions.c", PHP_WEAK_SHARED, "/DZEND_ENABLE_STATIC_TSRMLS_CACHE=1");
+if (PHP_REF != "no") {
+	EXTENSION("ref", "ref.c php_ref_notifier_exception.c php_ref_reference.c php_ref_functions.c", PHP_REF_SHARED, "/DZEND_ENABLE_STATIC_TSRMLS_CACHE=1");
 }

@@ -1,7 +1,7 @@
 --TEST--
-Weak\SoftReference - prevent original object from being destroyed forever, weak notifiers will not be called
+Ref\SoftReference - prevent original object from being destroyed forever, soft notifiers will not be called
 --SKIPIF--
-<?php if (!extension_loaded("weak")) print "skip"; ?>
+<?php if (!extension_loaded("ref")) print "skip"; ?>
 --FILE--
 <?php
 
@@ -14,13 +14,13 @@ $helper = require '.testsuite.php';
 $obj = new \WeakTests\TrackingDtor();
 $obj_copy = null;
 
-$sr = new Weak\SoftReference($obj, function (Weak\SoftReference $reference) use (&$obj, &$obj_copy) {
+$sr = new Ref\SoftReference($obj, function (Ref\SoftReference $reference) use (&$obj, &$obj_copy) {
     echo 'Soft notifier called', PHP_EOL;
 
     $obj_copy = $reference->get();
 });
 
-$wr = new Weak\Reference($obj, function (Weak\Reference $reference){
+$wr = new Ref\WeakReference($obj, function (Ref\WeakReference $reference){
     echo 'Weak notifier called', PHP_EOL;
 });
 

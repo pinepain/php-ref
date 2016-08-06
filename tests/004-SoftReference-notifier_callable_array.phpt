@@ -1,7 +1,7 @@
 --TEST--
-Weak\SoftReference - callable notifier passed as array
+Ref\SoftReference - callable notifier passed as array
 --SKIPIF--
-<?php if (!extension_loaded("weak")) print "skip"; ?>
+<?php if (!extension_loaded("ref")) print "skip"; ?>
 --FILE--
 <?php
 
@@ -15,7 +15,7 @@ class Test
 
     public function __construct($obj)
     {
-        $this->wr = new Weak\SoftReference($obj, [$this, 'notifier']);
+        $this->wr = new Ref\SoftReference($obj, [$this, 'notifier']);
     }
 
     public function notifier()

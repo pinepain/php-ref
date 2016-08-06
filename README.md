@@ -1,8 +1,8 @@
-# PHP Weak extension
+# PHP Ref extension
 
-[![Build Status](https://travis-ci.org/pinepain/php-weak.svg)](https://travis-ci.org/pinepain/php-weak)
-[![Windows Build status](https://ci.appveyor.com/api/projects/status/7r07eydi6c3lj36a/branch/master?svg=true)](https://ci.appveyor.com/project/pinepain/php-weak)
-[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/pinepain/php-weak/master/LICENSE)
+[![Build Status](https://travis-ci.org/pinepain/php-ref.svg)](https://travis-ci.org/pinepain/php-ref)
+[![Windows Build status](https://ci.appveyor.com/api/projects/status/7r07eydi6c3lj36a/branch/master?svg=true)](https://ci.appveyor.com/project/pinepain/php-ref)
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/pinepain/php-ref/master/LICENSE)
 
 This extension adds [Soft Reference](https://en.wikipedia.org/wiki/Weak_reference) and
 [Weak References](https://en.wikipedia.org/wiki/Weak_reference) to PHP 7 and may serve as a ground for other
@@ -14,8 +14,8 @@ data structures that require advanced referencing model.
 ```php
 <?php
 
-use Weak\Reference;
-use Weak\SoftReference;
+use Ref\WeakReference;
+use Ref\SoftReference;
 
 $obj = new class {
     public function __destruct() {
@@ -32,29 +32,32 @@ $obj = null; // outputs "Object will be destroyed", "Destructor called", "Object
     
 ## Docs
 
-This extension adds `Weak` namespace and all entities are created inside it.
+This extension adds `Ref` namespace and all entities are created inside it.
 
 There are no INI setting or constants provided by this extension.
 
-Brief docs about classes and [functions](./stubs/weak/functions.php)
-may be seen in [stub files](./stubs/weak).
+Brief docs about classes and [functions](./stubs/src/functions.php)
+may be seen in [stub files](./stubs/src).
 
 Short list if what provided by this extension is:
 
-  - `abstract class Weak\AbstractReference` *may not be subclassed directly* [doc](./stubs/weak/AbstractReference.php)
-  - `class Weak\SoftReference extends AbstractReference` [doc](./stubs/weak/SoftReference.php)
-  - `class Weak\Reference extends AbstractReference` [doc](./stubs/weak/Reference.php)
-  - `class Weak\NotifierException extend Exception` [doc](./stubs/weak/NotifierException.php)
-  - `function Weak\refcounted()`
-  - `function Weak\refcount()`
-  - `function Weak\softrefcounted()`
-  - `function Weak\softrefcount()`
-  - `function Weak\softrefs()`
-  - `function Weak\weakrefcounted()`
-  - `function Weak\weakrefcount()`
-  - `function Weak\weakrefs()`
-  - `function Weak\object_handle()`
-  - `function Weak\is_obj_destructor_called()`
+Classes:
+  - `abstract class Ref\AbstractReference` *may not be subclassed directly* ([doc](./stubs/src/AbstractReference.php))
+  - `class Ref\SoftReference extends AbstractReference` ([doc](./stubs/srd/SoftReference.php))
+  - `class Ref\WeakReference extends AbstractReference` ([doc](./stubs/src/Reference.php))
+  - `class Ref\NotifierException extend Exception` ([doc](./stubs/src/NotifierException.php))
+
+Functions ([doc](./stubs/src/functions.php)):
+  - `function Ref\refcounted()`
+  - `function Ref\refcount()`
+  - `function Ref\softrefcounted()`
+  - `function Ref\softrefcount()`
+  - `function Ref\softrefs()`
+  - `function Ref\weakrefcounted()`
+  - `function Ref\weakrefcount()`
+  - `function Ref\weakrefs()`
+  - `function Ref\object_handle()`
+  - `function Ref\is_obj_destructor_called()`
 
 ### References
 
@@ -68,13 +71,13 @@ Note: What this extension provides aren't quite actual soft and weak references,
 
 Notifier can be one of `callable`, `array` or `null` types. `null` notifier denotes no notifier set.
 
-Note that notification happens *after* referent object destruction, so at the time of notification `Weak\Referent::get()` 
+Note that notification happens *after* referent object destruction, so at the time of notification `Ref\Referent::get()` 
 will return `null` (unless rare case when object refcount get incremented in destructor, e.g. by storing destructing value
 somewhere else).
 
 If object destructor or one or more notifiers throw exception, all further notifier callbacks will be called as if
-that exception was thrown inside `try-catch` block. In case one or more exceptions were thrown, `Weak\NotifierException`
-will be thrown and all thrown exceptions will be available via `Weak\NotifierException::getExceptions()` method.
+that exception was thrown inside `try-catch` block. In case one or more exceptions were thrown, `Ref\NotifierException`
+will be thrown and all thrown exceptions will be available via `Ref\NotifierException::getExceptions()` method.
 
 
 ### Cloning
@@ -85,7 +88,7 @@ but they will be invoked with different reference objects.
 ```php
 <?php
 
-use Weak\Reference;
+use Ref\WeakReference;
 
 $obj = new stdClass();
 
@@ -100,7 +103,7 @@ To avoid this you may want to change notifier in `__clone()` method:
 ```php
 <?php
 
-class OwnNotifierReference extends Weak\Reference
+class OwnNotifierReference extends Ref\WeakReference
 {
     public function __clone()
     {
@@ -127,11 +130,11 @@ fatal error.
 
 ## Stub files
 
-If you are also using Composer, it is recommended to add the [php-weak-stub](https://github.com/pinepain/php-weak-stubs)
+If you are also using Composer, it is recommended to add the [php-ref-stub](https://github.com/pinepain/php-ref-stubs)
 package as a dev-mode requirement. It provides skeleton definitions and annotations to enable support for auto-completion
 in your IDE and other code-analysis tools.
 
-    composer require --dev pinepain/php-weak-stubs
+    composer require --dev pinepain/php-ref-stubs
 
 
 ## Extra weak data structures support
@@ -148,8 +151,8 @@ to add it to your project.
 
 ### Building from sources
 
-    git clone https://github.com/pinepain/php-weak.git
-    cd php-weak
+    git clone https://github.com/pinepain/php-ref.git
+    cd php-ref
     phpize && ./configure && make
     make test
 
@@ -160,22 +163,22 @@ To install extension globally run
 You will need to copy the extension config to your php dir, here is example for Ubuntu with PHP 7.0 from
 [Ondřej Surý's PPA for PHP](https://launchpad.net/~ondrej/+archive/ubuntu/php):
    
-    # sudo cp provision/php/weak.ini /etc/php/mods-available/
-    # sudo phpenmod -v ALL weak
+    # sudo cp provision/php/ref.ini /etc/php/mods-available/
+    # sudo phpenmod -v ALL ref
     # sudo service php7.0-fpm restart
 
-You may also want to add php-weak extension as a [composer.json dependency](https://getcomposer.org/doc/02-libraries.md#platform-packages):
+You may also want to add php-ref extension as a [composer.json dependency](https://getcomposer.org/doc/02-libraries.md#platform-packages):
 
     "require": {
         ...
-        "ext-weak": "~0.1.0"
+        "ext-ref": "~0.1.0"
         ...
     }
 
 
 ## Internals
 
-`Weak\Reference` class is implemented by storing tracked object handlers and then wrapping it original `dtor_obj` handler 
+`Ref\WeakReference` class is implemented by storing tracked object handlers and then wrapping it original `dtor_obj` handler
 with a custom one, which meta-code is:
 
 ```php
@@ -194,7 +197,7 @@ foreach($soft_references as $soft_ref_object_handle => $soft_reference) {
 }
 
 if ($exceptions) {
-    throw new Weak\NotifierException('One or more exceptions thrown during notifiers calling', $exceptions);
+    throw new Ref\NotifierException('One or more exceptions thrown during notifiers calling', $exceptions);
 }
 
 if (refcount($object) == 1) {
@@ -217,7 +220,7 @@ if (refcount($object) == 1) {
     }
 
     if ($exceptions) {
-        throw new Weak\NotifierException('One or more exceptions thrown during notifiers calling', $exceptions);
+        throw new Ref\NotifierException('One or more exceptions thrown during notifiers calling', $exceptions);
     }
 } else {
     // required while internally PHP GC mark object as it dtor was called before calling dtor
@@ -228,7 +231,7 @@ if (refcount($object) == 1) {
 ## Development and testing
 
 This extension shipped with Vagrant file which provides basic environment for development and testing purposes.
-To start it, just type `vagrant up` and then `vagrant ssh` in php-weak directory.
+To start it, just type `vagrant up` and then `vagrant ssh` in php-ref directory.
 
 Services available out of the box are:
 
@@ -270,4 +273,4 @@ between large variety of PHP versions.
 
 ## License
 
-[php-weak](https://github.com/pinepain/php-weak) PHP extension is licensed under the [MIT license](http://opensource.org/licenses/MIT).
+[php-ref](https://github.com/pinepain/php-ref) PHP extension is licensed under the [MIT license](http://opensource.org/licenses/MIT).

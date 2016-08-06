@@ -1,7 +1,7 @@
 --TEST--
-Weak\SoftReference - exception thrown in callback
+Ref\SoftReference - exception thrown in callback
 --SKIPIF--
-<?php if (!extension_loaded("weak")) print "skip"; ?>
+<?php if (!extension_loaded("ref")) print "skip"; ?>
 --FILE--
 <?php
 
@@ -12,23 +12,23 @@ require '.stubs.php';
 
 $obj = new \WeakTests\TrackingDtor();
 
-$callback = function (Weak\SoftReference $reference) {
+$callback = function (Ref\SoftReference $reference) {
     throw new \Exception('Test exception from callback');
 };
 
 
-$sr = new Weak\SoftReference($obj, $callback);
+$sr = new Ref\SoftReference($obj, $callback);
 
 try {
     $obj = null;
-} catch(\Weak\NotifierException $e) {
-    $helper->weak_exception_export($e);
+} catch(\Ref\NotifierException $e) {
+    $helper->ref_exception_export($e);
 }
 
 ?>
 EOF
 --EXPECT--
 WeakTests\TrackingDtor's destructor called
-Weak\NotifierException: One or more exceptions thrown during notifiers calling
+Ref\NotifierException: One or more exceptions thrown during notifiers calling
     Exception: Test exception from callback
 EOF

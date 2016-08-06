@@ -1,7 +1,7 @@
 --TEST--
-Weak\SoftReference - changing notifier
+Ref\SoftReference - changing notifier
 --SKIPIF--
-<?php if (!extension_loaded("weak")) print "skip"; ?>
+<?php if (!extension_loaded("ref")) print "skip"; ?>
 --FILE--
 <?php
 
@@ -14,7 +14,7 @@ $callback_notifier = function() {
 
 $obj = new stdClass();
 $array_notifier = [];
-$sr = new Weak\SoftReference($obj);
+$sr = new Ref\SoftReference($obj);
 
 $helper->assert('Notifier is null by default', $sr->notifier(), null);
 $helper->assert('Notifier was null', $sr->notifier($array_notifier), null);
@@ -27,7 +27,7 @@ $helper->line();
 
 $obj = new stdClass();
 $array_notifier = [];
-$sr = new Weak\SoftReference($obj, $array_notifier);
+$sr = new Ref\SoftReference($obj, $array_notifier);
 
 $helper->assert('Notifier is array by default', $sr->notifier(), $array_notifier);
 $helper->assert('Notifier was array', $sr->notifier($callback_notifier), $array_notifier);
@@ -38,7 +38,7 @@ $helper->line();
 
 $obj = new stdClass();
 $array_notifier = [];
-$sr = new Weak\SoftReference($obj, $callback_notifier);
+$sr = new Ref\SoftReference($obj, $callback_notifier);
 
 $helper->assert('Notifier is callback by default', $sr->notifier(), $callback_notifier);
 $helper->assert('Notifier was callback', $sr->notifier(null), $callback_notifier);
@@ -75,7 +75,7 @@ Notifier is callback by default: ok
 Notifier was callback: ok
 Notifier is null: ok
 
-TypeError: Argument 2 passed to Weak\SoftReference::notifier() must be callable, array or null, string given
+TypeError: Argument 2 passed to Ref\SoftReference::notifier() must be callable, array or null, string given
 Notifier stays the same: ok
 
 EOF

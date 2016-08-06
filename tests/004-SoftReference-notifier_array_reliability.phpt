@@ -1,7 +1,7 @@
 --TEST--
-Weak\SoftReference - array notifier
+Ref\SoftReference - array notifier
 --SKIPIF--
-<?php if (!extension_loaded("weak")) {
+<?php if (!extension_loaded("ref")) {
     print "skip";
 } ?>
 --FILE--
@@ -13,11 +13,11 @@ $helper = require '.testsuite.php';
 $obj = new stdClass();
 
 $notifier = [];
-$sr1 = new Weak\SoftReference($obj, $notifier);
-$sr2 = new Weak\SoftReference($obj, function () {
+$sr1 = new Ref\SoftReference($obj, $notifier);
+$sr2 = new Ref\SoftReference($obj, function () {
     throw new Exception('Testing array notifier reliability');
 });
-$sr2 = new Weak\SoftReference($obj, $notifier);
+$sr2 = new Ref\SoftReference($obj, $notifier);
 
 
 var_dump($notifier);
@@ -42,33 +42,33 @@ array(0) {
 }
 array(2) {
   [0]=>
-  object(Weak\SoftReference)#6 (2) {
-    ["referent":"Weak\AbstractReference":private]=>
+  object(Ref\SoftReference)#6 (2) {
+    ["referent":"Ref\AbstractReference":private]=>
     NULL
-    ["notifier":"Weak\AbstractReference":private]=>
+    ["notifier":"Ref\AbstractReference":private]=>
     array(2) {
       [0]=>
       *RECURSION*
       [1]=>
-      object(Weak\SoftReference)#3 (2) {
-        ["referent":"Weak\AbstractReference":private]=>
+      object(Ref\SoftReference)#3 (2) {
+        ["referent":"Ref\AbstractReference":private]=>
         NULL
-        ["notifier":"Weak\AbstractReference":private]=>
+        ["notifier":"Ref\AbstractReference":private]=>
         *RECURSION*
       }
     }
   }
   [1]=>
-  object(Weak\SoftReference)#3 (2) {
-    ["referent":"Weak\AbstractReference":private]=>
+  object(Ref\SoftReference)#3 (2) {
+    ["referent":"Ref\AbstractReference":private]=>
     NULL
-    ["notifier":"Weak\AbstractReference":private]=>
+    ["notifier":"Ref\AbstractReference":private]=>
     array(2) {
       [0]=>
-      object(Weak\SoftReference)#6 (2) {
-        ["referent":"Weak\AbstractReference":private]=>
+      object(Ref\SoftReference)#6 (2) {
+        ["referent":"Ref\AbstractReference":private]=>
         NULL
-        ["notifier":"Weak\AbstractReference":private]=>
+        ["notifier":"Ref\AbstractReference":private]=>
         *RECURSION*
       }
       [1]=>
@@ -78,33 +78,33 @@ array(2) {
 }
 array(2) {
   [0]=>
-  object(Weak\SoftReference)#6 (2) {
-    ["referent":"Weak\AbstractReference":private]=>
+  object(Ref\SoftReference)#6 (2) {
+    ["referent":"Ref\AbstractReference":private]=>
     NULL
-    ["notifier":"Weak\AbstractReference":private]=>
+    ["notifier":"Ref\AbstractReference":private]=>
     array(2) {
       [0]=>
       *RECURSION*
       [1]=>
-      object(Weak\SoftReference)#3 (2) {
-        ["referent":"Weak\AbstractReference":private]=>
+      object(Ref\SoftReference)#3 (2) {
+        ["referent":"Ref\AbstractReference":private]=>
         NULL
-        ["notifier":"Weak\AbstractReference":private]=>
+        ["notifier":"Ref\AbstractReference":private]=>
         *RECURSION*
       }
     }
   }
   [1]=>
-  object(Weak\SoftReference)#3 (2) {
-    ["referent":"Weak\AbstractReference":private]=>
+  object(Ref\SoftReference)#3 (2) {
+    ["referent":"Ref\AbstractReference":private]=>
     NULL
-    ["notifier":"Weak\AbstractReference":private]=>
+    ["notifier":"Ref\AbstractReference":private]=>
     array(2) {
       [0]=>
-      object(Weak\SoftReference)#6 (2) {
-        ["referent":"Weak\AbstractReference":private]=>
+      object(Ref\SoftReference)#6 (2) {
+        ["referent":"Ref\AbstractReference":private]=>
         NULL
-        ["notifier":"Weak\AbstractReference":private]=>
+        ["notifier":"Ref\AbstractReference":private]=>
         *RECURSION*
       }
       [1]=>

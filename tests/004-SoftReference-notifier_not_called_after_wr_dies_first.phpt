@@ -1,7 +1,7 @@
 --TEST--
-Weak\SoftReference - notifier not called after weak reference dies first
+Ref\SoftReference - notifier not called after weak reference dies first
 --SKIPIF--
-<?php if (!extension_loaded("weak")) print "skip"; ?>
+<?php if (!extension_loaded("ref")) print "skip"; ?>
 --FILE--
 <?php
 
@@ -17,16 +17,16 @@ class TestExceptionInDestructor {
 
 $obj = new TestExceptionInDestructor();
 
-$callback = function (Weak\SoftReference $reference) {
+$callback = function (Ref\SoftReference $reference) {
     echo 'Weak notifier called', PHP_EOL;
 };
 
-$sr = new Weak\SoftReference($obj, $callback);
+$sr = new Ref\SoftReference($obj, $callback);
 
 try {
     $obj = null;
-} catch(\Weak\NotifierException $e) {
-    $helper->weak_exception_export($e);
+} catch(\Ref\NotifierException $e) {
+    $helper->ref_exception_export($e);
     $helper->line();
 }
 
@@ -38,7 +38,7 @@ $helper->line();
 EOF
 --EXPECT--
 Weak notifier called
-Weak\NotifierException: One or more exceptions thrown during notifiers calling
+Ref\NotifierException: One or more exceptions thrown during notifiers calling
     Exception: Destructor throws exception
 
 Referent object dead: ok

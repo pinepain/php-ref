@@ -1,7 +1,7 @@
 --TEST--
-Weak\SoftReference - spl_object_hash still consistent before and after wrapping
+Ref\SoftReference - spl_object_hash still consistent before and after wrapping
 --SKIPIF--
-<?php if (!extension_loaded("weak")) print "skip";  ?>
+<?php if (!extension_loaded("ref")) print "skip";  ?>
 --FILE--
 <?php
 
@@ -13,14 +13,14 @@ $obj = new stdClass();
 
 $original_hash = spl_object_hash($obj);
 
-$sr = new Weak\SoftReference($obj);
+$sr = new Ref\SoftReference($obj);
 
 $current_hash = spl_object_hash($obj);
 
 $helper->assert('Wrapped object hash matches origin one', $original_hash == $current_hash);
 
 
-$sr2 = new Weak\SoftReference($obj);
+$sr2 = new Ref\SoftReference($obj);
 
 $double_hash = spl_object_hash($obj);
 $helper->assert('Repeatedly wrapped object hash does not changes', $current_hash == $double_hash);

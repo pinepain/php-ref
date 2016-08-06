@@ -1,7 +1,7 @@
 --TEST--
-Weak\SoftReference - invalid notifier callback passed
+Ref\SoftReference - invalid notifier callback passed
 --SKIPIF--
-<?php if (!extension_loaded("weak")) print "skip"; ?>
+<?php if (!extension_loaded("ref")) print "skip"; ?>
 --FILE--
 <?php
 
@@ -11,7 +11,7 @@ $helper = require '.testsuite.php';
 $obj = new stdClass();
 
 try {
-  $sr = new Weak\SoftReference($obj, 'nonexistent');
+  $sr = new Ref\SoftReference($obj, 'nonexistent');
 } catch (TypeError $e) {
   $helper->exception_export($e);
 }
@@ -20,6 +20,6 @@ $helper->line();
 ?>
 EOF
 --EXPECT--
-TypeError: Argument 2 passed to Weak\SoftReference::__construct() must be callable, array or null, string given
+TypeError: Argument 2 passed to Ref\SoftReference::__construct() must be callable, array or null, string given
 
 EOF

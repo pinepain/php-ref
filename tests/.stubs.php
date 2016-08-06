@@ -2,7 +2,7 @@
 
 namespace WeakTests;
 
-use Weak\Reference as WeakReference;
+use Ref\WeakReference as WeakReference;
 
 use ArrayAccess;
 
@@ -14,7 +14,7 @@ class TrackingDtor
     }
 }
 
-class ReferenceTrackingDtor extends WeakReference
+class WeakReferenceTrackingDtor extends WeakReference
 {
     public function __destruct()
     {
@@ -71,7 +71,7 @@ class TestProperties {
     private $private = 'private';
 }
 
-class ExtendedReference extends \Weak\Reference {
+class ExtendedWeakReference extends \Ref\WeakReference {
     /**
      * @var
      */
@@ -84,7 +84,7 @@ class ExtendedReference extends \Weak\Reference {
     }
 }
 
-class ExtendedSoftReference extends \Weak\SoftReference {
+class ExtendedSoftReference extends \Ref\SoftReference {
     /**
      * @var
      */

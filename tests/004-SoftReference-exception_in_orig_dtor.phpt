@@ -1,7 +1,7 @@
 --TEST--
-Weak\SoftReference - exception thrown in orig dtor
+Ref\SoftReference - exception thrown in orig dtor
 --SKIPIF--
-<?php if (!extension_loaded("weak")) print "skip"; ?>
+<?php if (!extension_loaded("ref")) print "skip"; ?>
 --FILE--
 <?php
 
@@ -19,17 +19,17 @@ class BadDtor {
 
 $obj = new BadDtor();
 
-$callback = function (Weak\SoftReference $reference) {
+$callback = function (Ref\SoftReference $reference) {
     echo 'Weak callback called', PHP_EOL;
 };
 
 
-$sr = new Weak\SoftReference($obj, $callback);
+$sr = new Ref\SoftReference($obj, $callback);
 
 try {
     $obj = null;
-} catch(\Weak\NotifierException $e) {
-    $helper->weak_exception_export($e);
+} catch(\Ref\NotifierException $e) {
+    $helper->ref_exception_export($e);
 }
 
 ?>
@@ -37,6 +37,6 @@ EOF
 --EXPECT--
 Weak callback called
 Dtor called
-Weak\NotifierException: One or more exceptions thrown during notifiers calling
+Ref\NotifierException: One or more exceptions thrown during notifiers calling
     Exception: Test exception from dtor
 EOF

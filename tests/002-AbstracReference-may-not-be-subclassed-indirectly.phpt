@@ -1,7 +1,7 @@
 --TEST--
-Weak\AbstractReference - may not be subclassed indirectly
+Ref\AbstractReference - may not be subclassed indirectly
 --SKIPIF--
-<?php if (!extension_loaded("weak")) {
+<?php if (!extension_loaded("ref")) {
     print "skip";
 } ?>
 --FILE--
@@ -12,7 +12,7 @@ $helper = require '.testsuite.php';
 
 $obj = new stdClass();
 try {
-    $rc = new ReflectionClass(Weak\AbstractReference::class);
+    $rc = new ReflectionClass(Ref\AbstractReference::class);
     $obj = $rc->newInstanceWithoutConstructor();
 
 } catch (Throwable $e) {
@@ -21,7 +21,7 @@ try {
 
 
 try {
-    new class($obj) extends Weak\AbstractReference
+    new class($obj) extends Ref\AbstractReference
     {
     };
 } catch (Throwable $e) {
@@ -31,5 +31,5 @@ try {
 
 ?>
 --EXPECT--
-Error: Cannot instantiate abstract class Weak\AbstractReference
-Error: Weak\AbstractReference class may not be subclassed directly
+Error: Cannot instantiate abstract class Ref\AbstractReference
+Error: Ref\AbstractReference class may not be subclassed directly

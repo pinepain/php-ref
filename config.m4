@@ -1,11 +1,11 @@
 dnl $Id$
-dnl config.m4 for extension weak
+dnl config.m4 for extension ref
 
-PHP_ARG_ENABLE(weak, whether to enable weak support,
+PHP_ARG_ENABLE(ref, whether to enable ref support,
 dnl Make sure that the comment is aligned:
-[  --enable-weak           Enable weak support])
+[  --enable-ref           Enable ref support])
 
-if test "$PHP_WEAK" != "no"; then
+if test "$PHP_REF" != "no"; then
 
     if test -z "$TRAVIS" ; then
         type git &>/dev/null
@@ -14,23 +14,23 @@ if test "$PHP_WEAK" != "no"; then
             git describe --abbrev=0 --tags &>/dev/null
 
             if test $? -eq 0 ; then
-                AC_DEFINE_UNQUOTED([PHP_WEAK_VERSION], ["`git describe --abbrev=0 --tags`-`git rev-parse --abbrev-ref HEAD`-dev"], [git version])
+                AC_DEFINE_UNQUOTED([PHP_REF_VERSION], ["`git describe --abbrev=0 --tags`-`git rev-parse --abbrev-ref HEAD`-dev"], [git version])
             fi
 
             git rev-parse --short HEAD &>/dev/null
 
             if test $? -eq 0 ; then
-                AC_DEFINE_UNQUOTED([PHP_WEAK_REVISION], ["`git rev-parse --short HEAD`"], [git revision])
+                AC_DEFINE_UNQUOTED([PHP_REF_REVISION], ["`git rev-parse --short HEAD`"], [git revision])
             fi
         else
-            AC_MSG_NOTICE([git not installed. Cannot obtain php-weak version tag. Install git.])
+            AC_MSG_NOTICE([git not installed. Cannot obtain php-ref version tag. Install git.])
         fi
     fi
 
-    PHP_NEW_EXTENSION(weak, [           \
-        weak.c                          \
-        php_weak_notifier_exception.c   \
-        php_weak_reference.c            \
-        php_weak_functions.c            \
+    PHP_NEW_EXTENSION(ref, [            \
+        ref.c                           \
+        php_ref_notifier_exception.c    \
+        php_ref_reference.c             \
+        php_ref_functions.c             \
     ], $ext_shared,, -DZEND_ENABLE_STATIC_TSRMLS_CACHE=1)
 fi

@@ -1,22 +1,26 @@
 {
-  "name": "pinepain/php-weak-stubs",
+  "name": "pinepain/php-ref-stubs",
   "type": "library",
-  "description": "Stub files for pinepain/php-weak php extension",
+  "description": "Stub files for pinepain/php-ref php extension",
   "keywords": [
     "dev",
     "stub",
-    "php-weak",
+    "php-ref",
+    "soft",
     "weak",
+    "ref",
     "reference",
+    "softref",
     "weakref",
-    "weakreference"
+    "weakreference",
+    "softreference"
   ],
-  "homepage": "https://github.com/pinepain/php-weak-stubs",
+  "homepage": "https://github.com/pinepain/php-ref-stubs",
   "license": "MIT",
   "authors": [
     {
       "name": "Bogdan Padalko",
-      "email": "zaq178miami@gmail.com",
+      "email": "pinepain@gmail.com",
       "homepage": "https://github.com/pinepain"
     }
   ],

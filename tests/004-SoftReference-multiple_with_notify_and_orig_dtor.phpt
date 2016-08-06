@@ -1,7 +1,7 @@
 --TEST--
-Weak\SoftReference - multiple weak references with notifiers, original object destructor called once and after all notifiers
+Ref\SoftReference - multiple soft references with notifiers, original object destructor called once and after all notifiers
 --SKIPIF--
-<?php if (!extension_loaded("weak")) print "skip"; ?>
+<?php if (!extension_loaded("ref")) print "skip"; ?>
 --FILE--
 <?php
 
@@ -12,16 +12,16 @@ require '.stubs.php';
 
 $obj = new \WeakTests\TrackingDtor();
 
-$callback1 = function (Weak\SoftReference $reference) {
+$callback1 = function (Ref\SoftReference $reference) {
     echo 'Weak notifier 1 called', PHP_EOL;
 };
 
-$callback2 = function (Weak\SoftReference $reference) {
+$callback2 = function (Ref\SoftReference $reference) {
     echo 'Weak notifier 2 called', PHP_EOL;
 };
 
-$sr1 = new Weak\SoftReference($obj, $callback1);
-$sr2 = new Weak\SoftReference($obj, $callback2);
+$sr1 = new Ref\SoftReference($obj, $callback1);
+$sr2 = new Ref\SoftReference($obj, $callback2);
 
 $obj = null;
 

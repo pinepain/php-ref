@@ -1,11 +1,11 @@
 --TEST--
-Weak\functions - test functions
+Ref\functions - test functions
 --SKIPIF--
-<?php if (!extension_loaded("weak")) print "skip"; ?>
+<?php if (!extension_loaded("ref")) print "skip"; ?>
 --FILE--
 <?php
 
-use function Weak\{
+use function Ref\{
     refcounted,
     refcount,
     softrefcounted,
@@ -18,8 +18,8 @@ use function Weak\{
     is_obj_destructor_called
 };
 
-use Weak\Reference;
-use Weak\SoftReference;
+use Ref\WeakReference;
+use Ref\SoftReference;
 
 /** @var \Testsuite $helper */
 $helper = require '.testsuite.php';
@@ -31,7 +31,7 @@ $obj3 = new stdClass();
 
 $test = $obj1;
 
-$helper->header('Test Weak\refcounted');
+$helper->header('Test Ref\refcounted');
 $helper->export_annotated('refcounted($obj1)', refcounted($obj1));
 $helper->export_annotated('refcounted($obj2)', refcounted($obj2));
 $helper->export_annotated('refcounted(new stdClass())', refcounted(new stdClass()));
@@ -40,7 +40,7 @@ $helper->export_annotated('refcounted(null)', refcounted(null));
 $helper->export_annotated('refcounted(42)', refcounted(42));
 $helper->line();
 
-$helper->header('Test Weak\refcount');
+$helper->header('Test Ref\refcount');
 $helper->export_annotated('refcount($obj1)', refcount($obj1));
 $helper->export_annotated('refcount($obj2)', refcount($obj2));
 $helper->export_annotated('refcount(new stdClass())', refcount(new stdClass()));
@@ -50,25 +50,25 @@ $helper->line();
 
 
 
-$weak_ref1a = new Reference($obj1);
-$weak_ref1b = new Reference($obj1);
-$weak_ref2 = new Reference($obj2);
+$weak_ref1a = new WeakReference($obj1);
+$weak_ref1b = new WeakReference($obj1);
+$weak_ref2 = new WeakReference($obj2);
 
 
-$helper->header('Test Weak\weakrefcounted');
+$helper->header('Test Ref\weakrefcounted');
 $helper->export_annotated('weakrefcounted($obj1)', weakrefcounted($obj1));
 $helper->export_annotated('weakrefcounted($obj2)', weakrefcounted($obj2));
 $helper->export_annotated('weakrefcounted($obj3)', weakrefcounted($obj3));
 $helper->line();
 
-$helper->header('Test Weak\weakrefcount');
+$helper->header('Test Ref\weakrefcount');
 $helper->export_annotated('weakrefcount($obj1)', weakrefcount($obj1));
 $helper->export_annotated('weakrefcount($obj2)', weakrefcount($obj2));
 $helper->export_annotated('weakrefcount($obj3)', weakrefcount($obj3));
 $helper->line();
 
 
-$helper->header('Test Weak\weakrefs');
+$helper->header('Test Ref\weakrefs');
 
 $helper->assert('Multiple weak refs reported for object with weakrefs()', weakrefs($obj1), [$weak_ref1a, $weak_ref1b]);
 $helper->dump(weakrefs($obj1));
@@ -83,13 +83,13 @@ $helper->dump(weakrefs($obj3));
 $helper->line();
 
 
-$helper->header('Test Weak\object_handle');
+$helper->header('Test Ref\object_handle');
 $helper->export_annotated('object_handle($obj1)', object_handle($obj1));
 $helper->export_annotated('object_handle($obj2)', object_handle($obj2));
 $helper->line();
 
 
-$helper->header('Test Weak\is_obj_destructor_called');
+$helper->header('Test Ref\is_obj_destructor_called');
 
 class ObjectWithSoftDestructor {
 
@@ -116,53 +116,53 @@ $helper->assert('Object stored to external value during destructor call', is_obj
 $helper->export_annotated('is_obj_destructor_called($external)', is_obj_destructor_called($external));
 
 ?>
---EXPECTF--
-Test Weak\refcounted:
----------------------
+--EXPECT--
+Test Ref\refcounted:
+--------------------
 refcounted($obj1): boolean: true
 refcounted($obj2): boolean: true
 refcounted(new stdClass()): boolean: true
 refcounted(null): boolean: false
 refcounted(42): boolean: false
 
-Test Weak\refcount:
--------------------
+Test Ref\refcount:
+------------------
 refcount($obj1): integer: 2
 refcount($obj2): integer: 1
 refcount(new stdClass()): integer: 0
 refcount(null): integer: 0
 refcount(42): integer: 0
 
-Test Weak\weakrefcounted:
--------------------------
+Test Ref\weakrefcounted:
+------------------------
 weakrefcounted($obj1): boolean: true
 weakrefcounted($obj2): boolean: true
 weakrefcounted($obj3): boolean: false
 
-Test Weak\weakrefcount:
------------------------
+Test Ref\weakrefcount:
+----------------------
 weakrefcount($obj1): integer: 2
 weakrefcount($obj2): integer: 1
 weakrefcount($obj3): integer: 0
 
-Test Weak\weakrefs:
--------------------
+Test Ref\weakrefs:
+------------------
 Multiple weak refs reported for object with weakrefs(): ok
 array(2) refcount(2){
   [0]=>
-  object(Weak\Reference)#5 (2) refcount(2){
-    ["referent":"Weak\AbstractReference":private]=>
+  object(Ref\WeakReference)#5 (2) refcount(2){
+    ["referent":"Ref\AbstractReference":private]=>
     object(stdClass)#2 (0) refcount(3){
     }
-    ["notifier":"Weak\AbstractReference":private]=>
+    ["notifier":"Ref\AbstractReference":private]=>
     NULL
   }
   [1]=>
-  object(Weak\Reference)#6 (2) refcount(2){
-    ["referent":"Weak\AbstractReference":private]=>
+  object(Ref\WeakReference)#6 (2) refcount(2){
+    ["referent":"Ref\AbstractReference":private]=>
     object(stdClass)#2 (0) refcount(3){
     }
-    ["notifier":"Weak\AbstractReference":private]=>
+    ["notifier":"Ref\AbstractReference":private]=>
     NULL
   }
 }
@@ -170,11 +170,11 @@ array(2) refcount(2){
 Single weak ref reported for object with weakrefs(): ok
 array(1) refcount(2){
   [0]=>
-  object(Weak\Reference)#7 (2) refcount(2){
-    ["referent":"Weak\AbstractReference":private]=>
+  object(Ref\WeakReference)#7 (2) refcount(2){
+    ["referent":"Ref\AbstractReference":private]=>
     object(stdClass)#3 (0) refcount(2){
     }
-    ["notifier":"Weak\AbstractReference":private]=>
+    ["notifier":"Ref\AbstractReference":private]=>
     NULL
   }
 }
@@ -183,13 +183,13 @@ No weak refs reported for object with weakrefs(): ok
 array(0) refcount(2){
 }
 
-Test Weak\object_handle:
-------------------------
+Test Ref\object_handle:
+-----------------------
 object_handle($obj1): integer: 2
 object_handle($obj2): integer: 3
 
-Test Weak\is_obj_destructor_called:
------------------------------------
+Test Ref\is_obj_destructor_called:
+----------------------------------
 is_obj_destructor_called($obj): boolean: false
 ObjectWithSoftDestructor::__destruct called
 Object stored to external value during destructor call: ok

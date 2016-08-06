@@ -1,7 +1,7 @@
 --TEST--
-Weak\SoftReference - SplObjectStorage hashes in debug output still consistent before and after wrapping
+Ref\SoftReference - SplObjectStorage hashes in debug output still consistent before and after wrapping
 --SKIPIF--
-<?php if (!extension_loaded("weak")) print "skip";  ?>
+<?php if (!extension_loaded("ref")) print "skip";  ?>
 --FILE--
 <?php
 
@@ -12,9 +12,9 @@ $s = new SplObjectStorage();
 $obj = new stdClass();
 $original_hash = spl_object_hash($obj);
 $s->attach($obj);
-$sr = new Weak\SoftReference($obj);
+$sr = new Ref\SoftReference($obj);
 $current_hash = spl_object_hash($obj);
-$helper->assert('Stored in SplObjectStorage weak-referenced object hash matches origin one', $original_hash == $current_hash);
+$helper->assert('Stored in SplObjectStorage soft-referenced object hash matches origin one', $original_hash == $current_hash);
 
 ob_start();
 debug_zval_dump($s);
@@ -33,7 +33,7 @@ $helper->line();
 ?>
 EOF
 --EXPECTF--
-Stored in SplObjectStorage weak-referenced object hash matches origin one: ok
+Stored in SplObjectStorage soft-referenced object hash matches origin one: ok
 Object hash in SplObjectStorage debug output not changed: ok
 
 string(32) "%s" refcount(2)

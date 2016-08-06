@@ -1,7 +1,7 @@
 --TEST--
-Weak\SoftReference - compare references
+Ref\SoftReference - compare references
 --SKIPIF--
-<?php if (!extension_loaded("weak")) print "skip"; ?>
+<?php if (!extension_loaded("ref")) print "skip"; ?>
 --FILE--
 <?php
 
@@ -13,10 +13,10 @@ $obj1 = new stdClass();
 $obj2 = new stdClass();
 $obj3 = new SplObjectStorage();
 
-$sr1 = $sr1a = new Weak\SoftReference($obj1);
-$sr1b = new Weak\SoftReference($obj1);
-$sr2 = new Weak\SoftReference($obj2);
-$sr3 = new Weak\SoftReference($obj3);
+$sr1 = $sr1a = new Ref\SoftReference($obj1);
+$sr1b = new Ref\SoftReference($obj1);
+$sr2 = new Ref\SoftReference($obj2);
+$sr3 = new Ref\SoftReference($obj3);
 
 
 $helper->assert('References to the same object matches', $sr1a == $sr1b);
@@ -54,13 +54,13 @@ $helper->line();
 
 $obj1 = new stdClass();
 
-$sr1 = new Weak\SoftReference($obj1, ['first']);
-$sr2 = new Weak\SoftReference($obj1, ['second']);
+$sr1 = new Ref\SoftReference($obj1, ['first']);
+$sr2 = new Ref\SoftReference($obj1, ['second']);
 
 $helper->assert('References to the same object with different notifiers do not match', $sr1 != $sr2);
 
-$sr1 = new Weak\SoftReference($obj1, []);
-$sr2 = new Weak\SoftReference($obj1, []);
+$sr1 = new Ref\SoftReference($obj1, []);
+$sr2 = new Ref\SoftReference($obj1, []);
 
 $helper->assert('References to the same object with same notifiers match', $sr1 == $sr2);
 
@@ -68,7 +68,7 @@ $sr2->property = 'changed';
 
 $helper->assert('References to the same object with same notifiers but different properties do not match', $sr1 != $sr2);
 
-$sr3 = new class($obj1, []) extends Weak\SoftReference {};
+$sr3 = new class($obj1, []) extends Ref\SoftReference {};
 
 $helper->assert('References to the same object with same notifiers do not match if they are instances of different classes', $sr2 != $sr3);
 

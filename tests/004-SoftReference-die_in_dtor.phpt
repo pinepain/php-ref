@@ -1,7 +1,7 @@
 --TEST--
-Weak\SoftReference - destructor calls die()
+Ref\SoftReference - destructor calls die()
 --SKIPIF--
-<?php if (!extension_loaded("weak")) print "skip"; ?>
+<?php if (!extension_loaded("ref")) print "skip"; ?>
 --FILE--
 <?php
 
@@ -19,11 +19,11 @@ class TestExceptionInDestructor {
 
 $obj = new TestExceptionInDestructor();
 
-$callback = function (Weak\SoftReference $reference) {
+$callback = function (Ref\SoftReference $reference) {
     echo 'Soft notifier called', PHP_EOL;
 };
 
-$sr = new Weak\SoftReference($obj, $callback);
+$sr = new Ref\SoftReference($obj, $callback);
 
 try {
     $obj = null;

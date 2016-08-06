@@ -1,7 +1,7 @@
 --TEST--
-Weak\SoftReference - original object destructor called after weak reference dies first
+Ref\SoftReference - original object destructor called after soft reference dies first
 --SKIPIF--
-<?php if (!extension_loaded("weak")) print "skip"; ?>
+<?php if (!extension_loaded("ref")) print "skip"; ?>
 --FILE--
 <?php
 
@@ -12,7 +12,7 @@ require '.stubs.php';
 
 $obj = new \WeakTests\TrackingDtor();
 
-$sr = new Weak\SoftReference($obj);
+$sr = new Ref\SoftReference($obj);
 
 $sr = null;
 $obj = null;

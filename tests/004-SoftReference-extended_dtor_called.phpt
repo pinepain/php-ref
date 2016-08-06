@@ -1,7 +1,7 @@
 --TEST--
-Weak\SoftReference - dump representation of extended reference class
+Ref\SoftReference - dump representation of extended reference class
 --SKIPIF--
-<?php if (!extension_loaded("weak")) print "skip"; ?>
+<?php if (!extension_loaded("ref")) print "skip"; ?>
 --FILE--
 <?php
 
@@ -10,7 +10,7 @@ $helper = require '.testsuite.php';
 
 $obj = new stdClass();
 
-class ExtendedReferenceTrackingDtor extends \Weak\SoftReference
+class ExtendedWeakReferenceTrackingDtor extends \Ref\SoftReference
 {
     public function __destruct()
     {
@@ -19,7 +19,7 @@ class ExtendedReferenceTrackingDtor extends \Weak\SoftReference
 
 }
 
-$sr = new ExtendedReferenceTrackingDtor($obj);
+$sr = new ExtendedWeakReferenceTrackingDtor($obj);
 
 $sr = null;
 
@@ -27,6 +27,6 @@ $helper->line();
 ?>
 EOF
 --EXPECT--
-Dtoring ExtendedReferenceTrackingDtor
+Dtoring ExtendedWeakReferenceTrackingDtor
 
 EOF

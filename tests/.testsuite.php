@@ -32,7 +32,7 @@ class Testsuite
         echo get_class($e), ': ', $e->getMessage(), PHP_EOL;
     }
 
-    public function weak_exception_export(\Weak\NotifierException $e)
+    public function ref_exception_export(\Ref\NotifierException $e)
     {
         $this->exception_export($e);
 
