@@ -21,12 +21,16 @@
 #include "TSRM.h"
 #endif
 
-extern zend_class_entry *php_weak_reference_class_entry;
+extern zend_class_entry *php_weak_abstract_reference_class_entry;
+extern zend_class_entry *php_weak_soft_reference_class_entry;
+extern zend_class_entry *php_weak_weak_reference_class_entry;
 
 
 typedef struct _php_weak_referent_t php_weak_referent_t;
 typedef struct _php_weak_reference_t php_weak_reference_t;
 
+typedef void (*php_weak_register)(php_weak_reference_t *reference, php_weak_referent_t *referent);
+typedef void (*php_weak_unregister)(php_weak_reference_t *reference);
 
 extern php_weak_reference_t *php_weak_reference_fetch_object(zend_object *obj);
 extern php_weak_referent_t *php_weak_referent_find_ptr(zend_ulong h);
@@ -48,6 +52,7 @@ struct _php_weak_referent_t {
     zend_object_handlers custom_handlers;
     const zend_object_handlers *original_handlers;
 
+    HashTable soft_references;
     HashTable weak_references;
 };
 
@@ -56,6 +61,9 @@ struct _php_weak_reference_t {
 
     zval notifier;
     int notifier_type;
+
+    php_weak_register register_reference;
+    php_weak_unregister unregister_reference;
 
     zval this_ptr;
     zend_object std;

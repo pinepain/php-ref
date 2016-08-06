@@ -32,10 +32,10 @@ object(WeakTests\ExtendedReference)#3 (3) {
     [0]=>
     int(42)
   }
-  ["referent":"Weak\Reference":private]=>
+  ["referent":"Weak\AbstractReference":private]=>
   object(stdClass)#2 (0) {
   }
-  ["notifier":"Weak\Reference":private]=>
+  ["notifier":"Weak\AbstractReference":private]=>
   object(Closure)#4 (1) {
     ["parameter"]=>
     array(1) {
@@ -51,9 +51,9 @@ object(WeakTests\ExtendedReference)#3 (3) {
     [0]=>
     int(42)
   }
-  ["referent":"Weak\Reference":private]=>
+  ["referent":"Weak\AbstractReference":private]=>
   NULL
-  ["notifier":"Weak\Reference":private]=>
+  ["notifier":"Weak\AbstractReference":private]=>
   object(Closure)#4 (1) {
     ["parameter"]=>
     array(1) {

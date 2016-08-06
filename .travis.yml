@@ -22,8 +22,6 @@ env:
 before_install:
   - phpize && ./configure && make
 
-install:
-
 script:
   - sh -c "make test | tee result.txt"
   - sh test-report.sh
@@ -32,7 +30,3 @@ addons:
   apt:
     packages:
       - valgrind
-
-#notifications:
-#  email:
-#    - zaq178miami@gmail.com

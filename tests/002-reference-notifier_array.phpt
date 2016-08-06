@@ -33,9 +33,9 @@ array(0) {
 array(1) {
   [0]=>
   object(Weak\Reference)#3 (2) {
-    ["referent":"Weak\Reference":private]=>
+    ["referent":"Weak\AbstractReference":private]=>
     NULL
-    ["notifier":"Weak\Reference":private]=>
+    ["notifier":"Weak\AbstractReference":private]=>
     array(1) {
       [0]=>
       *RECURSION*
@@ -45,9 +45,9 @@ array(1) {
 array(1) {
   [0]=>
   object(Weak\Reference)#3 (2) {
-    ["referent":"Weak\Reference":private]=>
+    ["referent":"Weak\AbstractReference":private]=>
     NULL
-    ["notifier":"Weak\Reference":private]=>
+    ["notifier":"Weak\AbstractReference":private]=>
     array(1) {
       [0]=>
       *RECURSION*

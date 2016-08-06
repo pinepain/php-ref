@@ -10,7 +10,7 @@ $helper = require '.testsuite.php';
 
 require '.stubs.php';
 
-$obj = new \WeakTests\TrackingDtor(0);
+$obj = new \WeakTests\TrackingDtor();
 
 $callback = function (Weak\Reference $reference) {
     throw new \Exception('Test exception from callback');

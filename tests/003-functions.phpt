@@ -8,13 +8,18 @@ Weak\functions - test functions
 use function Weak\{
     refcounted,
     refcount,
+    softrefcounted,
+    softrefcount,
+    softrefs,
     weakrefcounted,
     weakrefcount,
     weakrefs,
-    object_handle
+    object_handle,
+    is_obj_destructor_called
 };
 
 use Weak\Reference;
+use Weak\SoftReference;
 
 /** @var \Testsuite $helper */
 $helper = require '.testsuite.php';
@@ -45,9 +50,9 @@ $helper->line();
 
 
 
-$ref1a = new Reference($obj1);
-$ref1b = new Reference($obj1);
-$ref2 = new Reference($obj2);
+$weak_ref1a = new Reference($obj1);
+$weak_ref1b = new Reference($obj1);
+$weak_ref2 = new Reference($obj2);
 
 
 $helper->header('Test Weak\weakrefcounted');
@@ -65,11 +70,11 @@ $helper->line();
 
 $helper->header('Test Weak\weakrefs');
 
-$helper->assert('Multiple weak refs reported for object with weakrefs()', weakrefs($obj1), [$ref1a, $ref1b]);
+$helper->assert('Multiple weak refs reported for object with weakrefs()', weakrefs($obj1), [$weak_ref1a, $weak_ref1b]);
 $helper->dump(weakrefs($obj1));
 $helper->line();
 
-$helper->assert('Single weak refs reported for object with weakrefs()', weakrefs($obj2), [$ref2]);
+$helper->assert('Single weak ref reported for object with weakrefs()', weakrefs($obj2), [$weak_ref2]);
 $helper->dump(weakrefs($obj2));
 $helper->line();
 
@@ -83,9 +88,32 @@ $helper->export_annotated('object_handle($obj1)', object_handle($obj1));
 $helper->export_annotated('object_handle($obj2)', object_handle($obj2));
 $helper->line();
 
-$helper->export_annotated('spl_object_hash($obj1)', spl_object_hash($obj1));
-$helper->export_annotated('spl_object_hash($obj2)', spl_object_hash($obj2));
-$helper->line();
+
+$helper->header('Test Weak\is_obj_destructor_called');
+
+class ObjectWithSoftDestructor {
+
+  private $external;
+
+  public function __construct(&$external)
+  {
+    $this->external = &$external;
+  }
+
+  public function __destruct()
+  {
+    echo __METHOD__ . ' called', PHP_EOL;
+    $this->external = $this;
+  }
+}
+
+$external = null;
+$obj = new ObjectWithSoftDestructor($external);
+
+$helper->export_annotated('is_obj_destructor_called($obj)', is_obj_destructor_called($obj));
+$obj = null;
+$helper->assert('Object stored to external value during destructor call', is_object($external));
+$helper->export_annotated('is_obj_destructor_called($external)', is_obj_destructor_called($external));
 
 ?>
 --EXPECTF--
@@ -123,30 +151,30 @@ Multiple weak refs reported for object with weakrefs(): ok
 array(2) refcount(2){
   [0]=>
   object(Weak\Reference)#5 (2) refcount(2){
-    ["referent":"Weak\Reference":private]=>
+    ["referent":"Weak\AbstractReference":private]=>
     object(stdClass)#2 (0) refcount(3){
     }
-    ["notifier":"Weak\Reference":private]=>
+    ["notifier":"Weak\AbstractReference":private]=>
     NULL
   }
   [1]=>
   object(Weak\Reference)#6 (2) refcount(2){
-    ["referent":"Weak\Reference":private]=>
+    ["referent":"Weak\AbstractReference":private]=>
     object(stdClass)#2 (0) refcount(3){
     }
-    ["notifier":"Weak\Reference":private]=>
+    ["notifier":"Weak\AbstractReference":private]=>
     NULL
   }
 }
 
-Single weak refs reported for object with weakrefs(): ok
+Single weak ref reported for object with weakrefs(): ok
 array(1) refcount(2){
   [0]=>
   object(Weak\Reference)#7 (2) refcount(2){
-    ["referent":"Weak\Reference":private]=>
+    ["referent":"Weak\AbstractReference":private]=>
     object(stdClass)#3 (0) refcount(2){
     }
-    ["notifier":"Weak\Reference":private]=>
+    ["notifier":"Weak\AbstractReference":private]=>
     NULL
   }
 }
@@ -160,5 +188,9 @@ Test Weak\object_handle:
 object_handle($obj1): integer: 2
 object_handle($obj2): integer: 3
 
-spl_object_hash($obj1): string: '%s'
-spl_object_hash($obj2): string: '%s'
+Test Weak\is_obj_destructor_called:
+-----------------------------------
+is_obj_destructor_called($obj): boolean: false
+ObjectWithSoftDestructor::__destruct called
+Object stored to external value during destructor call: ok
+is_obj_destructor_called($external): boolean: true

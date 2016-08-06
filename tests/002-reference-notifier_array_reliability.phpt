@@ -43,32 +43,32 @@ array(0) {
 array(2) {
   [0]=>
   object(Weak\Reference)#6 (2) {
-    ["referent":"Weak\Reference":private]=>
+    ["referent":"Weak\AbstractReference":private]=>
     NULL
-    ["notifier":"Weak\Reference":private]=>
+    ["notifier":"Weak\AbstractReference":private]=>
     array(2) {
       [0]=>
       *RECURSION*
       [1]=>
       object(Weak\Reference)#3 (2) {
-        ["referent":"Weak\Reference":private]=>
+        ["referent":"Weak\AbstractReference":private]=>
         NULL
-        ["notifier":"Weak\Reference":private]=>
+        ["notifier":"Weak\AbstractReference":private]=>
         *RECURSION*
       }
     }
   }
   [1]=>
   object(Weak\Reference)#3 (2) {
-    ["referent":"Weak\Reference":private]=>
+    ["referent":"Weak\AbstractReference":private]=>
     NULL
-    ["notifier":"Weak\Reference":private]=>
+    ["notifier":"Weak\AbstractReference":private]=>
     array(2) {
       [0]=>
       object(Weak\Reference)#6 (2) {
-        ["referent":"Weak\Reference":private]=>
+        ["referent":"Weak\AbstractReference":private]=>
         NULL
-        ["notifier":"Weak\Reference":private]=>
+        ["notifier":"Weak\AbstractReference":private]=>
         *RECURSION*
       }
       [1]=>
@@ -79,32 +79,32 @@ array(2) {
 array(2) {
   [0]=>
   object(Weak\Reference)#6 (2) {
-    ["referent":"Weak\Reference":private]=>
+    ["referent":"Weak\AbstractReference":private]=>
     NULL
-    ["notifier":"Weak\Reference":private]=>
+    ["notifier":"Weak\AbstractReference":private]=>
     array(2) {
       [0]=>
       *RECURSION*
       [1]=>
       object(Weak\Reference)#3 (2) {
-        ["referent":"Weak\Reference":private]=>
+        ["referent":"Weak\AbstractReference":private]=>
         NULL
-        ["notifier":"Weak\Reference":private]=>
+        ["notifier":"Weak\AbstractReference":private]=>
         *RECURSION*
       }
     }
   }
   [1]=>
   object(Weak\Reference)#3 (2) {
-    ["referent":"Weak\Reference":private]=>
+    ["referent":"Weak\AbstractReference":private]=>
     NULL
-    ["notifier":"Weak\Reference":private]=>
+    ["notifier":"Weak\AbstractReference":private]=>
     array(2) {
       [0]=>
       object(Weak\Reference)#6 (2) {
-        ["referent":"Weak\Reference":private]=>
+        ["referent":"Weak\AbstractReference":private]=>
         NULL
-        ["notifier":"Weak\Reference":private]=>
+        ["notifier":"Weak\AbstractReference":private]=>
         *RECURSION*
       }
       [1]=>

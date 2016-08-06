@@ -34,10 +34,10 @@ When referent object alive:
 Referent object alive: ok
 Referent object valid: ok
 object(Weak\Reference)#3 (2) refcount(3){
-  ["referent":"Weak\Reference":private]=>
+  ["referent":"Weak\AbstractReference":private]=>
   object(stdClass)#2 (0) refcount(2){
   }
-  ["notifier":"Weak\Reference":private]=>
+  ["notifier":"Weak\AbstractReference":private]=>
   NULL
 }
 
@@ -47,9 +47,9 @@ When referent object dead:
 Referent object dead: ok
 Referent object invalid: ok
 object(Weak\Reference)#3 (2) refcount(3){
-  ["referent":"Weak\Reference":private]=>
+  ["referent":"Weak\AbstractReference":private]=>
   NULL
-  ["notifier":"Weak\Reference":private]=>
+  ["notifier":"Weak\AbstractReference":private]=>
   NULL
 }
 
