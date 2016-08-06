@@ -16,6 +16,7 @@ namespace Weak;
 
 
 use Exception;
+use Throwable;
 
 
 class NotifierException extends Exception
@@ -23,9 +24,9 @@ class NotifierException extends Exception
     private $exceptions = [];
 
     /**
-     * Get exceptions thrown from notifiers
+     * Get exceptions that were thrown from notifiers
      *
-     * @return array
+     * @return Throwable[]
      */
     public function getExceptions() : array
     {
