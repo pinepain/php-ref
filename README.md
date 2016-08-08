@@ -24,7 +24,7 @@ $obj = new class {
 };
 
 $softref = new SoftReference($obj, function () { echo 'Object will be destroyed', PHP_EOL; });
-$weakref = new Reference($obj, function () { echo 'Object destroyed', PHP_EOL; });
+$weakref = new WeakReference($obj, function () { echo 'Object destroyed', PHP_EOL; });
 
 $obj = null; // outputs "Object will be destroyed", "Destructor called", "Object destroyed" in this specific order.
 ```
@@ -61,9 +61,9 @@ Functions ([doc](./stubs/src/functions.php)):
 
 ### References
 
-There are two type of reference provided by this extension: `SoftReference` and `Reference`. The main difference is that
-`SoftReference` call it notifier before referent object will be destructed which allows to prevent object be destroyed,
-while `Reference` call it notifier after referent object was destructed.
+There are two type of reference provided by this extension: `SoftReference` and `WeakReference`. The main difference is
+that `SoftReference` call it notifier before referent object will be destructed which allows to prevent object be
+destroyed, while `WeakReference` call it notifier after referent object was destructed.
 
 Note: What this extension provides aren't quite actual soft and weak references, but it comes close for most use cases.
 
@@ -92,7 +92,7 @@ use Ref\WeakReference;
 
 $obj = new stdClass();
 
-$ref1 = new Reference($obj, function () { echo 'Object destroyed', PHP_EOL; });
+$ref1 = new WeakReference($obj, function () { echo 'Object destroyed', PHP_EOL; });
 $ref2 = clone $ref1;
 
 $obj = null; // outputs "Object destroyed" twice
