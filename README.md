@@ -4,7 +4,7 @@
 [![Windows Build status](https://ci.appveyor.com/api/projects/status/qr8k54crgfxfxr97/branch/master?svg=true)](https://ci.appveyor.com/project/pinepain/php-ref)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/pinepain/php-ref/master/LICENSE)
 
-This extension adds [Soft Reference](https://en.wikipedia.org/wiki/Weak_reference) and
+This extension adds [Soft Reference](https://en.wikipedia.org/wiki/Soft_reference) and
 [Weak References](https://en.wikipedia.org/wiki/Weak_reference) to PHP 7 and may serve as a ground for other
 data structures that require advanced referencing model.
 
@@ -29,7 +29,7 @@ $weakref = new WeakReference($obj, function () { echo 'Object destroyed', PHP_EO
 $obj = null; // outputs "Object will be destroyed", "Destructor called", "Object destroyed" in this specific order.
 ```
 
-    
+
 ## Docs
 
 This extension adds `Ref` namespace and all entities are created inside it.
@@ -71,7 +71,7 @@ Note: What this extension provides aren't quite actual soft and weak references,
 
 Notifier can be one of `callable`, `array` or `null` types. `null` notifier denotes no notifier set.
 
-Note that notification happens *after* referent object destruction, so at the time of notification `Ref\Referent::get()` 
+Note that notification happens *after* referent object destruction, so at the time of notification `Ref\Referent::get()`
 will return `null` (unless rare case when object refcount get incremented in destructor, e.g. by storing destructing value
 somewhere else).
 
@@ -81,7 +81,7 @@ will be thrown and all thrown exceptions will be available via `Ref\NotifierExce
 
 
 ### Cloning
- 
+
 When reference is cloned, notifier is cloned too, so when tracked object destroyed, both notifier will be called,
 but they will be invoked with different reference objects.
 
@@ -156,13 +156,13 @@ to add it to your project.
     phpize && ./configure && make
     make test
 
-To install extension globally run 
-    
+To install extension globally run
+
     # sudo make install
 
 You will need to copy the extension config to your php dir, here is example for Ubuntu with PHP 7.0 from
 [Ondřej Surý's PPA for PHP](https://launchpad.net/~ondrej/+archive/ubuntu/php):
-   
+
     # sudo cp provision/php/ref.ini /etc/php/mods-available/
     # sudo phpenmod -v ALL ref
     # sudo service php7.0-fpm restart
@@ -246,27 +246,27 @@ own environment, just execute `export NO_INTERACTION=1` to mute that reporting.
 You may also want to try Rasmus'es [php7dev](https://github.com/rlerdorf/php7dev) box with Debian 8 and ability to switch
 between large variety of PHP versions.
 
-## Reference:
- 
-  [Soft reference on Wikipedia](https://en.wikipedia.org/wiki/Soft_reference)
-  [Weak reference on Wikipedia](https://en.wikipedia.org/wiki/Weak_reference)
+## Reference
 
-#### In other languages:
+  - [Soft reference on Wikipedia](https://en.wikipedia.org/wiki/Soft_reference)
+  - [Weak reference on Wikipedia](https://en.wikipedia.org/wiki/Weak_reference)
 
-##### Java:
+### In other languages:
+
+#### Java:
 
   - [Class `SoftReference<T>`](https://docs.oracle.com/javase/7/docs/api/java/lang/ref/SoftReference.html)
   - [Class `WeakReference<T>`](https://docs.oracle.com/javase/7/docs/api/java/lang/ref/WeakReference.html)
   - [Guidelines for using the Java 2 reference classes](http://www.ibm.com/developerworks/library/j-refs/)
   - [Strong, Soft, Weak and Phantom References](http://neverfear.org/blog/view/150/Strong_Soft_Weak_and_Phantom_References_Java)
 
-##### Python:
-    
+#### Python:
+
   - [Weak references in Python 3.5](https://docs.python.org/3.5/library/weakref.html)
   - [Weak references in Python 2](https://docs.python.org/2/library/weakref.html)
   - [PEP 0205 - Weak References](https://www.python.org/dev/peps/pep-0205)
 
-##### .NET
+#### .NET
 
   - [`WeakReference` Class](https://msdn.microsoft.com/en-us/library/system.weakreference.aspx)
   - [`WeakReference<T>` Class](https://msdn.microsoft.com/en-us/library/gg712738%28v=vs.110%29.aspx)
