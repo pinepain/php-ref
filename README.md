@@ -1,7 +1,7 @@
 # PHP Ref extension
 
 [![Build Status](https://travis-ci.org/pinepain/php-ref.svg)](https://travis-ci.org/pinepain/php-ref)
-[![Windows Build status](https://ci.appveyor.com/api/projects/status/7r07eydi6c3lj36a/branch/master?svg=true)](https://ci.appveyor.com/project/pinepain/php-ref)
+[![Windows Build status](https://ci.appveyor.com/api/projects/status/qr8k54crgfxfxr97/branch/master?svg=true)](https://ci.appveyor.com/project/pinepain/php-ref)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/pinepain/php-ref/master/LICENSE)
 
 This extension adds [Soft Reference](https://en.wikipedia.org/wiki/Weak_reference) and
