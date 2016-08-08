@@ -1,7 +1,7 @@
 --TEST--
-Weak\SoftReference - dump representation of extended reference class
+Ref\SoftReference - dump representation of extended reference class
 --SKIPIF--
-<?php if (!extension_loaded("weak")) print "skip"; ?>
+<?php if (!extension_loaded("ref")) print "skip"; ?>
 --FILE--
 <?php
 
@@ -14,7 +14,7 @@ $helper = require '.testsuite.php';
 
 $obj = new stdClass();
 
-$sr = new ExtendedSoftReference($obj, function (Weak\SoftReference $reference) {}, [42]);
+$sr = new ExtendedSoftReference($obj, function (Ref\SoftReference $reference) {}, [42]);
 
 var_dump($sr);
 $helper->line();
@@ -32,10 +32,10 @@ object(WeakTests\ExtendedSoftReference)#3 (3) {
     [0]=>
     int(42)
   }
-  ["referent":"Weak\AbstractReference":private]=>
+  ["referent":"Ref\AbstractReference":private]=>
   object(stdClass)#2 (0) {
   }
-  ["notifier":"Weak\AbstractReference":private]=>
+  ["notifier":"Ref\AbstractReference":private]=>
   object(Closure)#4 (1) {
     ["parameter"]=>
     array(1) {
@@ -51,9 +51,9 @@ object(WeakTests\ExtendedSoftReference)#3 (3) {
     [0]=>
     int(42)
   }
-  ["referent":"Weak\AbstractReference":private]=>
+  ["referent":"Ref\AbstractReference":private]=>
   NULL
-  ["notifier":"Weak\AbstractReference":private]=>
+  ["notifier":"Ref\AbstractReference":private]=>
   object(Closure)#4 (1) {
     ["parameter"]=>
     array(1) {

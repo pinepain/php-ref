@@ -1,7 +1,7 @@
 --TEST--
-Weak\SoftReference - multiple weak references to the same object, original object destructor called once
+Ref\SoftReference - multiple soft references to the same object, original object destructor called once
 --SKIPIF--
-<?php if (!extension_loaded("weak")) print "skip"; ?>
+<?php if (!extension_loaded("ref")) print "skip"; ?>
 --FILE--
 <?php
 
@@ -12,8 +12,8 @@ require '.stubs.php';
 
 $obj = new \WeakTests\TrackingDtor();
 
-$sr1 = new Weak\SoftReference($obj);
-$sr2 = new Weak\SoftReference($obj);
+$sr1 = new Ref\SoftReference($obj);
+$sr2 = new Ref\SoftReference($obj);
 
 
 $obj = null;

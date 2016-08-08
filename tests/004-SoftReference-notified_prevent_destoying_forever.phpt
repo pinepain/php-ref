@@ -1,11 +1,11 @@
 --TEST--
-Weak\SoftReference - prevent original object from being destroyed forever
+Ref\SoftReference - prevent original object from being destroyed forever
 --SKIPIF--
-<?php if (!extension_loaded("weak")) print "skip"; ?>
+<?php if (!extension_loaded("ref")) print "skip"; ?>
 --FILE--
 <?php
 
-use function \Weak\{
+use function \Ref\{
     is_obj_destructor_called
 };
 
@@ -18,10 +18,10 @@ $helper = require '.testsuite.php';
 $obj = new \WeakTests\TrackingDtor();
 $obj_copy = null;
 
-$sr = new Weak\SoftReference($obj, function (Weak\SoftReference $reference) use (&$obj, &$obj_copy, &$helper) {
+$sr = new Ref\SoftReference($obj, function (Ref\SoftReference $reference) use (&$obj, &$obj_copy, &$helper) {
     $helper->assert('Notifier called', true);
     $helper->assert('Notifier get 1 argument', sizeof(func_get_args()) === 1);
-    $helper->assert('Notifier get weak reference as it argument', $reference instanceof Weak\SoftReference);
+    $helper->assert('Notifier get soft reference as it argument', $reference instanceof Ref\SoftReference);
     $helper->assert('Original object is null', null === $obj);
     $helper->assert('Soft reference in notifier is not null', null !== $reference->get());
     $helper->assert('Soft reference in notifier points to original object', $reference->get() instanceof \WeakTests\TrackingDtor);
@@ -58,11 +58,11 @@ When referent object alive:
 ---------------------------
 Referent object alive: ok
 
-object(Weak\SoftReference)#3 (2) refcount(3){
-  ["referent":"Weak\AbstractReference":private]=>
+object(Ref\SoftReference)#3 (2) refcount(3){
+  ["referent":"Ref\AbstractReference":private]=>
   object(WeakTests\TrackingDtor)#2 (0) refcount(2){
   }
-  ["notifier":"Weak\AbstractReference":private]=>
+  ["notifier":"Ref\AbstractReference":private]=>
   object(Closure)#4 (2) refcount(2){
     ["static"]=>
     array(3) refcount(1){
@@ -86,7 +86,7 @@ object(Weak\SoftReference)#3 (2) refcount(3){
 
 Notifier called: ok
 Notifier get 1 argument: ok
-Notifier get weak reference as it argument: ok
+Notifier get soft reference as it argument: ok
 Original object is null: ok
 Soft reference in notifier is not null: ok
 Soft reference in notifier points to original object: ok
@@ -99,11 +99,11 @@ Object copy is not null: ok
 Object copy dtor was not called: ok
 Referent object alive: ok
 
-object(Weak\SoftReference)#3 (2) refcount(3){
-  ["referent":"Weak\AbstractReference":private]=>
+object(Ref\SoftReference)#3 (2) refcount(3){
+  ["referent":"Ref\AbstractReference":private]=>
   object(WeakTests\TrackingDtor)#2 (0) refcount(2){
   }
-  ["notifier":"Weak\AbstractReference":private]=>
+  ["notifier":"Ref\AbstractReference":private]=>
   object(Closure)#4 (2) refcount(2){
     ["static"]=>
     array(3) refcount(1){
@@ -126,7 +126,7 @@ object(Weak\SoftReference)#3 (2) refcount(3){
 
 Notifier called: ok
 Notifier get 1 argument: ok
-Notifier get weak reference as it argument: ok
+Notifier get soft reference as it argument: ok
 Original object is null: ok
 Soft reference in notifier is not null: ok
 Soft reference in notifier points to original object: ok

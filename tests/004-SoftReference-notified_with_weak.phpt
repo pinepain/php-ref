@@ -1,7 +1,7 @@
 --TEST--
-Weak\SoftReference - soft reference notifier then original object dtor and then weak notifiers called
+Ref\SoftReference - soft reference notifier then original object dtor and then soft notifiers called
 --SKIPIF--
-<?php if (!extension_loaded("weak")) print "skip"; ?>
+<?php if (!extension_loaded("ref")) print "skip"; ?>
 --FILE--
 <?php
 
@@ -13,11 +13,11 @@ $helper = require '.testsuite.php';
 
 $obj = new \WeakTests\TrackingDtor();
 
-$sr = new Weak\SoftReference($obj, function (Weak\SoftReference $reference) {
+$sr = new Ref\SoftReference($obj, function (Ref\SoftReference $reference) {
     echo 'Soft notifier called', PHP_EOL;
 });
 
-$wr = new Weak\Reference($obj, function (Weak\Reference $reference){
+$wr = new Ref\WeakReference($obj, function (Ref\WeakReference $reference){
     echo 'Weak notifier called', PHP_EOL;
 });
 

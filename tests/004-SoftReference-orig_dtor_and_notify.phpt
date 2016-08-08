@@ -1,7 +1,7 @@
 --TEST--
-Weak\SoftReference - original object destructor called with notify callback after it
+Ref\SoftReference - original object destructor called with notify callback after it
 --SKIPIF--
-<?php if (!extension_loaded("weak")) print "skip"; ?>
+<?php if (!extension_loaded("ref")) print "skip"; ?>
 --FILE--
 <?php
 
@@ -10,13 +10,13 @@ $helper = require '.testsuite.php';
 
 require '.stubs.php';
 
-$callback = function (Weak\SoftReference $reference) {
+$callback = function (Ref\SoftReference $reference) {
     echo 'Weak notifier called', PHP_EOL;
 };
 
 $obj = new \WeakTests\TrackingDtor();
 
-$sr = new Weak\SoftReference($obj, $callback);
+$sr = new Ref\SoftReference($obj, $callback);
 
 
 $helper->assert("Weak references points to original object", $sr->get() === $obj);

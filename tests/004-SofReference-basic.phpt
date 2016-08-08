@@ -1,7 +1,7 @@
 --TEST--
-Weak\SoftReference - dump representation, get() and valid() methods
+Ref\SoftReference - dump representation, get() and valid() methods
 --SKIPIF--
-<?php if (!extension_loaded("weak")) print "skip"; ?>
+<?php if (!extension_loaded("ref")) print "skip"; ?>
 --FILE--
 <?php
 
@@ -10,7 +10,7 @@ $helper = require '.testsuite.php';
 
 $obj = new stdClass();
 
-$ref = new Weak\SoftReference($obj);
+$ref = new Ref\SoftReference($obj);
 
 $helper->header('When referent object alive');
 $helper->assert('Referent object alive', $ref->get() === $obj);
@@ -33,11 +33,11 @@ When referent object alive:
 ---------------------------
 Referent object alive: ok
 Referent object valid: ok
-object(Weak\SoftReference)#3 (2) refcount(3){
-  ["referent":"Weak\AbstractReference":private]=>
+object(Ref\SoftReference)#3 (2) refcount(3){
+  ["referent":"Ref\AbstractReference":private]=>
   object(stdClass)#2 (0) refcount(2){
   }
-  ["notifier":"Weak\AbstractReference":private]=>
+  ["notifier":"Ref\AbstractReference":private]=>
   NULL
 }
 
@@ -46,10 +46,10 @@ When referent object dead:
 --------------------------
 Referent object dead: ok
 Referent object invalid: ok
-object(Weak\SoftReference)#3 (2) refcount(3){
-  ["referent":"Weak\AbstractReference":private]=>
+object(Ref\SoftReference)#3 (2) refcount(3){
+  ["referent":"Ref\AbstractReference":private]=>
   NULL
-  ["notifier":"Weak\AbstractReference":private]=>
+  ["notifier":"Ref\AbstractReference":private]=>
   NULL
 }
 

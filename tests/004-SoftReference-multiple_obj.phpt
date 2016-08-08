@@ -1,7 +1,7 @@
 --TEST--
-Weak\SoftReference - track only single specific object
+Ref\SoftReference - track only single specific object
 --SKIPIF--
-<?php if (!extension_loaded("weak")) print "skip"; ?>
+<?php if (!extension_loaded("ref")) print "skip"; ?>
 --FILE--
 <?php
 
@@ -13,12 +13,12 @@ require '.stubs.php';
 $obj0 = new \WeakTests\TrackingDtor();
 $obj1 = new \WeakTests\TrackingDtor();
 
-$callback = function (Weak\SoftReference $reference) {
+$callback = function (Ref\SoftReference $reference) {
     echo 'Weak notifier called', PHP_EOL;
 };
 
 
-$sr0 = new Weak\SoftReference($obj0, $callback);
+$sr0 = new Ref\SoftReference($obj0, $callback);
 
 $obj1 = null;
 

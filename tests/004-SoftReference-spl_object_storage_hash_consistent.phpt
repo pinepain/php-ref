@@ -1,7 +1,7 @@
 --TEST--
-Weak\SoftReference - SplObjectStorage::getHash() still consistent before and after wrapping
+Ref\SoftReference - SplObjectStorage::getHash() still consistent before and after wrapping
 --SKIPIF--
-<?php if (!extension_loaded("weak")) print "skip";  ?>
+<?php if (!extension_loaded("ref")) print "skip";  ?>
 --FILE--
 <?php
 
@@ -14,14 +14,14 @@ $s = new SplObjectStorage();
 
 $original_hash = $s->getHash($obj);
 
-$sr = new Weak\SoftReference($obj);
+$sr = new Ref\SoftReference($obj);
 
 $current_hash = $s->getHash($obj);
 
 $helper->assert('Wrapped object hash matches origin one', $original_hash == $current_hash);
 
 
-$sr2 = new Weak\SoftReference($obj);
+$sr2 = new Ref\SoftReference($obj);
 
 $double_hash = $s->getHash($obj);
 $helper->assert('Repeatedly wrapped object hash does not changes', $current_hash == $double_hash);
@@ -49,10 +49,10 @@ $helper->assert('Stored in SplObjectStorage object hash matches origin one', $or
 $s = new SplObjectStorage();
 $obj = new stdClass();
 $original_hash = spl_object_hash($obj);
-$sr = new Weak\SoftReference($obj);
+$sr = new Ref\SoftReference($obj);
 $s->attach($sr);
 $current_hash = spl_object_hash($obj);
-$helper->assert('Stored in SplObjectStorage weak-referenced object hash matches origin one', $original_hash == $current_hash);
+$helper->assert('Stored in SplObjectStorage soft-referenced object hash matches origin one', $original_hash == $current_hash);
 
 $helper->line();
 
@@ -66,6 +66,6 @@ Wrapped object hash still not changed even after all references died: ok
 Wrapped object hash still the same even after all references died: ok
 
 Stored in SplObjectStorage object hash matches origin one: ok
-Stored in SplObjectStorage weak-referenced object hash matches origin one: ok
+Stored in SplObjectStorage soft-referenced object hash matches origin one: ok
 
 EOF

@@ -1,7 +1,7 @@
 --TEST--
-Weak\SoftReference - serialize extended reference that tries to implemet Serializable interface is not allowed
+Ref\SoftReference - serialize extended reference that tries to implemet Serializable interface is not allowed
 --SKIPIF--
-<?php if (!extension_loaded("weak")) print "skip"; ?>
+<?php if (!extension_loaded("ref")) print "skip"; ?>
 --FILE--
 <?php
 /** @var \Testsuite $helper */
@@ -11,7 +11,7 @@ $obj = new \stdClass();
 
 
 
-class SerializableWeakReference extends \Weak\SoftReference implements Serializable {
+class SerializableWeakReference extends \Ref\SoftReference implements Serializable {
     public function serialize()
     {
         // TODO: Implement serialize() method.

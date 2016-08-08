@@ -1,7 +1,7 @@
 --TEST--
-Weak\SoftReference - notifier accessor
+Ref\SoftReference - notifier accessor
 --SKIPIF--
-<?php if (!extension_loaded("weak")) print "skip"; ?>
+<?php if (!extension_loaded("ref")) print "skip"; ?>
 --FILE--
 <?php
 
@@ -13,10 +13,10 @@ $obj = new stdClass();
 $array_notifier = [];
 $callback_notifier = [$helper, 'dump'];
 
-$sr0 = new Weak\SoftReference($obj);
-$sr1 = new Weak\SoftReference($obj, null);
-$sr2 = new Weak\SoftReference($obj, $array_notifier);
-$sr3 = new Weak\SoftReference($obj, $callback_notifier);
+$sr0 = new Ref\SoftReference($obj);
+$sr1 = new Ref\SoftReference($obj, null);
+$sr2 = new Ref\SoftReference($obj, $array_notifier);
+$sr3 = new Ref\SoftReference($obj, $callback_notifier);
 
 $helper->assert('Notifier is null by default', $sr0->notifier(), null);
 $helper->assert('Null notifier acceptable', $sr1->notifier(), null);

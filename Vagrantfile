@@ -23,12 +23,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.network  "private_network", ip: "192.168.33.102"
 
   # NOTE: temporary workaround
-  #config.vm.hostname = "php-weak.vagrant"
-  config.vm.provision :shell, inline: "hostnamectl set-hostname php-weak.vagrant"
+  #config.vm.hostname = "php-ref.vagrant"
+  config.vm.provision :shell, inline: "hostnamectl set-hostname php-ref.vagrant"
 
   config.ssh.insert_key = false
 
-  config.vm.synced_folder ".", "/home/vagrant/php-weak"
+  config.vm.synced_folder ".", "/home/vagrant/php-ref"
 
   config.vm.provider "virtualbox" do |vb|
     # Don't boot with headless mode

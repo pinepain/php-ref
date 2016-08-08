@@ -1,10 +1,10 @@
 --TEST--
-Check for weak presence
+Check for ref extension presence
 --SKIPIF--
-<?php if (!extension_loaded("weak")) print "skip"; ?>
+<?php if (!extension_loaded("ref")) print "skip"; ?>
 --FILE--
 <?php 
-echo "weak extension is available";
+echo "ref extension is available";
 /*
   you can add regression tests for your extension here
 
@@ -18,4 +18,4 @@ echo "weak extension is available";
 */
 ?>
 --EXPECT--
-weak extension is available
+ref extension is available

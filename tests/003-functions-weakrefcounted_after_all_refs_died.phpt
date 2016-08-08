@@ -1,11 +1,11 @@
 --TEST--
-Weak\functions - test weakrefcount() functions after all references death
+Ref\functions - test weakrefcount() functions after all references death
 --SKIPIF--
-<?php if (!extension_loaded("weak")) print "skip"; ?>
+<?php if (!extension_loaded("ref")) print "skip"; ?>
 --FILE--
 <?php
 
-use function Weak\{
+use function Ref\{
     refcounted,
     refcount,
     weakrefcounted,
@@ -14,7 +14,7 @@ use function Weak\{
     object_handle
 };
 
-use Weak\Reference;
+use Ref\WeakReference;
 
 /** @var \Testsuite $helper */
 $helper = require '.testsuite.php';
@@ -29,7 +29,7 @@ $helper->dump_annotated('weakrefs($obj)', weakrefs($obj));
 $helper->line();
 
 
-$ref = new Reference($obj);
+$ref = new WeakReference($obj);
 
 $helper->header('Test when reference created');
 $helper->dump_annotated('weakrefcounted($obj)', weakrefcounted($obj));
@@ -60,11 +60,11 @@ weakrefcounted($obj): bool(true)
 weakrefcount($obj): int(1)
 weakrefs($obj): array(1) refcount(3){
   [0]=>
-  object(Weak\Reference)#3 (2) refcount(2){
-    ["referent":"Weak\AbstractReference":private]=>
+  object(Ref\WeakReference)#3 (2) refcount(2){
+    ["referent":"Ref\AbstractReference":private]=>
     object(stdClass)#2 (0) refcount(2){
     }
-    ["notifier":"Weak\AbstractReference":private]=>
+    ["notifier":"Ref\AbstractReference":private]=>
     NULL
   }
 }
