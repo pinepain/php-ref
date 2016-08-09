@@ -256,13 +256,21 @@ void php_ref_referent_object_dtor_obj(zend_object *object) /* {{{ */
 {
     php_ref_referent_t *referent = php_ref_referent_find_ptr(object->handle);
 
+    zval initial_exception;
     zval exceptions;
     zval tmp;
 
+    ZVAL_UNDEF(&initial_exception);
     ZVAL_UNDEF(&exceptions);
 
     assert(NULL != referent);
     assert(NULL != PHP_REF_G(referents));
+
+    if (EG(exception)) {
+        ZVAL_OBJ(&initial_exception, EG(exception));
+        Z_ADDREF(initial_exception);
+        zend_clear_exception();
+    }
 
     php_ref_call_notifiers(&referent->soft_references, &exceptions, &tmp, 0);
 
@@ -283,6 +291,10 @@ void php_ref_referent_object_dtor_obj(zend_object *object) /* {{{ */
     } else {
         zend_object *obj = Z_OBJ(referent->this_ptr);
         GC_FLAGS(obj) = GC_FLAGS(obj) & ~IS_OBJ_DESTRUCTOR_CALLED;
+    }
+
+    if (!Z_ISUNDEF(initial_exception)) {
+        zend_throw_exception_object(&initial_exception);
     }
 
     if (!Z_ISUNDEF(exceptions)) {
