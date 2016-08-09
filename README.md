@@ -139,10 +139,10 @@ in your IDE and other code-analysis tools.
 
 ## Extra weak data structures support
 
-To add weak map support (and probably other data structures), see [php-weak-lib](https://github.com/pinepain/php-weak-lib)
+To add weak map support (and probably other data structures), see [php-ref-lib](https://github.com/pinepain/php-ref-lib)
 project, or just run
 
-    composer require pinepain/php-weak-lib
+    composer require pinepain/php-ref-lib
 
 to add it to your project.
 
