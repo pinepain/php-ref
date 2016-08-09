@@ -39,7 +39,8 @@ EOF
 --EXPECT--
 Weak notifier called
 Ref\NotifierException: One or more exceptions thrown during notifiers calling
-    Exception: Destructor throws exception
+thrown:
+    #0: Exception: Destructor throws exception
 
 Referent object dead: ok
 Referent object invalid: ok

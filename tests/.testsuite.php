@@ -41,9 +41,15 @@ class Testsuite
             $this->exception_export($e->getPrevious());
         }
 
-        foreach ($e->getExceptions() as $thrown) {
-            echo '    ';
-            $this->exception_export($thrown);
+        if (!empty($e->getExceptions())) {
+            echo 'thrown:', PHP_EOL;
+            foreach ($e->getExceptions() as $id => $thrown) {
+                echo '    #' . $id . ': ';
+                $this->exception_export($thrown);
+                if ($thrown->getPrevious()) {
+                    echo '        previous: ', $this->exception_export($thrown->getPrevious());
+                }
+            }
         }
     }
 

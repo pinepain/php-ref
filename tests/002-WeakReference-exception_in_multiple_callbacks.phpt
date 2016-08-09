@@ -54,7 +54,8 @@ Callback #3 called
 Callback #4 called
 Callback #5 called
 Ref\NotifierException: One or more exceptions thrown during notifiers calling
-    Exception: Test exception from callback #1
-    Exception: Test exception from callback #3
+thrown:
+    #0: Exception: Test exception from callback #1
+    #1: Exception: Test exception from callback #3
 
 EOF

@@ -38,5 +38,6 @@ EOF
 Dtor called
 Weak callback called
 Ref\NotifierException: One or more exceptions thrown during notifiers calling
-    Exception: Test exception from dtor
+thrown:
+    #0: Exception: Test exception from dtor
 EOF
