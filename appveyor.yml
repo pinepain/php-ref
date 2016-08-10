@@ -4,9 +4,9 @@ platform:
 
 environment:
   matrix:
-    - PHP_VERSION: 7.0.8
+    - PHP_VERSION: 7.0.9
       THREAD_SAFE: true
-    - PHP_VERSION: 7.0.8
+    - PHP_VERSION: 7.0.0
       THREAD_SAFE: false
 
   PHP_SDK: c:\projects\php-sdk
@@ -32,7 +32,13 @@ init:
 
       $env:PHP="$($env:PHP_VERSION.Substring(0, $env:PHP_VERSION.indexOf('.', 2)))"
 
-      $env:ARTIFACT_NAME="php_ref-$($env:PHP)-$($env:TS_OR_NTS)-vc14-$($env:PLATFORM).zip"
+      If ($env:APPVEYOR_REPO_TAG -Match "true") {
+        $env:EXT_VERSION = "$($env:APPVEYOR_REPO_TAG_NAME.TrimStart('v', '.'))"
+      } else {
+        $env:EXT_VERSION = "$($env:APPVEYOR_REPO_COMMIT.Substring(0, 8))"
+      }
+
+      $env:ARTIFACT_NAME="php_ref-$($env:EXT_VERSION)-$($env:PHP)-$($env:TS_OR_NTS)-vc14-$($env:PLATFORM).zip"
 
 install:
   - cd %PHP_SDK%
