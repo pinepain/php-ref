@@ -215,7 +215,7 @@ static void php_ref_nullify_referents(HashTable *references)  /* {{{ */
     } ZEND_HASH_FOREACH_END();
 } /* }}} */
 
-static void php_ref_call_notifiers(HashTable *references, zval *exceptions, zval *tmp, zend_bool nullify_referent)  /* {{{ */
+static void php_ref_call_notifiers(HashTable *references, zval *exceptions, zval *tmp, zend_bool after_dtor)  /* {{{ */
 {
     zend_ulong handle;
     php_ref_reference_t *reference;
@@ -223,7 +223,7 @@ static void php_ref_call_notifiers(HashTable *references, zval *exceptions, zval
     ZEND_HASH_REVERSE_FOREACH_PTR(references, reference) {
         handle = _p->h;
 
-        if (nullify_referent) {
+        if (after_dtor) {
             reference->referent = NULL;
         }
 
@@ -245,7 +245,11 @@ static void php_ref_call_notifiers(HashTable *references, zval *exceptions, zval
                 break;
         }
 
-        if (nullify_referent) {
+        if (!after_dtor && reference->referent && Z_REFCOUNT(reference->referent->this_ptr) > 1) {
+            return;
+        }
+
+        if (after_dtor) {
             zend_hash_index_del(references, handle);
         }
     } ZEND_HASH_FOREACH_END();
