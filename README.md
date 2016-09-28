@@ -149,6 +149,23 @@ to add it to your project.
 
 ## Installation
 
+### Installing from packages
+
+#### Ubuntu
+
+    $ sudo add-apt-repository -y ppa:ondrej/php
+    $ sudo add-apt-repository -y ppa:pinepain/php
+    $ sudo apt-get update -y
+    $ sudo apt-get install -y php7.0 php-ref
+    $ php --ri ref
+
+#### OS X (homebrew)
+
+    $ brew tap homebrew/dupes
+    $ brew tap homebrew/php
+    $ brew install php70 php70-ref
+    $ php --ri ref
+
 ### Building from sources
 
     git clone https://github.com/pinepain/php-ref.git
