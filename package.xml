@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c)
+  -->
+
+<package xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" packagerversion="1.9.4" version="2.0" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0 http://pear.php.net/dtd/tasks-1.0.xsd http://pear.php.net/dtd/package-2.0 http://pear.php.net/dtd/package-2.0.xsd">
+    <name>ref</name>
+    <channel>pecl.php.net</channel>
+    <summary>Soft and Weak references support in PHP</summary>
+    <description>
+        This extension adds Soft and Weak references support to PHP 7 and may serve as a ground for other data structures that require advanced referencing model.
+    </description>
+    <lead>
+        <name>Bogdan Padalko</name>
+        <user>pinepain</user>
+        <email>pinepain@gmail.com</email>
+        <active>yes</active>
+    </lead>
+    <date>2017-01-15</date>
+    <time>20:45:14</time>
+    <version>
+        <release>0.4.1</release>
+        <api>0.4.1</api>
+    </version>
+    <stability>
+        <release>stable</release>
+        <api>stable</api>
+    </stability>
+    <license uri="https://opensource.org/licenses/mit">The MIT License (MIT)</license>
+    <notes>
+        - fixes problem when false Ref\NotifierException thrown during object destruction if non-caught exception
+          was thrown before such destruction (outside notifiers and referent object destructor) (#17);
+        - do not call soft notifiers if original object was prevented from being destroyed in one of notifiers (#18).
+    </notes>
+    <contents>
+        <dir name="/">
+            <!-- begin files list -->
+            <file name="stubs/composer.json" role="doc" />
+            <file name="stubs/LICENSE" role="doc" />
+            <file name="stubs/README.md" role="doc" />
+            <file name="stubs/src/AbstractReference.php" role="doc" />
+            <file name="stubs/src/functions.php" role="doc" />
+            <file name="stubs/src/NotifierException.php" role="doc" />
+            <file name="stubs/src/SoftReference.php" role="doc" />
+            <file name="stubs/src/WeakReference.php" role="doc" />
+            <file name="tests/.stubs.php" role="test" />
+            <file name="tests/.testsuite.php" role="test" />
+            <file name="tests/001-extension-loaded.phpt" role="test" />
+            <file name="tests/002-AbstractReference-basic.phpt" role="test" />
+            <file name="tests/002-AbstractReference-clone.phpt" role="test" />
+            <file name="tests/002-NotifierException-basic.phpt" role="test" />
+            <file name="tests/002-WeakReference-basic.phpt" role="test" />
+            <file name="tests/002-WeakReference-clone.phpt" role="test" />
+            <file name="tests/002-WeakReference-clone_extended.phpt" role="test" />
+            <file name="tests/002-WeakReference-closure.phpt" role="test" />
+            <file name="tests/002-WeakReference-compare.phpt" role="test" />
+            <file name="tests/002-WeakReference-die_in_dtor.phpt" role="test" />
+            <file name="tests/002-WeakReference-dump_extended.phpt" role="test" />
+            <file name="tests/002-WeakReference-exception-before-and-from-notifier.phpt" role="test" />
+            <file name="tests/002-WeakReference-exception-before-notifier.phpt" role="test" />
+            <file name="tests/002-WeakReference-exception_in_callback.phpt" role="test" />
+            <file name="tests/002-WeakReference-exception_in_multiple_callbacks.phpt" role="test" />
+            <file name="tests/002-WeakReference-exception_in_orig_dtor.phpt" role="test" />
+            <file name="tests/002-WeakReference-exception_in_orig_dtor_and_callback.phpt" role="test" />
+            <file name="tests/002-WeakReference-extended_dtor_called.phpt" role="test" />
+            <file name="tests/002-WeakReference-multiple_obj.phpt" role="test" />
+            <file name="tests/002-WeakReference-multiple_weak.phpt" role="test" />
+            <file name="tests/002-WeakReference-multiple_with_notify_and_orig_dtor.phpt" role="test" />
+            <file name="tests/002-WeakReference-notified.phpt" role="test" />
+            <file name="tests/002-WeakReference-notifier.phpt" role="test" />
+            <file name="tests/002-WeakReference-notifier_array.phpt" role="test" />
+            <file name="tests/002-WeakReference-notifier_array_clone.phpt" role="test" />
+            <file name="tests/002-WeakReference-notifier_array_reliability.phpt" role="test" />
+            <file name="tests/002-WeakReference-notifier_callable_array.phpt" role="test" />
+            <file name="tests/002-WeakReference-notifier_callable_string.phpt" role="test" />
+            <file name="tests/002-WeakReference-notifier_change.phpt" role="test" />
+            <file name="tests/002-WeakReference-notifier_clone_change.phpt" role="test" />
+            <file name="tests/002-WeakReference-notifier_invalid_callback.phpt" role="test" />
+            <file name="tests/002-WeakReference-notifier_not_called_after_wr_dies_first.phpt" role="test" />
+            <file name="tests/002-WeakReference-orig_dtor_and_notifier_when_wr_dies_first.phpt" role="test" />
+            <file name="tests/002-WeakReference-orig_dtor_and_notify.phpt" role="test" />
+            <file name="tests/002-WeakReference-orig_dtor_called.phpt" role="test" />
+            <file name="tests/002-WeakReference-orig_dtor_called_after_wr_dies_first.phpt" role="test" />
+            <file name="tests/002-WeakReference-orig_dtor_called_once.phpt" role="test" />
+            <file name="tests/002-WeakReference-serialize_extended_not_allowed.phpt" role="test" />
+            <file name="tests/002-WeakReference-serialize_not_allowed.phpt" role="test" />
+            <file name="tests/002-WeakReference-spl_hash_consistent.phpt" role="test" />
+            <file name="tests/002-WeakReference-spl_object_storage_debug_hash_consistent.phpt" role="test" />
+            <file name="tests/002-WeakReference-spl_object_storage_hash_consistent.phpt" role="test" />
+            <file name="tests/003-functions-soft-and-weak.phpt" role="test" />
+            <file name="tests/003-functions-soft.phpt" role="test" />
+            <file name="tests/003-functions-weakrefcounted_after_all_refs_died.phpt" role="test" />
+            <file name="tests/003-functions.phpt" role="test" />
+            <file name="tests/004-SofReference-basic.phpt" role="test" />
+            <file name="tests/004-SofrReference-compare.phpt" role="test" />
+            <file name="tests/004-SoftReference-clone.phpt" role="test" />
+            <file name="tests/004-SoftReference-clone_extended.phpt" role="test" />
+            <file name="tests/004-SoftReference-closure.phpt" role="test" />
+            <file name="tests/004-SoftReference-die_in_dtor.phpt" role="test" />
+            <file name="tests/004-SoftReference-dump_extended.phpt" role="test" />
+            <file name="tests/004-SoftReference-exception-before-and-from-notifier.phpt" role="test" />
+            <file name="tests/004-SoftReference-exception-before-notifier.phpt" role="test" />
+            <file name="tests/004-SoftReference-exception_in_callback.phpt" role="test" />
+            <file name="tests/004-SoftReference-exception_in_multiple_callbacks.phpt" role="test" />
+            <file name="tests/004-SoftReference-exception_in_orig_dtor.phpt" role="test" />
+            <file name="tests/004-SoftReference-exception_in_orig_dtor_and_callback.phpt" role="test" />
+            <file name="tests/004-SoftReference-extended_dtor_called.phpt" role="test" />
+            <file name="tests/004-SoftReference-multiple_obj.phpt" role="test" />
+            <file name="tests/004-SoftReference-multiple_weak.phpt" role="test" />
+            <file name="tests/004-SoftReference-multiple_with_notify_and_orig_dtor.phpt" role="test" />
+            <file name="tests/004-SoftReference-notified.phpt" role="test" />
+            <file name="tests/004-SoftReference-notified_prevent_destoying.phpt" role="test" />
+            <file name="tests/004-SoftReference-notified_prevent_destoying_forever.phpt" role="test" />
+            <file name="tests/004-SoftReference-notified_prevent_destoying_forever_with_weak.phpt" role="test" />
+            <file name="tests/004-SoftReference-notified_prevent_destoying_multiple.phpt" role="test" />
+            <file name="tests/004-SoftReference-notified_prevent_destoying_with_weak.phpt" role="test" />
+            <file name="tests/004-SoftReference-notified_with_weak.phpt" role="test" />
+            <file name="tests/004-SoftReference-notifier.phpt" role="test" />
+            <file name="tests/004-SoftReference-notifier_array.phpt" role="test" />
+            <file name="tests/004-SoftReference-notifier_array_clone.phpt" role="test" />
+            <file name="tests/004-SoftReference-notifier_array_reliability.phpt" role="test" />
+            <file name="tests/004-SoftReference-notifier_callable_array.phpt" role="test" />
+            <file name="tests/004-SoftReference-notifier_callable_string.phpt" role="test" />
+            <file name="tests/004-SoftReference-notifier_change.phpt" role="test" />
+            <file name="tests/004-SoftReference-notifier_clone_change.phpt" role="test" />
+            <file name="tests/004-SoftReference-notifier_invalid_callback.phpt" role="test" />
+            <file name="tests/004-SoftReference-notifier_not_called_after_wr_dies_first.phpt" role="test" />
+            <file name="tests/004-SoftReference-orig_dtor_and_notifier_when_wr_dies_first.phpt" role="test" />
+            <file name="tests/004-SoftReference-orig_dtor_and_notify.phpt" role="test" />
+            <file name="tests/004-SoftReference-orig_dtor_called.phpt" role="test" />
+            <file name="tests/004-SoftReference-orig_dtor_called_after_wr_dies_first.phpt" role="test" />
+            <file name="tests/004-SoftReference-orig_dtor_called_once.phpt" role="test" />
+            <file name="tests/004-SoftReference-serialize_extended_not_allowed.phpt" role="test" />
+            <file name="tests/004-SoftReference-serialize_not_allowed.phpt" role="test" />
+            <file name="tests/004-SoftReference-spl_hash_consistent.phpt" role="test" />
+            <file name="tests/004-SoftReference-spl_object_storage_debug_hash_consistent.phpt" role="test" />
+            <file name="tests/004-SoftReference-spl_object_storage_hash_consistent.phpt" role="test" />
+            <file name="tests/005-Soft-and-Weak-Reference-exception-before-and-from-notifier.phpt" role="test" />
+            <file name="tests/005-Soft-and-Weak-Reference-exception-before-notifier.phpt" role="test" />
+            <file name="config.m4" role="src" />
+            <file name="config.w32" role="src" />
+            <file name="LICENSE" role="doc" />
+            <file name="php_ref.h" role="src" />
+            <file name="php_ref_functions.c" role="src" />
+            <file name="php_ref_functions.h" role="src" />
+            <file name="php_ref_notifier_exception.c" role="src" />
+            <file name="php_ref_notifier_exception.h" role="src" />
+            <file name="php_ref_reference.c" role="src" />
+            <file name="php_ref_reference.h" role="src" />
+            <file name="README.md" role="doc" />
+            <file name="ref.c" role="src" />
+            <!-- end files list -->
+        </dir>
+    </contents>
+    <dependencies>
+        <required>
+            <php>
+                <min>7.0</min>
+            </php>
+            <pearinstaller>
+                <min>1.4.0</min>
+            </pearinstaller>
+        </required>
+    </dependencies>
+    <providesextension>ref</providesextension>
+    <extsrcrelease/>
+</package>
