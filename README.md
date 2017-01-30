@@ -293,6 +293,16 @@ between large variety of PHP versions.
   - [`WeakReference` Class](https://msdn.microsoft.com/en-us/library/system.weakreference.aspx)
   - [`WeakReference<T>` Class](https://msdn.microsoft.com/en-us/library/gg712738%28v=vs.110%29.aspx)
 
+## Credits
+
+My thanks to the following people and projects, without whom this extension wouldn't be what it is today.
+(Please let me know if I've mistakenly omitted anyone.)
+
+ - [php-weakref](https://github.com/colder/php-weakref) PHP extension which inspired me to write this extension;
+ - [Etienne Kneuss](https://github.com/colder), for his profound work on [php-weakref](https://github.com/colder/php-weakref);
+ - [Nikita Popov](https://github.com/nikic) for his assistance with confirmin a bug with `spl_object_hash()` being
+   inconsistent under certain circumstances;
+
 ## License
 
 [php-ref](https://github.com/pinepain/php-ref) PHP extension is licensed under the [MIT license](http://opensource.org/licenses/MIT).
