@@ -7,6 +7,18 @@ dnl Make sure that the comment is aligned:
 
 if test "$PHP_REF" != "no"; then
 
+  AC_MSG_CHECKING([Check for supported PHP versions])
+  PHP_REF_FOUND_VERSION=`${PHP_CONFIG} --version`
+  PHP_REF_FOUND_VERNUM=`echo "${PHP_REF_FOUND_VERSION}" | $AWK 'BEGIN { FS = "."; } { printf "%d", ([$]1 * 100 + [$]2) * 100 + [$]3;}'`
+  
+  if test "$PHP_REF_FOUND_VERNUM" -lt "70003"; then
+    AC_MSG_ERROR([not supported. Need a PHP version >= 7.0.3 (found $PHP_REF_FOUND_VERSION)])
+  else
+    AC_MSG_RESULT([supported ($PHP_REF_FOUND_VERSION)])
+  fi
+
+    echo "$PHP_VERSION_ID"
+
     if test -z "$TRAVIS" ; then
         type git &>/dev/null
 

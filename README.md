@@ -9,6 +9,8 @@ This extension adds [Soft Reference](https://en.wikipedia.org/wiki/Soft_referenc
 data structures that require advanced referencing model.
 
 
+**PHP >= 7.0.3 required**
+
 ## Usage
 
 ```php
