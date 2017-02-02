@@ -26,8 +26,9 @@ extern zend_module_entry php_ref_module_entry;
 #define PHP_REF_REVISION "dev"
 #endif
 
-#if PHP_VERSION_ID <= 70002
-#define PHP_REF_PATCH_SPL_OBJECT_HASH
+#if PHP_VERSION_ID < 70003
+// should never get her, but just in case
+#error PHP >= 7.0.3 required
 #endif
 
 #define PHP_REF_NS "Ref"
@@ -46,9 +47,6 @@ extern zend_module_entry php_ref_module_entry;
 
 ZEND_BEGIN_MODULE_GLOBALS(ref)
     HashTable *referents;
-#ifdef PHP_REF_PATCH_SPL_OBJECT_HASH
-    zend_bool spl_hash_replaced;
-#endif
 ZEND_END_MODULE_GLOBALS(ref)
 
 ZEND_EXTERN_MODULE_GLOBALS(ref);

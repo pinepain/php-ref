@@ -73,28 +73,10 @@ PHP_MINFO_FUNCTION(ref) /* {{{ */
 static PHP_GINIT_FUNCTION(ref) /* {{{ */
 {
     ref_globals->referents = NULL;
-#ifdef PHP_REF_PATCH_SPL_OBJECT_HASH
-    ref_globals->spl_hash_replaced = 0;
-#endif
-
 } /* }}} */
 
-#ifdef PHP_REF_PATCH_SPL_OBJECT_HASH
-static const zend_module_dep php_ref_deps[] = {
-    ZEND_MOD_REQUIRED("spl")
-    ZEND_MOD_CONFLICTS("weakref")
-    ZEND_MOD_END
-};
-#endif
-
 zend_module_entry php_ref_module_entry = { /* {{{ */
-#ifdef PHP_REF_PATCH_SPL_OBJECT_HASH
-    STANDARD_MODULE_HEADER_EX,  /* size, zend_api, zend_debug, zts*/
-    NULL,                       /* ini_entry */
-    php_ref_deps,               /* deps */
-#else
     STANDARD_MODULE_HEADER,
-#endif
     "ref",
     php_ref_functions,
     PHP_MINIT(ref),
