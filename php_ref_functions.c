@@ -14,7 +14,7 @@
 #include "php_ref_reference.h"
 #include "php_ref.h"
 
-PHP_FUNCTION(refcounted) /* {{{ */
+PHP_FUNCTION(refcounted)
 {
     zval *zv;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "z", &zv) == FAILURE) {
@@ -22,7 +22,7 @@ PHP_FUNCTION(refcounted) /* {{{ */
     }
 
     RETURN_BOOL(Z_REFCOUNTED_P(zv));
-} /* }}} */
+}
 
 PHP_FUNCTION(refcount)
 {
@@ -37,9 +37,9 @@ PHP_FUNCTION(refcount)
     }
 
     RETURN_LONG(0);
-} /* }}} */
+}
 
-PHP_FUNCTION(softrefcounted) /* {{{ */
+PHP_FUNCTION(softrefcounted)
 {
     zval *zv;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "z", &zv) == FAILURE) {
@@ -53,9 +53,9 @@ PHP_FUNCTION(softrefcounted) /* {{{ */
     }
 
     RETURN_BOOL(0);
-} /* }}} */
+}
 
-PHP_FUNCTION(softrefcount) /* {{{ */
+PHP_FUNCTION(softrefcount)
 {
     zval *zv;
 
@@ -75,9 +75,9 @@ PHP_FUNCTION(softrefcount) /* {{{ */
     }
 
     RETURN_LONG(0);
-} /* }}} */
+}
 
-PHP_FUNCTION(softrefs) /* {{{ */
+PHP_FUNCTION(softrefs)
 {
     zval *zv;
     zval  softrefs;
@@ -108,9 +108,9 @@ PHP_FUNCTION(softrefs) /* {{{ */
     }
 
     RETURN_ZVAL(&softrefs, 1, 1);
-} /* }}} */
+}
 
-PHP_FUNCTION(weakrefcounted) /* {{{ */
+PHP_FUNCTION(weakrefcounted)
 {
     zval *zv;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "z", &zv) == FAILURE) {
@@ -124,9 +124,9 @@ PHP_FUNCTION(weakrefcounted) /* {{{ */
     }
 
     RETURN_BOOL(0);
-} /* }}} */
+}
 
-PHP_FUNCTION(weakrefcount) /* {{{ */
+PHP_FUNCTION(weakrefcount)
 {
     zval *zv;
 
@@ -146,9 +146,9 @@ PHP_FUNCTION(weakrefcount) /* {{{ */
     }
 
     RETURN_LONG(0);
-} /* }}} */
+}
 
-PHP_FUNCTION(weakrefs) /* {{{ */
+PHP_FUNCTION(weakrefs)
 {
     zval *zv;
     zval  weakrefs;
@@ -179,9 +179,9 @@ PHP_FUNCTION(weakrefs) /* {{{ */
     }
 
     RETURN_ZVAL(&weakrefs, 1, 1);
-} /* }}} */
+}
 
-PHP_FUNCTION(object_handle) /* {{{ */
+PHP_FUNCTION(object_handle)
 {
     zval *zv;
 
@@ -190,9 +190,9 @@ PHP_FUNCTION(object_handle) /* {{{ */
     }
 
     RETURN_LONG((uint32_t)Z_OBJ_HANDLE_P(zv));
-}  /* }}} */
+}
 
-PHP_FUNCTION(is_obj_destructor_called) /* {{{ */
+PHP_FUNCTION(is_obj_destructor_called)
 {
     zval *zv;
 
@@ -205,7 +205,7 @@ PHP_FUNCTION(is_obj_destructor_called) /* {{{ */
     uint32_t flags = GC_FLAGS(obj);
 
     RETURN_BOOL(flags & IS_OBJ_DESTRUCTOR_CALLED);
-}  /* }}} */
+}
 
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(refcounted_arg, ZEND_RETURN_VALUE, 1, _IS_BOOL, NULL, 0)
@@ -248,7 +248,7 @@ ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(is_obj_destructor_called_arg, ZEND_RETUR
                 ZEND_ARG_INFO(0, object)
 ZEND_END_ARG_INFO()
 
-const zend_function_entry php_ref_functions[] = { /* {{{ */
+const zend_function_entry php_ref_functions[] = {
     ZEND_NS_FE(PHP_REF_NS, refcounted, refcounted_arg)
     ZEND_NS_FE(PHP_REF_NS, refcount, refcount_arg)
 
@@ -264,14 +264,4 @@ const zend_function_entry php_ref_functions[] = { /* {{{ */
     ZEND_NS_FE(PHP_REF_NS, is_obj_destructor_called, is_obj_destructor_called_arg)
 
     PHP_FE_END
-}; /* }}} */
-
-
-/*
- * Local variables:
- * tab-width: 4
- * c-basic-offset: 4
- * End:
- * vim600: noet sw=4 ts=4 fdm=marker
- * vim<600: noet sw=4 ts=4
- */
+};

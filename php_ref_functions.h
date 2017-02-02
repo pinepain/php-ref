@@ -22,13 +22,3 @@
 extern const zend_function_entry php_ref_functions[];
 
 #endif /* PHP_REF_FUNCTIONS_H */
-
-
-/*
- * Local variables:
- * tab-width: 4
- * c-basic-offset: 4
- * End:
- * vim600: noet sw=4 ts=4 fdm=marker
- * vim<600: noet sw=4 ts=4
- */

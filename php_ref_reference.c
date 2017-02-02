@@ -30,21 +30,21 @@ static inline void php_ref_store_exceptions(zval *exceptions, zval *tmp);
 static int php_ref_reference_check_notifier(zval *notifier, zval *this);
 
 
-php_ref_reference_t *php_ref_reference_fetch_object(zend_object *obj) /* {{{ */
+php_ref_reference_t *php_ref_reference_fetch_object(zend_object *obj)
 {
     return (php_ref_reference_t *) ((char *) obj - XtOffsetOf(php_ref_reference_t, std));
-} /* }}} */
+}
 
-php_ref_referent_t *php_ref_referent_find_ptr(zend_ulong h) /* {{{ */
+php_ref_referent_t *php_ref_referent_find_ptr(zend_ulong h)
 {
     if (NULL == PHP_REF_G(referents)) {
         return NULL;
     }
 
     return (php_ref_referent_t *) zend_hash_index_find_ptr(PHP_REF_G(referents), h);
-} /* }}} */
+}
 
-void php_ref_reference_call_notifier(zval *reference, zval *notifier) /* {{{ */
+void php_ref_reference_call_notifier(zval *reference, zval *notifier)
 {
     zval args;
     zval retval_tmp;
@@ -86,9 +86,9 @@ void php_ref_reference_call_notifier(zval *reference, zval *notifier) /* {{{ */
     zval_ptr_dtor(&args);
     zval_ptr_dtor(&retval_tmp);
 
-} /* }}} */
+}
 
-static void php_ref_nullify_referents(HashTable *references)  /* {{{ */
+static void php_ref_nullify_referents(HashTable *references)
 {
     zend_ulong handle;
     php_ref_reference_t *reference;
@@ -99,9 +99,9 @@ static void php_ref_nullify_referents(HashTable *references)  /* {{{ */
 
         zend_hash_index_del(references, handle);
     } ZEND_HASH_FOREACH_END();
-} /* }}} */
+}
 
-static void php_ref_call_notifiers(HashTable *references, zval *exceptions, zval *tmp, zend_bool after_dtor)  /* {{{ */
+static void php_ref_call_notifiers(HashTable *references, zval *exceptions, zval *tmp, zend_bool after_dtor)
 {
     zend_ulong handle;
     php_ref_reference_t *reference;
@@ -140,9 +140,9 @@ static void php_ref_call_notifiers(HashTable *references, zval *exceptions, zval
         }
     } ZEND_HASH_FOREACH_END();
 
-} /* }}} */
+}
 
-void php_ref_referent_object_dtor_obj(zend_object *object) /* {{{ */
+void php_ref_referent_object_dtor_obj(zend_object *object)
 {
     php_ref_referent_t *referent = php_ref_referent_find_ptr(object->handle);
 
@@ -193,9 +193,9 @@ void php_ref_referent_object_dtor_obj(zend_object *object) /* {{{ */
 
         zend_throw_exception_object(&exception);
     }
-} /* }}} */
+}
 
-void php_ref_globals_referents_ht_dtor(zval *zv) /* {{{ */
+void php_ref_globals_referents_ht_dtor(zval *zv)
 {
     php_ref_referent_t *referent = (php_ref_referent_t *) Z_PTR_P(zv);
 
@@ -207,17 +207,17 @@ void php_ref_globals_referents_ht_dtor(zval *zv) /* {{{ */
     Z_OBJ(referent->this_ptr)->handlers = referent->original_handlers;
 
     efree(referent);
-} /* }}} */
+}
 
-void php_ref_referent_weak_references_ht_dtor(zval *zv) /* {{{ */
+void php_ref_referent_weak_references_ht_dtor(zval *zv)
 {
     php_ref_reference_t *reference = (php_ref_reference_t *) Z_PTR_P(zv);
 
     /* clean links to ht & release callbacks as we don't need them already*/
     reference->referent = NULL; /* no need to free anything at this point here */
-} /* }}} */
+}
 
-php_ref_referent_t *php_ref_referent_get_or_create(zval *referent_zv) /* {{{ */
+php_ref_referent_t *php_ref_referent_get_or_create(zval *referent_zv)
 {
     php_ref_referent_t *referent = php_ref_referent_find_ptr((zend_ulong) Z_OBJ_HANDLE_P(referent_zv));
 
@@ -248,57 +248,57 @@ php_ref_referent_t *php_ref_referent_get_or_create(zval *referent_zv) /* {{{ */
     zend_hash_index_add_ptr(PHP_REF_G(referents), (zend_ulong) Z_OBJ_HANDLE_P(referent_zv), referent);
 
     return referent;
-} /* }}} */
+}
 
-void php_ref_abstract_reference_attach(php_ref_reference_t *reference, php_ref_referent_t *referent) /* {{{ */
+void php_ref_abstract_reference_attach(php_ref_reference_t *reference, php_ref_referent_t *referent)
 {
-} /* }}} */
+}
 
-void php_ref_abstract_reference_maybe_unregister(php_ref_reference_t *reference) /* {{{ */
+void php_ref_abstract_reference_maybe_unregister(php_ref_reference_t *reference)
 {
-} /* }}} */
+}
 
-void php_ref_soft_reference_attach(php_ref_reference_t *reference, php_ref_referent_t *referent) /* {{{ */
+void php_ref_soft_reference_attach(php_ref_reference_t *reference, php_ref_referent_t *referent)
 {
     reference->referent = referent;
     zend_hash_index_add_ptr(&referent->soft_references, (zend_ulong) Z_OBJ_HANDLE_P(&reference->this_ptr), reference);
-} /* }}} */
+}
 
-void php_ref_soft_reference_unregister(php_ref_reference_t *reference) /* {{{ */
+void php_ref_soft_reference_unregister(php_ref_reference_t *reference)
 {
     zend_hash_index_del(&reference->referent->soft_references, (zend_ulong) Z_OBJ_HANDLE_P(&reference->this_ptr));
-} /* }}} */
+}
 
-void php_ref_soft_reference_maybe_unregister(php_ref_reference_t *reference) /* {{{ */
+void php_ref_soft_reference_maybe_unregister(php_ref_reference_t *reference)
 {
     if (NULL == reference->referent) {
         return;
     }
 
     php_ref_soft_reference_unregister(reference);
-} /* }}} */
+}
 
-void php_ref_reference_attach(php_ref_reference_t *reference, php_ref_referent_t *referent) /* {{{ */
+void php_ref_reference_attach(php_ref_reference_t *reference, php_ref_referent_t *referent)
 {
     reference->referent = referent;
     zend_hash_index_add_ptr(&referent->weak_references, (zend_ulong) Z_OBJ_HANDLE_P(&reference->this_ptr), reference);
-} /* }}} */
+}
 
-void php_ref_reference_unregister(php_ref_reference_t *reference) /* {{{ */
+void php_ref_reference_unregister(php_ref_reference_t *reference)
 {
     zend_hash_index_del(&reference->referent->weak_references, (zend_ulong) Z_OBJ_HANDLE_P(&reference->this_ptr));
-} /* }}} */
+}
 
-void php_ref_reference_maybe_unregister(php_ref_reference_t *reference) /* {{{ */
+void php_ref_reference_maybe_unregister(php_ref_reference_t *reference)
 {
     if (NULL == reference->referent) {
         return;
     }
 
     php_ref_reference_unregister(reference);
-} /* }}} */
+}
 
-php_ref_reference_t *php_ref_reference_init(zval *this_ptr, zval *referent_zv, zval *notifier_zv)  /* {{{ */
+php_ref_reference_t *php_ref_reference_init(zval *this_ptr, zval *referent_zv, zval *notifier_zv)
 {
     php_ref_referent_t *referent;
 
@@ -325,7 +325,7 @@ php_ref_reference_t *php_ref_reference_init(zval *this_ptr, zval *referent_zv, z
     reference->notifier_type = notifier_type;
 
     return reference;
-} /* }}} */
+}
 
 static inline void php_ref_store_exceptions(zval *exceptions, zval *tmp)
 {
@@ -340,7 +340,7 @@ static inline void php_ref_store_exceptions(zval *exceptions, zval *tmp)
     zend_clear_exception();
 }
 
-static int php_ref_reference_check_notifier(zval *notifier, zval *this) /* {{{ */
+static int php_ref_reference_check_notifier(zval *notifier, zval *this)
 {
     if (NULL == notifier) {
         /* no value provided at all, nothing to check */
@@ -368,9 +368,9 @@ static int php_ref_reference_check_notifier(zval *notifier, zval *this) /* {{{ *
     }
 
     return PHP_REF_NOTIFIER_CALLBACK;
-} /* }}} */
+}
 
-static HashTable *php_ref_reference_gc(zval *object, zval **table, int *n) /* {{{ */
+static HashTable *php_ref_reference_gc(zval *object, zval **table, int *n)
 {
     PHP_REF_REFERENCE_FETCH_INTO(object, reference);
 
@@ -378,9 +378,9 @@ static HashTable *php_ref_reference_gc(zval *object, zval **table, int *n) /* {{
     *n = 1;
 
     return zend_std_get_properties(object);
-} /* }}} */
+}
 
-static void php_ref_reference_free(zend_object *object) /* {{{ */
+static void php_ref_reference_free(zend_object *object)
 {
     php_ref_reference_t *reference = php_ref_reference_fetch_object(object);
 
@@ -394,9 +394,9 @@ static void php_ref_reference_free(zend_object *object) /* {{{ */
 
     /* freeing original object */
     zend_object_std_dtor(&reference->std);
-} /* }}} */
+}
 
-static void php_ref_reference_dtor(zend_object *object) /* {{{ */
+static void php_ref_reference_dtor(zend_object *object)
 {
     php_ref_reference_t *reference = php_ref_reference_fetch_object(object);
 
@@ -410,9 +410,9 @@ static void php_ref_reference_dtor(zend_object *object) /* {{{ */
 
     /* call standard dtor */
     zend_objects_destroy_object(object);
-} /* }}} */
+}
 
-static zend_object *php_ref_abstract_reference_ctor(zend_class_entry *ce)  /* {{{ */
+static zend_object *php_ref_abstract_reference_ctor(zend_class_entry *ce)
 {
     php_ref_reference_t *reference;
 
@@ -427,9 +427,9 @@ static zend_object *php_ref_abstract_reference_ctor(zend_class_entry *ce)  /* {{
     reference->unregister_reference = php_ref_abstract_reference_maybe_unregister;
 
     return &reference->std;
-} /* }}} */
+}
 
-static zend_object *php_ref_soft_reference_ctor(zend_class_entry *ce)  /* {{{ */
+static zend_object *php_ref_soft_reference_ctor(zend_class_entry *ce)
 {
     php_ref_reference_t *reference;
 
@@ -444,9 +444,9 @@ static zend_object *php_ref_soft_reference_ctor(zend_class_entry *ce)  /* {{{ */
     reference->unregister_reference = php_ref_soft_reference_maybe_unregister;
 
     return &reference->std;
-} /* }}} */
+}
 
-static zend_object *php_ref_weak_reference_ctor(zend_class_entry *ce)  /* {{{ */
+static zend_object *php_ref_weak_reference_ctor(zend_class_entry *ce)
 {
     php_ref_reference_t *reference;
 
@@ -461,9 +461,9 @@ static zend_object *php_ref_weak_reference_ctor(zend_class_entry *ce)  /* {{{ */
     reference->unregister_reference = php_ref_reference_maybe_unregister;
 
     return &reference->std;
-} /* }}} */
+}
 
-static zend_object *php_ref_reference_clone_obj(zval *object) /* {{{ */
+static zend_object *php_ref_reference_clone_obj(zval *object)
 {
     zend_object *old_object;
     zend_object *new_object;
@@ -486,9 +486,9 @@ static zend_object *php_ref_reference_clone_obj(zval *object) /* {{{ */
     zend_objects_clone_members(new_object, old_object);
 
     return new_object;
-} /* }}} */
+}
 
-static HashTable *php_ref_get_debug_info(zval *object, int *is_temp) /* {{{ */
+static HashTable *php_ref_get_debug_info(zval *object, int *is_temp)
 {
     HashTable *debug_info;
     zend_string *key;
@@ -525,9 +525,9 @@ static HashTable *php_ref_get_debug_info(zval *object, int *is_temp) /* {{{ */
     zend_string_release(key);
 
     return debug_info;
-}/* }}} */
+}
 
-static int php_ref_compare_objects(zval *object1, zval *object2) /* {{{ */
+static int php_ref_compare_objects(zval *object1, zval *object2)
 {
     zval result;
     int res;
@@ -561,9 +561,9 @@ static int php_ref_compare_objects(zval *object1, zval *object2) /* {{{ */
 
     /* Compare standard objects */
     return std_object_handlers.compare_objects(object1, object2);
-} /* }}} */
+}
 
-static PHP_METHOD(WeakReference, __construct)  /* {{{ */
+static PHP_METHOD(WeakReference, __construct)
 {
     zval *referent_zv;
     zval *notifier_zv = NULL;
@@ -573,9 +573,9 @@ static PHP_METHOD(WeakReference, __construct)  /* {{{ */
     }
 
     php_ref_reference_init(getThis(), referent_zv, notifier_zv);
-} /* }}} */
+}
 
-static PHP_METHOD(WeakReference, get)  /* {{{ */
+static PHP_METHOD(WeakReference, get)
 {
     if (zend_parse_parameters_none() == FAILURE) {
         return;
@@ -588,9 +588,9 @@ static PHP_METHOD(WeakReference, get)  /* {{{ */
     }
 
     RETURN_ZVAL(&reference->referent->this_ptr, 1, 0);
-} /* }}} */
+}
 
-static PHP_METHOD(WeakReference, valid)  /* {{{ */
+static PHP_METHOD(WeakReference, valid)
 {
     if (zend_parse_parameters_none() == FAILURE) {
         return;
@@ -599,9 +599,9 @@ static PHP_METHOD(WeakReference, valid)  /* {{{ */
     PHP_REF_REFERENCE_FETCH_INTO(getThis(), reference);
 
     RETURN_BOOL(NULL != reference->referent);
-} /* }}} */
+}
 
-static PHP_METHOD(WeakReference, notifier)  /* {{{ */
+static PHP_METHOD(WeakReference, notifier)
 {
     zval *notifier_zv = NULL;
 
@@ -633,7 +633,7 @@ static PHP_METHOD(WeakReference, notifier)  /* {{{ */
 
     reference->notifier_type = notifier_type;
 
-} /* }}} */
+}
 
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_ref_reference___construct, ZEND_SEND_BY_VAL, ZEND_RETURN_VALUE, 1)
@@ -652,7 +652,7 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_ref_reference_notifier, ZEND_SEND_BY_VAL, ZEND_RE
 ZEND_END_ARG_INFO()
 
 
-static const zend_function_entry php_ref_abstract_reference_methods[] = { /* {{{ */
+static const zend_function_entry php_ref_abstract_reference_methods[] = {
         PHP_ME(WeakReference, __construct, arginfo_ref_reference___construct, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
 
         PHP_ME(WeakReference, get, arginfo_ref_reference_get, ZEND_ACC_PUBLIC)
@@ -660,18 +660,18 @@ static const zend_function_entry php_ref_abstract_reference_methods[] = { /* {{{
         PHP_ME(WeakReference, notifier, arginfo_ref_reference_notifier, ZEND_ACC_PUBLIC)
 
         PHP_FE_END
-}; /* }}} */
+};
 
-static const zend_function_entry php_ref_weak_reference_methods[] = { /* {{{ */
+static const zend_function_entry php_ref_weak_reference_methods[] = {
         PHP_FE_END
-}; /* }}} */
+};
 
-static const zend_function_entry php_ref_soft_reference_methods[] = { /* {{{ */
+static const zend_function_entry php_ref_soft_reference_methods[] = {
         PHP_FE_END
-}; /* }}} */
+};
 
 
-PHP_MINIT_FUNCTION (php_ref_reference) /* {{{ */
+PHP_MINIT_FUNCTION (php_ref_reference)
 {
     zend_class_entry ce;
 
@@ -701,14 +701,4 @@ PHP_MINIT_FUNCTION (php_ref_reference) /* {{{ */
     php_ref_weak_reference_class_entry->create_object = php_ref_weak_reference_ctor;
 
     return SUCCESS;
-} /* }}} */
-
-
-/*
- * Local variables:
- * tab-width: 4
- * c-basic-offset: 4
- * End:
- * vim600: noet sw=4 ts=4 fdm=marker
- * vim<600: noet sw=4 ts=4
- */
+}

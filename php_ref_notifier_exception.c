@@ -19,7 +19,7 @@ zend_class_entry *php_ref_notifier_exception_class_entry;
 #define this_ce php_ref_notifier_exception_class_entry
 
 
-static zend_object *php_ref_notifier_exception_ctor(zend_class_entry *ce) /* {{{ */
+static zend_object *php_ref_notifier_exception_ctor(zend_class_entry *ce)
 {
     zval obj, thrown;
     zend_object *object;
@@ -30,17 +30,17 @@ static zend_object *php_ref_notifier_exception_ctor(zend_class_entry *ce) /* {{{
     zend_update_property(php_ref_notifier_exception_class_entry, &obj, ZEND_STRL("exceptions"), &thrown);
 
     return object;
-} /* }}} */
+}
 
 
-void php_ref_create_notifier_exception(zval *exception, const char *message, zval *thrown) /* {{{ */
+void php_ref_create_notifier_exception(zval *exception, const char *message, zval *thrown)
 {
     object_init_ex(exception, this_ce);
     zend_update_property_string(zend_ce_exception, exception, ZEND_STRL("message"), message);
     zend_update_property(php_ref_notifier_exception_class_entry, exception, ZEND_STRL("exceptions"), thrown);
-} /* }}} */
+}
 
-static PHP_METHOD(NotifierException, __construct)  /* {{{ */
+static PHP_METHOD(NotifierException, __construct)
 {
 	zend_string *message = NULL;
 	zend_long   code = 0;
@@ -73,7 +73,7 @@ static PHP_METHOD(NotifierException, __construct)  /* {{{ */
     }
 }
 
-static PHP_METHOD(NotifierException, getExceptions)  /* {{{ */
+static PHP_METHOD(NotifierException, getExceptions)
 {
     zval rv;
 
@@ -82,7 +82,7 @@ static PHP_METHOD(NotifierException, getExceptions)  /* {{{ */
     }
 
     RETVAL_ZVAL(zend_read_property(php_ref_notifier_exception_class_entry, getThis(), ZEND_STRL("exceptions"), 0, &rv), 1, 0);
-} /* }}} */
+}
 
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_notifier_exception___construct, ZEND_SEND_BY_VAL, ZEND_RETURN_VALUE, 0)
@@ -96,15 +96,15 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_notifier_exception_getExceptions, ZEND_SEND_BY_VA
 ZEND_END_ARG_INFO()
 
 
-static const zend_function_entry php_ref_notifier_exception_methods[] = { /* {{{ */
+static const zend_function_entry php_ref_notifier_exception_methods[] = {
         PHP_ME(NotifierException, __construct,   arginfo_notifier_exception___construct,   ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
         PHP_ME(NotifierException, getExceptions, arginfo_notifier_exception_getExceptions, ZEND_ACC_PUBLIC)
 
         PHP_FE_END
-}; /* }}} */
+};
 
 
-PHP_MINIT_FUNCTION (php_ref_notifier_exception) /* {{{ */
+PHP_MINIT_FUNCTION (php_ref_notifier_exception)
 {
     zend_class_entry ce;
 
@@ -116,14 +116,4 @@ PHP_MINIT_FUNCTION (php_ref_notifier_exception) /* {{{ */
 
 
     return SUCCESS;
-} /* }}} */
-
-
-/*
- * Local variables:
- * tab-width: 4
- * c-basic-offset: 4
- * End:
- * vim600: noet sw=4 ts=4 fdm=marker
- * vim<600: noet sw=4 ts=4
- */
+}
