@@ -4,13 +4,13 @@ platform:
 
 environment:
   matrix:
-    - PHP_VERSION: 7.0.15
+    - PHP_VERSION: 7.0.20
       THREAD_SAFE: true
-    - PHP_VERSION: 7.0.15
+    - PHP_VERSION: 7.0.20
       THREAD_SAFE: false
-    - PHP_VERSION: 7.1.1
+    - PHP_VERSION: 7.1.6
       THREAD_SAFE: true
-    - PHP_VERSION: 7.1.1
+    - PHP_VERSION: 7.1.6
       THREAD_SAFE: false
 
 
