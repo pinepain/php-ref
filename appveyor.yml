@@ -4,13 +4,13 @@ platform:
 
 environment:
   matrix:
-    - PHP_VERSION: 7.0.15
+    - PHP_VERSION: 7.0.20
       THREAD_SAFE: true
-    - PHP_VERSION: 7.0.15
+    - PHP_VERSION: 7.0.20
       THREAD_SAFE: false
-    - PHP_VERSION: 7.1.1
+    - PHP_VERSION: 7.1.6
       THREAD_SAFE: true
-    - PHP_VERSION: 7.1.1
+    - PHP_VERSION: 7.1.6
       THREAD_SAFE: false
 
 
@@ -47,12 +47,12 @@ init:
 
 install:
   - cd %PHP_SDK%
-  - curl -fSL -o php-sdk-binary-tools-20110915.zip 'http://windows.php.net/downloads/php-sdk/php-sdk-binary-tools-20110915.zip'
+  - curl -fSL -o php-sdk-binary-tools-20110915.zip "http://windows.php.net/downloads/php-sdk/php-sdk-binary-tools-20110915.zip"
   - 7z.exe x php-sdk-binary-tools-20110915.zip
   - call bin\phpsdk_setvars.bat
   - call bin\phpsdk_buildtree.bat php-ref-ci
   - cd php-ref-ci\vc14\x86
-  - curl -fSL -o 'php-%PHP_VERSION%.tar.gz' 'http://us1.php.net/distributions/php-%PHP_VERSION%.tar.gz'
+  - curl -fSL -o "php-%PHP_VERSION%.tar.gz" "http://us1.php.net/distributions/php-%PHP_VERSION%.tar.gz"
   - ren php php-%PHP_VERSION%
   - 7z.exe x php-%PHP_VERSION%.tar.gz -y
   - 7z.exe x php-%PHP_VERSION%.tar -y | find /v "Extracting"
