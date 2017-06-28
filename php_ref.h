@@ -41,6 +41,27 @@ extern zend_module_entry php_ref_module_entry;
 #    define PHP_REF_API
 #endif
 
+
+// Add zend_type support (new since PHP 7.2)
+#ifdef ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX
+    #define PHP_REF_ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(name, return_reference, required_num_args, classname, allow_null) \
+                    ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(name, return_reference, required_num_args, classname, allow_null)
+
+    #define PHP_REF_ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(name, return_reference, required_num_args, type, allow_null) \
+                    ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(name, return_reference, required_num_args, type, allow_null)
+#else
+    #define PHP_REF_ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(name, return_reference, required_num_args,             classname, allow_null) \
+                   ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(name, return_reference, required_num_args, IS_OBJECT, #classname, allow_null)
+
+    #define PHP_REF_ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(name, return_reference, required_num_args, type,       allow_null) \
+                    ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(name, return_reference, required_num_args, type, NULL, allow_null)
+#endif
+
+#if PHP_VERSION_ID < 70100
+    #define zend_get_executed_scope() EG(scope)
+#endif
+
+
 #ifdef ZTS
 #include "TSRM.h"
 #endif
