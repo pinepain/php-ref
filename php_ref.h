@@ -56,4 +56,20 @@ ZEND_EXTERN_MODULE_GLOBALS(ref);
 ZEND_TSRMLS_CACHE_EXTERN();
 #endif
 
+#if PHP_VERSION_ID >= 70200
+
+#define REF_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX   ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX
+#define REF_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX    ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX
+
+#else
+
+#define REF_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(name, return_reference, required_num_args, type,       allow_null) \
+       ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(name, return_reference, required_num_args, type, NULL, allow_null)
+
+#define REF_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(name, return_reference, required_num_args,            classname, allow_null) \
+       ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(name, return_reference, required_num_args, IS_OBJECT, classname, allow_null)
+
+#endif
+
+
 #endif /* PHP_REF_H */
