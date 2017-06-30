@@ -16,11 +16,11 @@
         <email>pinepain@gmail.com</email>
         <active>yes</active>
     </lead>
-    <date>2017-03-05</date>
-    <time>22:14:32</time>
+    <date>2017-06-30</date>
+    <time>17:52:14</time>
     <version>
-        <release>0.4.2</release>
-        <api>0.4.2</api>
+        <release>0.4.3</release>
+        <api>0.4.3</api>
     </version>
     <stability>
         <release>stable</release>
@@ -28,7 +28,7 @@
     </stability>
     <license uri="https://opensource.org/licenses/mit">The MIT License (MIT)</license>
     <notes>
-        This is a maintenance release which drops PHP &lt; 7.0.3 support.
+        - add PHP 7.2 compatibility support (Remi Collet &lt;remi@remirepo.net&gt;)
     </notes>
     <contents>
         <dir name="/">

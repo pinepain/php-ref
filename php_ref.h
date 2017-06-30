@@ -19,11 +19,11 @@ extern zend_module_entry php_ref_module_entry;
 #define phpext_ref_ptr &php_ref_module_entry
 
 #ifndef PHP_REF_VERSION
-#define PHP_REF_VERSION "0.5.0"
+#define PHP_REF_VERSION "0.4.3"
 #endif
 
 #ifndef PHP_REF_REVISION
-#define PHP_REF_REVISION "dev"
+#define PHP_REF_REVISION "release"
 #endif
 
 #if PHP_VERSION_ID < 70003
