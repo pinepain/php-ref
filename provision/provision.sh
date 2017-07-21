@@ -31,24 +31,24 @@ sudo mkdir -p /var/www/html/
 sudo chown -R vagrant:vagrant /var/www
 
 # Requirements to build php from sources, uncomment if you decide to do so
-#sudo apt-get install -y \
-#    libxml2-dev \
-#    libcurl4-openssl-dev \
-#    libjpeg-dev \
-#    libpng-dev \
-#    libxpm-dev \
-#    libmcrypt-dev \
-#    libmysqlclient-dev \
-#    libpq-dev \
-#    libicu-dev \
-#    libfreetype6-dev \
-#    libldap2-dev \
-#    libxslt-dev \
-#    libbz2-dev \
-#    libreadline-dev \
-#    autoconf \
-#    libtool \
-#    pkg-config
+sudo apt-get install -y \
+    libxml2-dev \
+    libcurl4-openssl-dev \
+    libjpeg-dev \
+    libpng-dev \
+    libxpm-dev \
+    libmcrypt-dev \
+    libmysqlclient-dev \
+    libpq-dev \
+    libicu-dev \
+    libfreetype6-dev \
+    libldap2-dev \
+    libxslt-dev \
+    libbz2-dev \
+    libreadline-dev \
+    autoconf \
+    libtool \
+    pkg-config
 
 # Valgrind for investigating and plumbing memory-related problems
 sudo apt-get install valgrind
