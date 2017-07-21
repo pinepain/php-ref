@@ -52,6 +52,8 @@ struct _php_ref_referent_t {
 
     HashTable soft_references;
     HashTable weak_references;
+
+    uint32_t tracked;
 };
 
 struct _php_ref_reference_t {
