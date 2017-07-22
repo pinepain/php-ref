@@ -158,14 +158,15 @@ to add it to your project.
     $ sudo add-apt-repository -y ppa:ondrej/php
     $ sudo add-apt-repository -y ppa:pinepain/php
     $ sudo apt-get update -y
-    $ sudo apt-get install -y php7.0 php-ref
+    $ sudo apt-get install -y php7.1 php-ref
     $ php --ri ref
 
 #### OS X (homebrew)
 
-    $ brew tap homebrew/dupes
+    $ brew tap homebrew/devtoo
     $ brew tap homebrew/php
-    $ brew install php70 php70-ref
+    $ brew tap pinepain/devtools
+    $ brew install php71 php71-ref
     $ php --ri ref
 
 ### Windows
@@ -184,12 +185,12 @@ To install extension globally run
 
     # sudo make install
 
-You will need to copy the extension config to your php dir, here is example for Ubuntu with PHP 7.0 from
+You will need to copy the extension config to your php dir, here is example for Ubuntu with PHP 7.1 from
 [Ondřej Surý's PPA for PHP](https://launchpad.net/~ondrej/+archive/ubuntu/php):
 
     # sudo cp provision/php/ref.ini /etc/php/mods-available/
     # sudo phpenmod -v ALL ref
-    # sudo service php7.0-fpm restart
+    # sudo service php7.1-fpm restart
 
 You may also want to add php-ref extension as a [composer.json dependency](https://getcomposer.org/doc/02-libraries.md#platform-packages):
 
