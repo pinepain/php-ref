@@ -16,11 +16,11 @@
         <email>pinepain@gmail.com</email>
         <active>yes</active>
     </lead>
-    <date>2017-06-30</date>
-    <time>17:52:14</time>
+    <date>2017-07-22</date>
+    <time>11:38:26</time>
     <version>
-        <release>0.4.3</release>
-        <api>0.4.3</api>
+        <release>0.4.4</release>
+        <api>0.4.4</api>
     </version>
     <stability>
         <release>stable</release>
@@ -28,7 +28,10 @@
     </stability>
     <license uri="https://opensource.org/licenses/mit">The MIT License (MIT)</license>
     <notes>
-        - add PHP 7.2 compatibility support (Remi Collet &lt;remi@remirepo.net&gt;)
+        This release improves PHP 7.2 compatibility support
+
+        Changelist:
+         - Restore original referent obj handler when it is no longer tracked
     </notes>
     <contents>
         <dir name="/">

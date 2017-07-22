@@ -104,6 +104,19 @@ $package = preg_replace("/\<date\>.+\<\/date\>/", '<date>' . $datetime->format('
 $package = preg_replace("/\<time\>.+\<\/time\>/", '<time>' . $datetime->format('H:i:s') . '</time>', $package);
 
 
+// Replace version:
+
+$header = file_get_contents('php_ref.h');
+
+if (!preg_match('/#define PHP_REF_VERSION "(.+)"/', $header, $matches)) {
+    throw new RuntimeException("Unable to get release version");
+}
+$version = $matches[1];
+
+$package = preg_replace("/\<release\>\d+\.\d+.\d+\<\/release\>/", '<release>' . $version . '</release>', $package);
+$package = preg_replace("/\<api\>\d+\.\d+.\d+\<\/api\>/", '<api>' . $version . '</api>', $package);
+
+
 $new_package_filename = 'package-new.xml';
 if (isset($argv[1]) && '-f' == $argv[1]) {
     $new_package_filename = 'package.xml';

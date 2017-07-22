@@ -42,3 +42,5 @@ tests/*
 
 /.subsplit
 /.vagrant
+
+ref-*.tgz
