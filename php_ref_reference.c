@@ -29,6 +29,13 @@ php_ref_reference_t *php_ref_reference_init(zval *this_ptr, zval *referent_zv, z
 static inline void php_ref_store_exceptions(zval *exceptions, zval *tmp);
 static int php_ref_reference_check_notifier(zval *notifier, zval *this);
 
+//#define PHP_REF_DEBUG 1
+
+#ifdef PHP_REF_DEBUG
+#define php_ref_debug(format, ...) fprintf(stderr, format, ##__VA_ARGS__);
+#else
+#define php_ref_debug(format, ...)
+#endif
 
 php_ref_reference_t *php_ref_reference_fetch_object(zend_object *obj)
 {
@@ -95,6 +102,8 @@ static void php_ref_nullify_referents(HashTable *references)
 
     ZEND_HASH_REVERSE_FOREACH_PTR(references, reference) {
         handle = _p->h;
+
+        reference->referent->tracked --;
         reference->referent = NULL;
 
         zend_hash_index_del(references, handle);
@@ -142,6 +151,16 @@ static void php_ref_call_notifiers(HashTable *references, zval *exceptions, zval
 
 }
 
+static void php_ref_maybe_restore_handlers(php_ref_referent_t *referent)
+{
+    if (referent->tracked) {
+        return;
+    }
+
+    Z_OBJ(referent->this_ptr)->handlers = referent->original_handlers;
+    referent->original_handlers = NULL;
+}
+
 void php_ref_referent_object_dtor_obj(zend_object *object)
 {
     php_ref_referent_t *referent = php_ref_referent_find_ptr(object->handle);
@@ -174,8 +193,8 @@ void php_ref_referent_object_dtor_obj(zend_object *object)
         }
 
         php_ref_nullify_referents(&referent->soft_references);
-
         php_ref_call_notifiers(&referent->weak_references, &exceptions, &tmp, 1);
+        php_ref_maybe_restore_handlers(referent);
 
         zend_hash_index_del(PHP_REF_G(referents), referent->handle);
     } else {
@@ -204,14 +223,22 @@ void php_ref_globals_referents_ht_dtor(zval *zv)
     zend_hash_destroy(&referent->soft_references);
     zend_hash_destroy(&referent->weak_references);
 
-    Z_OBJ(referent->this_ptr)->handlers = referent->original_handlers;
+    if (referent->original_handlers) {
+        Z_OBJ(referent->this_ptr)->handlers = referent->original_handlers;
+        referent->original_handlers = NULL;
+    }
 
     efree(referent);
 }
 
-void php_ref_referent_weak_references_ht_dtor(zval *zv)
+void php_ref_referent_abstract_references_ht_dtor(zval *zv)
 {
     php_ref_reference_t *reference = (php_ref_reference_t *) Z_PTR_P(zv);
+
+    if (reference->referent) {
+        reference->referent->tracked--;
+        php_ref_maybe_restore_handlers(reference->referent);
+    }
 
     /* clean links to ht & release callbacks as we don't need them already*/
     reference->referent = NULL; /* no need to free anything at this point here */
@@ -227,8 +254,10 @@ php_ref_referent_t *php_ref_referent_get_or_create(zval *referent_zv)
 
     referent = (php_ref_referent_t *) ecalloc(1, sizeof(php_ref_referent_t));
 
-    zend_hash_init(&referent->soft_references, 0, NULL, NULL, 0);
-    zend_hash_init(&referent->weak_references, 0, NULL, php_ref_referent_weak_references_ht_dtor, 0);
+    referent->tracked = 0;
+
+    zend_hash_init(&referent->soft_references, 0, NULL, php_ref_referent_abstract_references_ht_dtor, 0);
+    zend_hash_init(&referent->weak_references, 0, NULL, php_ref_referent_abstract_references_ht_dtor, 0);
 
     referent->original_handlers = Z_OBJ_P(referent_zv)->handlers;
 
@@ -261,6 +290,7 @@ void php_ref_abstract_reference_maybe_unregister(php_ref_reference_t *reference)
 void php_ref_soft_reference_attach(php_ref_reference_t *reference, php_ref_referent_t *referent)
 {
     reference->referent = referent;
+    referent->tracked++;
     zend_hash_index_add_ptr(&referent->soft_references, (zend_ulong) Z_OBJ_HANDLE_P(&reference->this_ptr), reference);
 }
 
@@ -281,6 +311,7 @@ void php_ref_soft_reference_maybe_unregister(php_ref_reference_t *reference)
 void php_ref_reference_attach(php_ref_reference_t *reference, php_ref_referent_t *referent)
 {
     reference->referent = referent;
+    referent->tracked++;
     zend_hash_index_add_ptr(&referent->weak_references, (zend_ulong) Z_OBJ_HANDLE_P(&reference->this_ptr), reference);
 }
 
