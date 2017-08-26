@@ -62,6 +62,7 @@ static PHP_METHOD(NotifierException, __construct)
     } else {
         array_init_size(&tmp, 0);
         zend_update_property(this_ce, getThis(), ZEND_STRL("exceptions"), &tmp);
+        zval_dtor(&tmp);
     }
 
     if (code) {

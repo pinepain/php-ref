@@ -211,6 +211,7 @@ void php_ref_referent_object_dtor_obj(zend_object *object)
         php_ref_create_notifier_exception(&exception, "One or more exceptions thrown during notifiers calling", &exceptions);
 
         zend_throw_exception_object(&exception);
+        zval_dtor(&exceptions);
     }
 }
 
