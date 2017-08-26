@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /*
  * This file is part of the pinepain/php-ref PHP extension.
@@ -25,8 +25,8 @@ namespace Ref;
 abstract class AbstractReference
 {
     /**
-     * @param object                  $referent Referent object
-     * @param callable | array | null $notify   Optional notifier to signal when referent object destroyed.
+     * @param object        $referent Referent object
+     * @param callable|null $notify Optional notifier to signal when referent object destroyed.
      *
      * If notifier is callback, it will be called with a current reference object as a first argument.
      *
@@ -35,18 +35,15 @@ abstract class AbstractReference
      * object's destructor will not be called and next time referent object refcount will reach 0 it will be a subject of
      * full destructing cycle again. For WeakReference, referent object will be already destroyed at the time of
      * notifiers calling.
-     *
-     * If notifier is array, current reference object will be appended to it regardless any exception thrown by
-     * referent object destructor or previous notify callback.
      */
-    public function __construct(object $referent, $notify = null)
+    public function __construct(object $referent, callable $notify = null)
     {
     }
 
     /**
      * Get referent object
      *
-     * @return object | null
+     * @return object|null
      */
     public function get()
     {
@@ -57,20 +54,20 @@ abstract class AbstractReference
      *
      * @return bool
      */
-    public function valid() : bool
+    public function valid(): bool
     {
     }
 
     /**
      * Get notifier
      *
-     * @param callable | array | null $notify Notifier to replace existent notifier with. Same as in constructor.
+     * @param callable|null $notify Notifier to replace existent notifier with. Same as in constructor.
      *
      * If any value provided, any existent notifier will be replaced and returned.
      *
-     * @return callable | array | null Current notifier or the old one when replacing it with provided value.
+     * @return callable | null Current notifier or the old one when replacing it with provided value.
      */
-    public function notifier($notify = null)
+    public function notifier(callable $notify = null)
     {
     }
 }

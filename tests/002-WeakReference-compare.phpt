@@ -54,13 +54,14 @@ $helper->line();
 
 $obj1 = new stdClass();
 
-$wr1 = new Ref\WeakReference($obj1, ['first']);
-$wr2 = new Ref\WeakReference($obj1, ['second']);
+$wr1 = new Ref\WeakReference($obj1, function () {});
+$wr2 = new Ref\WeakReference($obj1, function () {});
 
 $helper->assert('References to the same object with different notifiers do not match', $wr1 != $wr2);
 
-$wr1 = new Ref\WeakReference($obj1, []);
-$wr2 = new Ref\WeakReference($obj1, []);
+$notifier = function () {};
+$wr1 = new Ref\WeakReference($obj1, $notifier);
+$wr2 = new Ref\WeakReference($obj1, $notifier);
 
 $helper->assert('References to the same object with same notifiers match', $wr1 == $wr2);
 
@@ -68,7 +69,7 @@ $wr2->property = 'changed';
 
 $helper->assert('References to the same object with same notifiers but different properties do not match', $wr1 != $wr2);
 
-$wr3 = new class($obj1, []) extends Ref\WeakReference {};
+$wr3 = new class($obj1, $notifier) extends Ref\WeakReference {};
 
 $helper->assert('References to the same object with same notifiers do not match if they are instances of different classes', $wr2 != $wr3);
 

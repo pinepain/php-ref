@@ -38,11 +38,6 @@ extern void php_ref_globals_referents_ht_dtor(zval *zv);
 #define PHP_REF_REFERENCE_FETCH(zv) php_ref_reference_fetch_object(Z_OBJ_P(zv))
 #define PHP_REF_REFERENCE_FETCH_INTO(pzval, into) php_ref_reference_t *(into) = PHP_REF_REFERENCE_FETCH((pzval));
 
-#define PHP_REF_NOTIFIER_INVALID    0
-#define PHP_REF_NOTIFIER_NULL       1
-#define PHP_REF_NOTIFIER_ARRAY      2
-#define PHP_REF_NOTIFIER_CALLBACK   3
-
 struct _php_ref_referent_t {
     zval this_ptr;
     uint32_t handle;
@@ -60,7 +55,6 @@ struct _php_ref_reference_t {
     php_ref_referent_t *referent;
 
     zval notifier;
-    int notifier_type;
 
     php_ref_register register_reference;
     php_ref_unregister unregister_reference;

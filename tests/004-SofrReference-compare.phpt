@@ -54,13 +54,16 @@ $helper->line();
 
 $obj1 = new stdClass();
 
-$sr1 = new Ref\SoftReference($obj1, ['first']);
-$sr2 = new Ref\SoftReference($obj1, ['second']);
+$sr1 = new Ref\SoftReference($obj1, function () {});
+$sr2 = new Ref\SoftReference($obj1, function () {});
 
 $helper->assert('References to the same object with different notifiers do not match', $sr1 != $sr2);
 
-$sr1 = new Ref\SoftReference($obj1, []);
-$sr2 = new Ref\SoftReference($obj1, []);
+
+$notifier =  function () {};
+
+$sr1 = new Ref\SoftReference($obj1, $notifier);
+$sr2 = new Ref\SoftReference($obj1, $notifier);
 
 $helper->assert('References to the same object with same notifiers match', $sr1 == $sr2);
 
@@ -68,7 +71,7 @@ $sr2->property = 'changed';
 
 $helper->assert('References to the same object with same notifiers but different properties do not match', $sr1 != $sr2);
 
-$sr3 = new class($obj1, []) extends Ref\SoftReference {};
+$sr3 = new class($obj1, $notifier) extends Ref\SoftReference {};
 
 $helper->assert('References to the same object with same notifiers do not match if they are instances of different classes', $sr2 != $sr3);
 

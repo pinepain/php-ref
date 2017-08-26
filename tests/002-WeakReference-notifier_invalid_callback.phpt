@@ -20,6 +20,6 @@ $helper->line();
 ?>
 EOF
 --EXPECT--
-TypeError: Argument 2 passed to Ref\WeakReference::__construct() must be callable, array or null, string given
+TypeError: Argument 2 passed to Ref\AbstractReference::__construct() must be callable or null, string given
 
 EOF

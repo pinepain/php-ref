@@ -8,43 +8,45 @@ Ref\WeakReference - changing notifier
 /** @var \Testsuite $helper */
 $helper = require '.testsuite.php';
 
-$callback_notifier = function() {
-    echo 'Callback notified', PHP_EOL;
+$callback_notifier_1 = function() {
+    echo 'Callback notifier 1', PHP_EOL;
+};
+
+$callback_notifier_2 = function() {
+    echo 'Callback notifier 2', PHP_EOL;
 };
 
 $obj = new stdClass();
-$array_notifier = [];
 $wr = new Ref\WeakReference($obj);
 
 $helper->assert('Notifier is null by default', $wr->notifier(), null);
-$helper->assert('Notifier was null', $wr->notifier($array_notifier), null);
-$helper->assert('Notifier is array', $wr->notifier(), $array_notifier);
+$helper->assert('Notifier was null', $wr->notifier($callback_notifier_1), NULL);
+$helper->assert('Notifier is callback', $wr->notifier(), $callback_notifier_1);
 
 $obj = null;
-$helper->assert('New array notifier notified on referent object death', $array_notifier, [$wr]);
 $helper->line();
 
 
 $obj = new stdClass();
-$array_notifier = [];
-$wr = new Ref\WeakReference($obj, $array_notifier);
+$wr = new Ref\WeakReference($obj, $callback_notifier_1);
 
-$helper->assert('Notifier is array by default', $wr->notifier(), $array_notifier);
-$helper->assert('Notifier was array', $wr->notifier($callback_notifier), $array_notifier);
-$helper->assert('Notifier is callback', $wr->notifier(), $callback_notifier);
+$helper->assert('Notifier is callback by default', $wr->notifier(), $callback_notifier_1);
+$helper->assert('Notifier was callback', $wr->notifier($callback_notifier_2), $callback_notifier_1);
+$helper->assert('Notifier is callback', $wr->notifier(), $callback_notifier_2);
 
 $obj = null;
 $helper->line();
 
 $obj = new stdClass();
-$array_notifier = [];
-$wr = new Ref\WeakReference($obj, $callback_notifier);
+$wr = new Ref\WeakReference($obj, $callback_notifier_1);
 
-$helper->assert('Notifier is callback by default', $wr->notifier(), $callback_notifier);
-$helper->assert('Notifier was callback', $wr->notifier(null), $callback_notifier);
-$helper->assert('Notifier is null', $wr->notifier(), null);
+$helper->assert('Notifier is callback by default', $wr->notifier(), $callback_notifier_1);
+$helper->assert('Notifier was callback', $wr->notifier($callback_notifier_2), $callback_notifier_1);
+$helper->assert('Notifier is callback', $wr->notifier(), $callback_notifier_2);
+
 $obj = null;
 $helper->line();
+
 
 $notifier = 'var_dump';
 $wr->notifier($notifier);
@@ -63,19 +65,20 @@ EOF
 --EXPECT--
 Notifier is null by default: ok
 Notifier was null: ok
-Notifier is array: ok
-New array notifier notified on referent object death: ok
-
-Notifier is array by default: ok
-Notifier was array: ok
 Notifier is callback: ok
-Callback notified
+Callback notifier 1
 
 Notifier is callback by default: ok
 Notifier was callback: ok
-Notifier is null: ok
+Notifier is callback: ok
+Callback notifier 2
 
-TypeError: Argument 2 passed to Ref\WeakReference::notifier() must be callable, array or null, string given
+Notifier is callback by default: ok
+Notifier was callback: ok
+Notifier is callback: ok
+Callback notifier 2
+
+TypeError: Argument 1 passed to Ref\AbstractReference::notifier() must be callable or null, string given
 Notifier stays the same: ok
 
 EOF
