@@ -9,7 +9,7 @@ This extension adds [Soft Reference](https://en.wikipedia.org/wiki/Soft_referenc
 data structures that require advanced referencing model.
 
 
-**PHP >= 7.0.3 required**
+**PHP >= 7.1 required**
 
 ## Usage
 
@@ -196,7 +196,7 @@ You may also want to add php-ref extension as a [composer.json dependency](https
 
     "require": {
         ...
-        "ext-ref": "~0.1.0"
+        "ext-ref": "*"
         ...
     }
 

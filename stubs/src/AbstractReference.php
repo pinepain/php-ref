@@ -65,9 +65,9 @@ abstract class AbstractReference
      *
      * If any value provided, any existent notifier will be replaced and returned.
      *
-     * @return callable | null Current notifier or the old one when replacing it with provided value.
+     * @return callable|null Current notifier or the old one when replacing it with provided value.
      */
-    public function notifier(callable $notify = null)
+    public function notifier(callable $notify = null): ?callable
     {
     }
 }

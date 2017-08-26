@@ -29,7 +29,7 @@ class NotifierException extends Exception
      *
      * @return Throwable[]
      */
-    public function getExceptions() : array
+    public function getExceptions(): array
     {
         return $this->exceptions;
     }
