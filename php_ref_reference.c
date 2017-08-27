@@ -521,42 +521,6 @@ static HashTable *php_ref_get_debug_info(zval *object, int *is_temp)
     return debug_info;
 }
 
-static int php_ref_compare_objects(zval *object1, zval *object2)
-{
-    zval result;
-    int res;
-
-    PHP_REF_REFERENCE_FETCH_INTO(object1, reference1);
-    PHP_REF_REFERENCE_FETCH_INTO(object2, reference2);
-
-    /* Compare referent objects */
-    if (NULL == reference1->referent && NULL == reference2->referent) {
-        /* skip */
-    } else if(NULL == reference1->referent) {
-        return 1;
-    } else if (NULL == reference2->referent) {
-        return -1;
-    } else {
-        res = std_object_handlers.compare_objects(&reference1->referent->this_ptr, &reference2->referent->this_ptr);
-
-        if (res != 0) {
-            return res;
-        }
-    }
-
-    /* Compare notifiers */
-    ZVAL_LONG(&result, 0);
-
-    compare_function(&result, &reference1->notifier, &reference2->notifier);
-
-    if (Z_LVAL(result) != 0) {
-        return (int) Z_LVAL(result);
-    }
-
-    /* Compare standard objects */
-    return std_object_handlers.compare_objects(object1, object2);
-}
-
 static PHP_METHOD(WeakReference, __construct)
 {
     zval *referent_zv;
@@ -674,7 +638,6 @@ PHP_MINIT_FUNCTION (php_ref_reference)
     php_ref_reference_object_handlers.get_gc = php_ref_reference_gc;
     php_ref_reference_object_handlers.clone_obj = php_ref_reference_clone_obj;
     php_ref_reference_object_handlers.get_debug_info = php_ref_get_debug_info;
-    php_ref_reference_object_handlers.compare_objects = php_ref_compare_objects;
 
     INIT_NS_CLASS_ENTRY(ce, PHP_REF_NS, "SoftReference", php_ref_weak_reference_methods);
     php_ref_soft_reference_class_entry = zend_register_internal_class_ex(&ce, php_ref_abstract_reference_class_entry);
