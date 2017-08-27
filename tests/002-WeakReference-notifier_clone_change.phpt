@@ -8,35 +8,35 @@ Ref\WeakReference - change notifier on cloned object
 /** @var \Testsuite $helper */
 $helper = require '.testsuite.php';
 
-$callback_notifier = [$helper, 'dump'];
+$callback_notifier_1 = function() {
+    echo 'Callback notifier 1', PHP_EOL;
+};
+
+$callback_notifier_2 = function() {
+    echo 'Callback notifier 2', PHP_EOL;
+};
 
 $obj = new stdClass();
-$array_notifier = [];
-$wr = new Ref\WeakReference($obj, $array_notifier);
+$wr = new Ref\WeakReference($obj, $callback_notifier_1);
 
-$helper->assert('Notifier is array', $wr->notifier(), $array_notifier);
-
-$array_notifier1 = [];
+$helper->assert('Notifier is callback', $wr->notifier(), $callback_notifier_1);
 
 $wr1 = clone $wr;
-$helper->assert('Cloned notifier is array', $wr1->notifier(), $array_notifier);
-$wr1->notifier($array_notifier1);
-$helper->assert('Cloned notifier changed to it own array', $wr1->notifier(), $array_notifier1);
+$helper->assert('Cloned notifier is array', $wr1->notifier(), $callback_notifier_1);
+$wr1->notifier($callback_notifier_2);
+$helper->assert('Cloned notifier changed to it own callback', $wr1->notifier(), $callback_notifier_2);
 
-$obj = null;
 $helper->line();
-
-$helper->assert('First array notifier notified', $array_notifier, [$wr]);
-$helper->assert('Second array notifier notified', $array_notifier1, [$wr1]);
+$obj = null;
 $helper->line();
 ?>
 EOF
 --EXPECT--
-Notifier is array: ok
+Notifier is callback: ok
 Cloned notifier is array: ok
-Cloned notifier changed to it own array: ok
+Cloned notifier changed to it own callback: ok
 
-First array notifier notified: ok
-Second array notifier notified: ok
+Callback notifier 2
+Callback notifier 1
 
 EOF

@@ -97,7 +97,7 @@ object(Ref\SoftReference)#5 (2) refcount(3){
 
 Soft references reported with cloned reference: ok
 
-Notified: object(Ref\SoftReference)#5 (2) refcount(6){
+Notified: object(Ref\SoftReference)#5 (2) refcount(7){
   ["referent":"Ref\AbstractReference":private]=>
   object(stdClass)#2 (0) refcount(2){
   }
@@ -116,7 +116,7 @@ Notified: object(Ref\SoftReference)#5 (2) refcount(6){
     }
   }
 }
-Notified: object(Ref\SoftReference)#4 (2) refcount(6){
+Notified: object(Ref\SoftReference)#4 (2) refcount(7){
   ["referent":"Ref\AbstractReference":private]=>
   object(stdClass)#2 (0) refcount(2){
   }

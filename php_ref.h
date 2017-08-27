@@ -26,9 +26,9 @@ extern zend_module_entry php_ref_module_entry;
 #define PHP_REF_REVISION "dev"
 #endif
 
-#if PHP_VERSION_ID < 70003
+#if PHP_VERSION_ID < 70100
 // should never get her, but just in case
-#error PHP >= 7.0.3 required
+#error PHP >= 7.1 required
 #endif
 
 #define PHP_REF_NS "Ref"

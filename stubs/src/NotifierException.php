@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /*
  * This file is part of the pinepain/php-ref PHP extension.
@@ -29,7 +29,7 @@ class NotifierException extends Exception
      *
      * @return Throwable[]
      */
-    public function getExceptions() : array
+    public function getExceptions(): array
     {
         return $this->exceptions;
     }

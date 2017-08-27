@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /*
  * This file is part of the pinepain/php-ref PHP extension.
@@ -22,7 +22,9 @@ namespace Ref;
  *
  * @return bool
  */
-function refcounted(mixed $value) : bool {}
+function refcounted(mixed $value): bool
+{
+}
 
 /**
  * Get real value references count (not counting value reference passed as a function argument)
@@ -31,7 +33,9 @@ function refcounted(mixed $value) : bool {}
  *
  * @return int
  */
-function refcount(mixed $value) : int {}
+function refcount(mixed $value): int
+{
+}
 
 /**
  * Check whether object has soft references
@@ -40,16 +44,20 @@ function refcount(mixed $value) : int {}
  *
  * @return bool
  */
-function softrefcounted(object $value) : bool {}
+function softrefcounted(object $value): bool
+{
+}
 
 /**
  * Get object's soft references count
-
+ *
  * @param object $value
  *
  * @return int
  */
-function softrefcount(object $value) : int {}
+function softrefcount(object $value): int
+{
+}
 
 /**
  * Get object's soft references
@@ -58,7 +66,9 @@ function softrefcount(object $value) : int {}
  *
  * @return mixed
  */
-function softrefs(object $value) : array {}
+function softrefs(object $value): array
+{
+}
 
 /**
  * Check whether object has weak references
@@ -67,16 +77,20 @@ function softrefs(object $value) : array {}
  *
  * @return bool
  */
-function weakrefcounted(object $value) : bool {}
+function weakrefcounted(object $value): bool
+{
+}
 
 /**
  * Get object's weak references count
-
+ *
  * @param object $value
  *
  * @return int
  */
-function weakrefcount(object $value) : int {}
+function weakrefcount(object $value): int
+{
+}
 
 /**
  * Get object's weak references
@@ -85,7 +99,9 @@ function weakrefcount(object $value) : int {}
  *
  * @return mixed
  */
-function weakrefs(object $value) : array {}
+function weakrefs(object $value): array
+{
+}
 
 /**
  * Get object's handle id
@@ -94,12 +110,17 @@ function weakrefs(object $value) : array {}
  *
  * @return int
  */
-function object_handle(object $value) : int {}
+function object_handle(object $value): int
+{
+}
 
 /**
  * Check whether object's destructor was called
+ *
  * @param object $value
  *
  * @return bool
  */
-function is_obj_destructor_called(object $value) : bool {}
+function is_obj_destructor_called(object $value): bool
+{
+}

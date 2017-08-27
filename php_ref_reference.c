@@ -27,7 +27,6 @@ zend_object_handlers php_ref_reference_object_handlers;
 php_ref_reference_t *php_ref_reference_init(zval *this_ptr, zval *referent_zv, zval *notifier_zv);
 
 static inline void php_ref_store_exceptions(zval *exceptions, zval *tmp);
-static int php_ref_reference_check_notifier(zval *notifier, zval *this);
 
 //#define PHP_REF_DEBUG 1
 
@@ -122,22 +121,18 @@ static void php_ref_call_notifiers(HashTable *references, zval *exceptions, zval
             reference->referent = NULL;
         }
 
-        switch (reference->notifier_type) {
-            case PHP_REF_NOTIFIER_ARRAY:
-                /* array notifier */
-                add_next_index_zval(&reference->notifier, &reference->this_ptr);
-                Z_ADDREF(reference->this_ptr);
-                break;
-            case PHP_REF_NOTIFIER_CALLBACK:
-                /* callback notifier */
-                php_ref_reference_call_notifier(&reference->this_ptr, &reference->notifier);
+        if (IS_NULL == Z_TYPE(reference->notifier)) {
+            /* notifier is not set */
+            break;
+        }
 
-                if (EG(exception)) {
-                    php_ref_store_exceptions(exceptions, tmp);
-                }
-                break;
-            default:
-                break;
+        /* WeakRef could be destroyed during notifier call, so we need to increment decrement refcount to survive */
+        Z_ADDREF(reference->this_ptr);
+        php_ref_reference_call_notifier(&reference->this_ptr, &reference->notifier);
+        Z_DELREF(reference->this_ptr);
+
+        if (EG(exception)) {
+            php_ref_store_exceptions(exceptions, tmp);
         }
 
         if (!after_dtor && reference->referent && Z_REFCOUNT(reference->referent->this_ptr) > 1) {
@@ -157,8 +152,10 @@ static void php_ref_maybe_restore_handlers(php_ref_referent_t *referent)
         return;
     }
 
-    Z_OBJ(referent->this_ptr)->handlers = referent->original_handlers;
-    referent->original_handlers = NULL;
+    if (referent->original_handlers) {
+        Z_OBJ(referent->this_ptr)->handlers = referent->original_handlers;
+        referent->original_handlers = NULL;
+    }
 }
 
 void php_ref_referent_object_dtor_obj(zend_object *object)
@@ -211,6 +208,7 @@ void php_ref_referent_object_dtor_obj(zend_object *object)
         php_ref_create_notifier_exception(&exception, "One or more exceptions thrown during notifiers calling", &exceptions);
 
         zend_throw_exception_object(&exception);
+        zval_dtor(&exceptions);
     }
 }
 
@@ -238,6 +236,10 @@ void php_ref_referent_abstract_references_ht_dtor(zval *zv)
     if (reference->referent) {
         reference->referent->tracked--;
         php_ref_maybe_restore_handlers(reference->referent);
+
+        if (!reference->referent->tracked) {
+            zend_hash_index_del(PHP_REF_G(referents), reference->referent->handle);
+        }
     }
 
     /* clean links to ht & release callbacks as we don't need them already*/
@@ -335,12 +337,6 @@ php_ref_reference_t *php_ref_reference_init(zval *this_ptr, zval *referent_zv, z
 
     PHP_REF_REFERENCE_FETCH_INTO(this_ptr, reference);
 
-    int notifier_type = php_ref_reference_check_notifier(notifier_zv, this_ptr);
-
-    if (PHP_REF_NOTIFIER_INVALID == notifier_type) {
-        return reference;
-    }
-
     ZVAL_COPY_VALUE(&reference->this_ptr, this_ptr);
 
     referent = php_ref_referent_get_or_create(referent_zv);
@@ -352,8 +348,6 @@ php_ref_reference_t *php_ref_reference_init(zval *this_ptr, zval *referent_zv, z
     } else {
         ZVAL_NULL(&reference->notifier);
     }
-
-    reference->notifier_type = notifier_type;
 
     return reference;
 }
@@ -369,36 +363,6 @@ static inline void php_ref_store_exceptions(zval *exceptions, zval *tmp)
     add_next_index_zval(exceptions, tmp);
 
     zend_clear_exception();
-}
-
-static int php_ref_reference_check_notifier(zval *notifier, zval *this)
-{
-    if (NULL == notifier) {
-        /* no value provided at all, nothing to check */
-        return PHP_REF_NOTIFIER_NULL;
-    }
-
-    if (IS_NULL == Z_TYPE_P(notifier)) {
-        /* no notifier */
-        return PHP_REF_NOTIFIER_NULL;
-    }
-
-    /* maybe callback notifier */
-    if (!zend_is_callable(notifier, 0, NULL)) {
-
-        if (IS_ARRAY == Z_TYPE_P(notifier)) {
-            /* array notifier */
-            return PHP_REF_NOTIFIER_ARRAY;
-        }
-
-        zend_throw_error(zend_ce_type_error,
-                         "Argument 2 passed to %s::%s() must be callable, array or null, %s given",
-                         ZSTR_VAL(Z_OBJCE_P(this)->name), get_active_function_name(), zend_zval_type_name(notifier));
-
-        return PHP_REF_NOTIFIER_INVALID;
-    }
-
-    return PHP_REF_NOTIFIER_CALLBACK;
 }
 
 static HashTable *php_ref_reference_gc(zval *object, zval **table, int *n)
@@ -508,7 +472,6 @@ static zend_object *php_ref_reference_clone_obj(zval *object)
 
     ZVAL_OBJ(&new_reference->this_ptr, new_object);
     ZVAL_COPY(&new_reference->notifier, &old_reference->notifier);
-    new_reference->notifier_type = old_reference->notifier_type;
 
     if (old_reference->referent) {
         old_reference->register_reference(new_reference, old_reference->referent);
@@ -556,42 +519,6 @@ static HashTable *php_ref_get_debug_info(zval *object, int *is_temp)
     zend_string_release(key);
 
     return debug_info;
-}
-
-static int php_ref_compare_objects(zval *object1, zval *object2)
-{
-    zval result;
-    int res;
-
-    PHP_REF_REFERENCE_FETCH_INTO(object1, reference1);
-    PHP_REF_REFERENCE_FETCH_INTO(object2, reference2);
-
-    /* Compare referent objects */
-    if (NULL == reference1->referent && NULL == reference2->referent) {
-        /* skip */
-    } else if(NULL == reference1->referent) {
-        return 1;
-    } else if (NULL == reference2->referent) {
-        return -1;
-    } else {
-        res = std_object_handlers.compare_objects(&reference1->referent->this_ptr, &reference2->referent->this_ptr);
-
-        if (res != 0) {
-            return res;
-        }
-    }
-
-    /* Compare notifiers */
-    ZVAL_LONG(&result, 0);
-
-    compare_function(&result, &reference1->notifier, &reference2->notifier);
-
-    if (Z_LVAL(result) != 0) {
-        return (int) Z_LVAL(result);
-    }
-
-    /* Compare standard objects */
-    return std_object_handlers.compare_objects(object1, object2);
 }
 
 static PHP_METHOD(WeakReference, __construct)
@@ -647,13 +574,6 @@ static PHP_METHOD(WeakReference, notifier)
     }
 
     /* Change existent notifier */
-
-    int notifier_type = php_ref_reference_check_notifier(notifier_zv, getThis());
-
-    if (PHP_REF_NOTIFIER_INVALID == notifier_type) {
-        return;
-    }
-
     RETVAL_ZVAL(&reference->notifier, 1, 1);
 
     if (NULL == notifier_zv) {
@@ -661,15 +581,12 @@ static PHP_METHOD(WeakReference, notifier)
     } else {
         ZVAL_COPY(&reference->notifier, notifier_zv);
     }
-
-    reference->notifier_type = notifier_type;
-
 }
 
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_ref_reference___construct, ZEND_SEND_BY_VAL, ZEND_RETURN_VALUE, 1)
                 ZEND_ARG_INFO(0, referent)
-                ZEND_ARG_INFO(0, notify)
+                ZEND_ARG_CALLABLE_INFO(0, notify, 1)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_ref_reference_get, ZEND_SEND_BY_VAL, ZEND_RETURN_VALUE, 0)
@@ -678,8 +595,8 @@ ZEND_END_ARG_INFO()
 PHP_REF_ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_ref_reference_valid, ZEND_RETURN_VALUE, 0, _IS_BOOL, 0)
 ZEND_END_ARG_INFO()
 
-ZEND_BEGIN_ARG_INFO_EX(arginfo_ref_reference_notifier, ZEND_SEND_BY_VAL, ZEND_RETURN_VALUE, 0)
-                ZEND_ARG_INFO(0, notify)
+PHP_REF_ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_ref_reference_notifier, ZEND_SEND_BY_VAL, 0, IS_CALLABLE, 1)
+                ZEND_ARG_CALLABLE_INFO(0, notify, 1)
 ZEND_END_ARG_INFO()
 
 
@@ -721,7 +638,6 @@ PHP_MINIT_FUNCTION (php_ref_reference)
     php_ref_reference_object_handlers.get_gc = php_ref_reference_gc;
     php_ref_reference_object_handlers.clone_obj = php_ref_reference_clone_obj;
     php_ref_reference_object_handlers.get_debug_info = php_ref_get_debug_info;
-    php_ref_reference_object_handlers.compare_objects = php_ref_compare_objects;
 
     INIT_NS_CLASS_ENTRY(ce, PHP_REF_NS, "SoftReference", php_ref_weak_reference_methods);
     php_ref_soft_reference_class_entry = zend_register_internal_class_ex(&ce, php_ref_abstract_reference_class_entry);

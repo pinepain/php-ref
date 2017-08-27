@@ -97,7 +97,7 @@ object(Ref\WeakReference)#5 (2) refcount(3){
 
 Weak references reported with cloned reference: ok
 
-Notified: object(Ref\WeakReference)#5 (2) refcount(6){
+Notified: object(Ref\WeakReference)#5 (2) refcount(7){
   ["referent":"Ref\AbstractReference":private]=>
   NULL
   ["notifier":"Ref\AbstractReference":private]=>
@@ -115,7 +115,7 @@ Notified: object(Ref\WeakReference)#5 (2) refcount(6){
     }
   }
 }
-Notified: object(Ref\WeakReference)#4 (2) refcount(6){
+Notified: object(Ref\WeakReference)#4 (2) refcount(7){
   ["referent":"Ref\AbstractReference":private]=>
   NULL
   ["notifier":"Ref\AbstractReference":private]=>

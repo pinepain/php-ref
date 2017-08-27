@@ -9,7 +9,7 @@ This extension adds [Soft Reference](https://en.wikipedia.org/wiki/Soft_referenc
 data structures that require advanced referencing model.
 
 
-**PHP >= 7.0.3 required**
+**PHP >= 7.1 required**
 
 ## Usage
 
@@ -69,9 +69,9 @@ destroyed, while `WeakReference` call it notifier after referent object was dest
 
 Note: What this extension provides aren't quite actual soft and weak references, but it comes close for most use cases.
 
-### Notifiers
+### Notifier
 
-Notifier can be one of `callable`, `array` or `null` types. `null` notifier denotes no notifier set.
+Notifier can be `callable` or `null`. `null` notifier denotes no notifier set.
 
 Note that notification happens *after* referent object destruction, so at the time of notification `Ref\Referent::get()`
 will return `null` (unless rare case when object refcount get incremented in destructor, e.g. by storing destructing value
@@ -196,7 +196,7 @@ You may also want to add php-ref extension as a [composer.json dependency](https
 
     "require": {
         ...
-        "ext-ref": "~0.1.0"
+        "ext-ref": "*"
         ...
     }
 
@@ -210,9 +210,7 @@ with a custom one, which meta-code is:
 $exceptions = [];
 
 foreach($soft_references as $soft_ref_object_handle => $soft_reference) {
-    if (is_array($weak_reference->notifier)) {
-        $soft_reference->notifier[] = $weak_reference;
-    } elseif (is_callable($soft_reference->notifier)) {
+    if (is_callable($soft_reference->notifier)) {
         try {
             $soft_reference->notifier($weak_reference);
         } catch(Throwable $e) {
@@ -233,9 +231,7 @@ if (refcount($object) == 1) {
     }
 
     foreach($weak_references as $weak_ref_object_handle => $weak_reference) {
-        if (is_array($weak_reference->notifier)) {
-            $weak_reference->notifier[] = $weak_reference;
-        } elseif (is_callable($weak_reference->notifier)) {
+        if (is_callable($weak_reference->notifier)) {
             try {
                 $weak_reference->notifier($weak_reference);
             } catch(Throwable $e) {
