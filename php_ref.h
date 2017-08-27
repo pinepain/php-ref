@@ -57,10 +57,6 @@ extern zend_module_entry php_ref_module_entry;
                     ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(name, return_reference, required_num_args, type, NULL, allow_null)
 #endif
 
-#if PHP_VERSION_ID < 70100
-    #define zend_get_executed_scope() EG(scope)
-#endif
-
 
 #ifdef ZTS
 #include "TSRM.h"
