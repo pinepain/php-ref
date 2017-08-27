@@ -152,8 +152,10 @@ static void php_ref_maybe_restore_handlers(php_ref_referent_t *referent)
         return;
     }
 
-    Z_OBJ(referent->this_ptr)->handlers = referent->original_handlers;
-    referent->original_handlers = NULL;
+    if (referent->original_handlers) {
+        Z_OBJ(referent->this_ptr)->handlers = referent->original_handlers;
+        referent->original_handlers = NULL;
+    }
 }
 
 void php_ref_referent_object_dtor_obj(zend_object *object)
@@ -234,6 +236,10 @@ void php_ref_referent_abstract_references_ht_dtor(zval *zv)
     if (reference->referent) {
         reference->referent->tracked--;
         php_ref_maybe_restore_handlers(reference->referent);
+
+        if (!reference->referent->tracked) {
+            zend_hash_index_del(PHP_REF_G(referents), reference->referent->handle);
+        }
     }
 
     /* clean links to ht & release callbacks as we don't need them already*/
