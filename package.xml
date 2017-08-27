@@ -16,11 +16,11 @@
         <email>pinepain@gmail.com</email>
         <active>yes</active>
     </lead>
-    <date>2017-07-22</date>
-    <time>11:38:26</time>
+    <date>2017-08-27</date>
+    <time>14:08:56</time>
     <version>
-        <release>0.4.4</release>
-        <api>0.4.4</api>
+        <release>0.5.0</release>
+        <api>0.5.0</api>
     </version>
     <stability>
         <release>stable</release>
@@ -28,10 +28,15 @@
     </stability>
     <license uri="https://opensource.org/licenses/mit">The MIT License (MIT)</license>
     <notes>
-        This release improves PHP 7.2 compatibility support
+        This release fix bugs, drop unused feature and soon to be EOL PHP 7.0 (see http://php.net/supported-versions.php for details).
 
         Changelist:
-         - Restore original referent obj handler when it is no longer tracked
+         - Drop PHP &lt; 7.1 support (BC-breaking);
+         - Remove array notifier in a favor of callback (BC-breaking);
+         - Remove references comparison (BC-breaking);
+         - Fix bug when object handle reused but previous state was not clean;
+         - Fix wrong behavior when reference get deleted during notifier call;
+         - Fix memleaks;
     </notes>
     <contents>
         <dir name="/">
@@ -54,7 +59,6 @@
             <file name="tests/002-WeakReference-clone.phpt" role="test" />
             <file name="tests/002-WeakReference-clone_extended.phpt" role="test" />
             <file name="tests/002-WeakReference-closure.phpt" role="test" />
-            <file name="tests/002-WeakReference-compare.phpt" role="test" />
             <file name="tests/002-WeakReference-die_in_dtor.phpt" role="test" />
             <file name="tests/002-WeakReference-dump_extended.phpt" role="test" />
             <file name="tests/002-WeakReference-exception-before-and-from-notifier.phpt" role="test" />
@@ -69,20 +73,19 @@
             <file name="tests/002-WeakReference-multiple_with_notify_and_orig_dtor.phpt" role="test" />
             <file name="tests/002-WeakReference-notified.phpt" role="test" />
             <file name="tests/002-WeakReference-notifier.phpt" role="test" />
-            <file name="tests/002-WeakReference-notifier_array.phpt" role="test" />
-            <file name="tests/002-WeakReference-notifier_array_clone.phpt" role="test" />
-            <file name="tests/002-WeakReference-notifier_array_reliability.phpt" role="test" />
             <file name="tests/002-WeakReference-notifier_callable_array.phpt" role="test" />
             <file name="tests/002-WeakReference-notifier_callable_string.phpt" role="test" />
             <file name="tests/002-WeakReference-notifier_change.phpt" role="test" />
             <file name="tests/002-WeakReference-notifier_clone_change.phpt" role="test" />
             <file name="tests/002-WeakReference-notifier_invalid_callback.phpt" role="test" />
             <file name="tests/002-WeakReference-notifier_not_called_after_wr_dies_first.phpt" role="test" />
+            <file name="tests/002-WeakReference-object-handle-reuse.phpt" role="test" />
             <file name="tests/002-WeakReference-orig_dtor_and_notifier_when_wr_dies_first.phpt" role="test" />
             <file name="tests/002-WeakReference-orig_dtor_and_notify.phpt" role="test" />
             <file name="tests/002-WeakReference-orig_dtor_called.phpt" role="test" />
             <file name="tests/002-WeakReference-orig_dtor_called_after_wr_dies_first.phpt" role="test" />
             <file name="tests/002-WeakReference-orig_dtor_called_once.phpt" role="test" />
+            <file name="tests/002-WeakReference-reference-deleted-during-notifier.phpt" role="test" />
             <file name="tests/002-WeakReference-serialize_extended_not_allowed.phpt" role="test" />
             <file name="tests/002-WeakReference-serialize_not_allowed.phpt" role="test" />
             <file name="tests/002-WeakReference-spl_hash_consistent.phpt" role="test" />
@@ -93,7 +96,6 @@
             <file name="tests/003-functions-weakrefcounted_after_all_refs_died.phpt" role="test" />
             <file name="tests/003-functions.phpt" role="test" />
             <file name="tests/004-SofReference-basic.phpt" role="test" />
-            <file name="tests/004-SofrReference-compare.phpt" role="test" />
             <file name="tests/004-SoftReference-clone.phpt" role="test" />
             <file name="tests/004-SoftReference-clone_extended.phpt" role="test" />
             <file name="tests/004-SoftReference-closure.phpt" role="test" />
@@ -117,9 +119,6 @@
             <file name="tests/004-SoftReference-notified_prevent_destoying_with_weak.phpt" role="test" />
             <file name="tests/004-SoftReference-notified_with_weak.phpt" role="test" />
             <file name="tests/004-SoftReference-notifier.phpt" role="test" />
-            <file name="tests/004-SoftReference-notifier_array.phpt" role="test" />
-            <file name="tests/004-SoftReference-notifier_array_clone.phpt" role="test" />
-            <file name="tests/004-SoftReference-notifier_array_reliability.phpt" role="test" />
             <file name="tests/004-SoftReference-notifier_callable_array.phpt" role="test" />
             <file name="tests/004-SoftReference-notifier_callable_string.phpt" role="test" />
             <file name="tests/004-SoftReference-notifier_change.phpt" role="test" />

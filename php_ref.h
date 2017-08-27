@@ -23,7 +23,7 @@ extern zend_module_entry php_ref_module_entry;
 #endif
 
 #ifndef PHP_REF_REVISION
-#define PHP_REF_REVISION "dev"
+#define PHP_REF_REVISION "release"
 #endif
 
 #if PHP_VERSION_ID < 70100
