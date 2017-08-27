@@ -122,12 +122,14 @@ static void php_ref_call_notifiers(HashTable *references, zval *exceptions, zval
         }
 
         if (IS_NULL == Z_TYPE(reference->notifier)) {
-            /* no notifier set*/
+            /* notifier is not set */
             break;
         }
 
-        /* callback notifier */
+        /* WeakRef could be destroyed during notifier call, so we need to increment decrement refcount to survive */
+        Z_ADDREF(reference->this_ptr);
         php_ref_reference_call_notifier(&reference->this_ptr, &reference->notifier);
+        Z_DELREF(reference->this_ptr);
 
         if (EG(exception)) {
             php_ref_store_exceptions(exceptions, tmp);
