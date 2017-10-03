@@ -141,10 +141,9 @@ in your IDE and other code-analysis tools.
 
 ## Extra weak data structures support
 
-To add weak map support (and probably other data structures), see [php-ref-lib](https://github.com/pinepain/php-ref-lib)
-project, or just run
+To add object maps support see [php-object-maps](https://github.com/pinepain/php-object-maps) project, or just run
 
-    composer require pinepain/php-ref-lib
+    composer require pinepain/php-object-maps
 
 to add it to your project.
 
