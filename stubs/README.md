@@ -4,6 +4,10 @@ This is a git subtree split of [php-ref](https://github.com/pinepain/php-ref) ex
 
 **All issues and pull-requests should be submitted to the original [php-ref](https://github.com/pinepain/php-ref) repository.**
 
+### PLEASE READ:
+
+Maintaining this project takes significant amount of time and efforts.
+If you like my work and want to show your appreciation, please consider supporting me at https://www.patreon.com/pinepain.
 
 ## Installation
 
