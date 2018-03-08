@@ -126,7 +126,7 @@ $helper->assert('Object stored to external value during destructor call', is_obj
 $helper->export_annotated('is_obj_destructor_called($external)', is_obj_destructor_called($external));
 
 ?>
---EXPECT--
+--EXPECTF--
 Test Ref\refcounted:
 --------------------
 refcounted($obj1): boolean: true
@@ -141,7 +141,7 @@ refcount($obj1): integer: 2
 refcount($obj2): integer: 1
 refcount(new stdClass()): integer: 0
 TypeError: Argument 1 passed to Ref\refcount() must be an object, null given
-TypeError: Argument 1 passed to Ref\refcount() must be an object, integer given
+TypeError: Argument 1 passed to Ref\refcount() must be an object, int%S given
 
 Test Ref\weakrefcounted:
 ------------------------
