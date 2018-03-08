@@ -1,0 +1,98 @@
+<?php declare(strict_types=1);
+
+/*
+ * This file is part of the pinepain/php-ref PHP extension.
+ *
+ * Copyright (c) 2016-2018 Bogdan Padalko <pinepain@gmail.com>
+ *
+ * Licensed under the MIT license: http://opensource.org/licenses/MIT
+ *
+ * For the full copyright and license information, please view the
+ * LICENSE file that was distributed with this source or visit
+ * http://opensource.org/licenses/MIT
+ */
+
+
+namespace Ref;
+
+
+/**
+ * Class AbstractReference
+ *
+ * Abstract base class for reference objects. This class defines the operations common to all reference objects.
+ * Because of reference objects implementation details which depends on how GC in PHP works, this class may not be
+ * subclassed directly.
+ */
+abstract class AbstractReference
+{
+    /**
+     * @var object
+     */
+    private $referent;
+    /**
+     * @var callable|null
+     */
+    private $notify;
+
+    /**
+     * @param object        $referent Referent object
+     * @param callable|null $notify Optional notifier to signal when referent object destroyed.
+     *
+     * If notifier is callback, it will be called with a current reference object as a first argument.
+     *
+     * For SoftReference, notifiers are called before object will (or will not) be destructed. If referent object
+     * prevented from being destroyed (regular reference to it created during SoftReference notifiers calling), original
+     * object's destructor will not be called and next time referent object refcount will reach 0 it will be a subject of
+     * full destructing cycle again. For WeakReference, referent object will be already destroyed at the time of
+     * notifiers calling.
+     */
+    public function __construct($referent, callable $notify = null)
+    {
+        if (!\is_object($referent)) {
+            throw new \TypeError('Referent is not an object');
+        }
+
+        $this->referent = $referent;
+        $this->notify   = $notify;
+    }
+
+    /**
+     * Get referent object
+     *
+     * @return object|null
+     */
+    public function get()
+    {
+        return $this->referent;
+    }
+
+    /**
+     * Whether referent object exists
+     *
+     * @return bool
+     */
+    public function valid(): bool
+    {
+        return null === $this->referent;
+    }
+
+    /**
+     * Get notifier
+     *
+     * @param callable|null $notify Notifier to replace existent notifier with. Same as in constructor.
+     *
+     * If any value provided, any existent notifier will be replaced and returned.
+     *
+     * @return callable|null Current notifier or the old one when replacing it with provided value.
+     */
+    public function notifier(callable $notify = null): ?callable
+    {
+        $current = $this->notify;
+
+        if (func_num_args() > 0) {
+            $this->notify = $notify;
+        }
+
+        return $current;
+    }
+}
