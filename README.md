@@ -173,11 +173,6 @@ to add it to your project.
     $ brew install php72 php72-ref
     $ php --ri ref
 
-### Windows
-
-Windows builds can be found at [php-ref Appveyor build page](https://ci.appveyor.com/project/pinepain/php-ref).
-Pick artifacts from build which match your platform (x86 or x64), PHP release.major version and thread safety (ZTS or NTS).
-
 ### Building from sources
 
     git clone https://github.com/pinepain/php-ref.git
