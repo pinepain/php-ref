@@ -16,11 +16,11 @@
         <email>pinepain@gmail.com</email>
         <active>yes</active>
     </lead>
-    <date>2017-08-27</date>
-    <time>14:08:56</time>
+    <date>2018-03-08</date>
+    <time>14:11:16</time>
     <version>
-        <release>0.5.0</release>
-        <api>0.5.0</api>
+        <release>0.6.0</release>
+        <api>0.6.0</api>
     </version>
     <stability>
         <release>stable</release>
@@ -28,15 +28,10 @@
     </stability>
     <license uri="https://opensource.org/licenses/mit">The MIT License (MIT)</license>
     <notes>
-        This release fix bugs, drop unused feature and soon to be EOL PHP 7.0 (see http://php.net/supported-versions.php for details).
-
         Changelist:
-         - Drop PHP &lt; 7.1 support (BC-breaking);
-         - Remove array notifier in a favor of callback (BC-breaking);
-         - Remove references comparison (BC-breaking);
-         - Fix bug when object handle reused but previous state was not clean;
-         - Fix wrong behavior when reference get deleted during notifier call;
-         - Fix memleaks;
+         - Drop PHP &lt; 7.2 support (BC-breaking);
+         - Enforce object typehint (BC-breaking);
+         - Drop windows support (BC-breaking);
     </notes>
     <contents>
         <dir name="/">
@@ -52,6 +47,10 @@
             <file name="tests/.stubs.php" role="test" />
             <file name="tests/.testsuite.php" role="test" />
             <file name="tests/001-extension-loaded.phpt" role="test" />
+            <file name="tests/001-extension_info.phpt" role="test" />
+            <file name="tests/001-verify-method-case.phpt" role="test" />
+            <file name="tests/001-verify-methods-signature.phpt" role="test" />
+            <file name="tests/001-verify_extension_entities.phpt" role="test" />
             <file name="tests/002-AbstractReference-basic.phpt" role="test" />
             <file name="tests/002-AbstractReference-clone.phpt" role="test" />
             <file name="tests/002-NotifierException-basic.phpt" role="test" />
