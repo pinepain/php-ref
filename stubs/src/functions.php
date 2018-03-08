@@ -3,7 +3,7 @@
 /*
  * This file is part of the pinepain/php-ref PHP extension.
  *
- * Copyright (c) 2016-2017 Bogdan Padalko <pinepain@gmail.com>
+ * Copyright (c) 2016-2018 Bogdan Padalko <pinepain@gmail.com>
  *
  * Licensed under the MIT license: http://opensource.org/licenses/MIT
  *
@@ -27,13 +27,13 @@ function refcounted(mixed $value): bool
 }
 
 /**
- * Get real value references count (not counting value reference passed as a function argument)
+ * Get real object references count (not counting value reference passed as a function argument)
  *
- * @param mixed $value
+ * @param object $object
  *
  * @return int
  */
-function refcount(mixed $value): int
+function refcount(object $object): int
 {
 }
 

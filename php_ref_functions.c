@@ -1,7 +1,7 @@
 /*
  * This file is part of the pinepain/php-ref PHP extension.
  *
- * Copyright (c) 2016-2017 Bogdan Padalko <pinepain@gmail.com>
+ * Copyright (c) 2016-2018 Bogdan Padalko <pinepain@gmail.com>
  *
  * Licensed under the MIT license: http://opensource.org/licenses/MIT
  *
@@ -208,44 +208,44 @@ PHP_FUNCTION(is_obj_destructor_called)
 }
 
 
-PHP_REF_ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(refcounted_arg, ZEND_RETURN_VALUE, 1, _IS_BOOL, 0)
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(refcounted_arg, ZEND_RETURN_VALUE, 1, _IS_BOOL, 0)
                 ZEND_ARG_INFO(0, value)
 ZEND_END_ARG_INFO()
 
-PHP_REF_ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(refcount_arg, ZEND_RETURN_VALUE, 1, IS_LONG, 0)
-                ZEND_ARG_INFO(0, value)
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(refcount_arg, ZEND_RETURN_VALUE, 1, IS_LONG, 0)
+                ZEND_ARG_TYPE_INFO(0, object, IS_OBJECT, 0)
 ZEND_END_ARG_INFO()
 
-PHP_REF_ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(softrefcounted_arg, ZEND_RETURN_VALUE, 1, _IS_BOOL, 0)
-                ZEND_ARG_INFO(0, object)
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(softrefcounted_arg, ZEND_RETURN_VALUE, 1, _IS_BOOL, 0)
+                ZEND_ARG_TYPE_INFO(0, object, IS_OBJECT, 0)
 ZEND_END_ARG_INFO()
 
-PHP_REF_ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(softrefcount_arg, ZEND_RETURN_VALUE, 1, IS_LONG, 0)
-                ZEND_ARG_INFO(0, object)
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(softrefcount_arg, ZEND_RETURN_VALUE, 1, IS_LONG, 0)
+                ZEND_ARG_TYPE_INFO(0, object, IS_OBJECT, 0)
 ZEND_END_ARG_INFO()
 
-PHP_REF_ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(softrefs_arg, ZEND_RETURN_VALUE, 1, IS_ARRAY, 0)
-                ZEND_ARG_INFO(0, object)
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(softrefs_arg, ZEND_RETURN_VALUE, 1, IS_ARRAY, 0)
+                ZEND_ARG_TYPE_INFO(0, object, IS_OBJECT, 0)
 ZEND_END_ARG_INFO()
 
-PHP_REF_ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(weakrefcounted_arg, ZEND_RETURN_VALUE, 1, _IS_BOOL, 0)
-                ZEND_ARG_INFO(0, object)
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(weakrefcounted_arg, ZEND_RETURN_VALUE, 1, _IS_BOOL, 0)
+                ZEND_ARG_TYPE_INFO(0, object, IS_OBJECT, 0)
 ZEND_END_ARG_INFO()
 
-PHP_REF_ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(weakrefcount_arg, ZEND_RETURN_VALUE, 1, IS_LONG, 0)
-                ZEND_ARG_INFO(0, object)
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(weakrefcount_arg, ZEND_RETURN_VALUE, 1, IS_LONG, 0)
+                ZEND_ARG_TYPE_INFO(0, object, IS_OBJECT, 0)
 ZEND_END_ARG_INFO()
 
-PHP_REF_ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(weakrefs_arg, ZEND_RETURN_VALUE, 1, IS_ARRAY, 0)
-                ZEND_ARG_INFO(0, object)
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(weakrefs_arg, ZEND_RETURN_VALUE, 1, IS_ARRAY, 0)
+                ZEND_ARG_TYPE_INFO(0, object, IS_OBJECT, 0)
 ZEND_END_ARG_INFO()
 
-PHP_REF_ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(object_handle_arg, ZEND_RETURN_VALUE, 1, IS_LONG, 0)
-                ZEND_ARG_INFO(0, object)
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(object_handle_arg, ZEND_RETURN_VALUE, 1, IS_LONG, 0)
+                ZEND_ARG_TYPE_INFO(0, object, IS_OBJECT, 0)
 ZEND_END_ARG_INFO()
 
-PHP_REF_ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(is_obj_destructor_called_arg, ZEND_RETURN_VALUE, 1, _IS_BOOL, 0)
-                ZEND_ARG_INFO(0, object)
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(is_obj_destructor_called_arg, ZEND_RETURN_VALUE, 1, _IS_BOOL, 0)
+                ZEND_ARG_TYPE_INFO(0, object, IS_OBJECT, 0)
 ZEND_END_ARG_INFO()
 
 const zend_function_entry php_ref_functions[] = {

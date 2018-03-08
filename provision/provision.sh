@@ -7,14 +7,14 @@ sudo apt-get -y autoremove
 # Make sure these tools installed
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y git htop curl tshark pkgconf
 # Add PPA with fresh PHP 7:
-sudo add-apt-repository -u -y ppa:ondrej/php-7.0
+sudo add-apt-repository -u -y ppa:ondrej/php
 
 # Install available php from packages
-sudo apt-get install -y php7.0 php7.0-dev php7.0-fpm
+sudo apt-get install -y php7.2 php7.2-dev php7.2-fpm
 
 # Configure php-fpm
-sudo cp ~/php-ref/provision/php/www.conf /etc/php/7.0/fpm/pool.d/www.conf
-sudo service php7.0-fpm restart
+sudo cp ~/php-ref/provision/php/www.conf /etc/php/7.2/fpm/pool.d/www.conf
+sudo service php7.2-fpm restart
 
 # Fix php executable detection with PHP7 (https://github.com/oerdnj/deb.sury.org/issues/142)
 sudo sed -i -e 's/^php_cli_binary=NONE$/php_cli_binary="\/usr\/bin\/php"/g' /usr/bin/php-config
@@ -79,7 +79,7 @@ sudo cp -f /usr/share/nginx/html/index.html /var/www/html/index-nginx.html
 #phpize --clean && phpize && ./configure && sudo make install
 #sudo cp ~/php-ref/provision/php/ref.ini /etc/php/mods-available/
 #sudo phpenmod -v ALL ref
-#sudo service php7.0-fpm restart
+#sudo service php7.2-fpm restart
 
 # For debugging segfault when extension fails in php-fpm mode:
 #sudo sh -c "echo '/home/vagrant/php-ref/coredump-%e.%p' > /proc/sys/kernel/core_pattern"
@@ -91,7 +91,7 @@ sudo cp -f /usr/share/nginx/html/index.html /var/www/html/index-nginx.html
 sudo apt-get autoremove -y
 
 # This is for the future
-# At this point it is good idea to do `phpbrew install 7.1` (or other version you want to test extension with)
+# At this point it is good idea to do `phpbrew install 7.2` (or other version you want to test extension with)
 # and `phpbrew ext install ~/php-ref/`
 
 date > /home/vagrant/vagrant_provisioned_at

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.1)
-project(php_ref)
+project(php-ref)
 
 # NOTE: This CMake file is just for syntax highlighting in CLion
 
