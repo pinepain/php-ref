@@ -44,10 +44,20 @@ $helper->header('Test Ref\refcount');
 $helper->export_annotated('refcount($obj1)', refcount($obj1));
 $helper->export_annotated('refcount($obj2)', refcount($obj2));
 $helper->export_annotated('refcount(new stdClass())', refcount(new stdClass()));
-$helper->export_annotated('refcount(null)', refcount(null));
-$helper->export_annotated('refcount(42)', refcount(42));
-$helper->line();
 
+try {
+    $helper->export_annotated('refcount(null)', refcount(null));
+} catch (TypeError $e) {
+    $helper->exception_export($e);
+}
+
+try {
+    $helper->export_annotated('refcount(42)', refcount(42));
+} catch (TypeError $e) {
+    $helper->exception_export($e);
+}
+
+$helper->line();
 
 
 $weak_ref1a = new WeakReference($obj1);
@@ -130,8 +140,8 @@ Test Ref\refcount:
 refcount($obj1): integer: 2
 refcount($obj2): integer: 1
 refcount(new stdClass()): integer: 0
-refcount(null): integer: 0
-refcount(42): integer: 0
+TypeError: Argument 1 passed to Ref\refcount() must be an object, null given
+TypeError: Argument 1 passed to Ref\refcount() must be an object, integer given
 
 Test Ref\weakrefcounted:
 ------------------------
@@ -158,7 +168,7 @@ array(2) refcount(2){
     NULL
   }
   [1]=>
-  object(Ref\WeakReference)#6 (2) refcount(2){
+  object(Ref\WeakReference)#7 (2) refcount(2){
     ["referent":"Ref\AbstractReference":private]=>
     object(stdClass)#2 (0) refcount(3){
     }
@@ -170,7 +180,7 @@ array(2) refcount(2){
 Single weak ref reported for object with weakrefs(): ok
 array(1) refcount(2){
   [0]=>
-  object(Ref\WeakReference)#7 (2) refcount(2){
+  object(Ref\WeakReference)#8 (2) refcount(2){
     ["referent":"Ref\AbstractReference":private]=>
     object(stdClass)#3 (0) refcount(2){
     }

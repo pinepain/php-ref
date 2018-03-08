@@ -26,9 +26,9 @@ extern zend_module_entry php_ref_module_entry;
 #define PHP_REF_REVISION "dev"
 #endif
 
-#if PHP_VERSION_ID < 70100
+#if PHP_VERSION_ID < 70200
 // should never get her, but just in case
-#error PHP >= 7.1 required
+#error PHP >= 7.2 required
 #endif
 
 #define PHP_REF_NS "Ref"
@@ -39,22 +39,6 @@ extern zend_module_entry php_ref_module_entry;
 #    define PHP_REF_API __attribute__ ((visibility("default")))
 #else
 #    define PHP_REF_API
-#endif
-
-
-// Add zend_type support (new since PHP 7.2)
-#ifdef ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX
-    #define PHP_REF_ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(name, return_reference, required_num_args, classname, allow_null) \
-                    ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(name, return_reference, required_num_args, classname, allow_null)
-
-    #define PHP_REF_ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(name, return_reference, required_num_args, type, allow_null) \
-                    ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(name, return_reference, required_num_args, type, allow_null)
-#else
-    #define PHP_REF_ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(name, return_reference, required_num_args,             classname, allow_null) \
-                   ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(name, return_reference, required_num_args, IS_OBJECT, #classname, allow_null)
-
-    #define PHP_REF_ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(name, return_reference, required_num_args, type,       allow_null) \
-                    ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(name, return_reference, required_num_args, type, NULL, allow_null)
 #endif
 
 

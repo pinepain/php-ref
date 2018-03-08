@@ -27,13 +27,13 @@ function refcounted(mixed $value): bool
 }
 
 /**
- * Get real value references count (not counting value reference passed as a function argument)
+ * Get real object references count (not counting value reference passed as a function argument)
  *
- * @param mixed $value
+ * @param object $object
  *
  * @return int
  */
-function refcount(mixed $value): int
+function refcount(object $object): int
 {
 }
 

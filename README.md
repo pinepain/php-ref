@@ -9,7 +9,7 @@ This extension adds [Soft Reference](https://en.wikipedia.org/wiki/Soft_referenc
 data structures that require advanced referencing model.
 
 
-**PHP >= 7.1 required**
+**PHP >= 7.2 required.** The last version that supports PHP 7.1 is `v0.5.0`.
 
 ### PLEASE READ:
 
@@ -162,7 +162,7 @@ to add it to your project.
     $ sudo add-apt-repository -y ppa:ondrej/php
     $ sudo add-apt-repository -y ppa:pinepain/php
     $ sudo apt-get update -y
-    $ sudo apt-get install -y php7.1 php-ref
+    $ sudo apt-get install -y php7.2 php-ref
     $ php --ri ref
 
 #### OS X (homebrew)
@@ -170,7 +170,7 @@ to add it to your project.
     $ brew tap homebrew/devtoo
     $ brew tap homebrew/php
     $ brew tap pinepain/devtools
-    $ brew install php71 php71-ref
+    $ brew install php72 php72-ref
     $ php --ri ref
 
 ### Windows
@@ -189,12 +189,12 @@ To install extension globally run
 
     # sudo make install
 
-You will need to copy the extension config to your php dir, here is example for Ubuntu with PHP 7.1 from
+You will need to copy the extension config to your php dir, here is example for Ubuntu with PHP 7.2 from
 [Ondřej Surý's PPA for PHP](https://launchpad.net/~ondrej/+archive/ubuntu/php):
 
     # sudo cp provision/php/ref.ini /etc/php/mods-available/
     # sudo phpenmod -v ALL ref
-    # sudo service php7.1-fpm restart
+    # sudo service php7.2-fpm restart
 
 You may also want to add php-ref extension as a [composer.json dependency](https://getcomposer.org/doc/02-libraries.md#platform-packages):
 

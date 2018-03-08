@@ -1,10 +1,10 @@
 #!/usr/bin/env php
-<?php
+<?php declare(strict_types=1);
 
-/*
+/**
  * This file is part of the pinepain/php-ref PHP extension.
  *
- * Copyright (c) 2016-2017 Bogdan Padalko <pinepain@gmail.com>
+ * Copyright (c) 2015-2018 Bogdan Padalko <pinepain@gmail.com>
  *
  * Licensed under the MIT license: http://opensource.org/licenses/MIT
  *
@@ -12,6 +12,7 @@
  * LICENSE file that was distributed with this source or visit
  * http://opensource.org/licenses/MIT
  */
+
 
 chdir(__DIR__ . DIRECTORY_SEPARATOR . '..');
 
@@ -38,6 +39,7 @@ $rules = [
         '/^\..+\.php$/',
     ],
 ];
+
 
 $files = [];
 
@@ -103,6 +105,10 @@ $datetime = new DateTime();
 $package = preg_replace("/\<date\>.+\<\/date\>/", '<date>' . $datetime->format('Y-m-d') . '</date>', $package);
 $package = preg_replace("/\<time\>.+\<\/time\>/", '<time>' . $datetime->format('H:i:s') . '</time>', $package);
 
+$new_package_filename = 'package-new.xml';
+if (isset($argv[1]) && '-f' == $argv[1]) {
+    $new_package_filename = 'package.xml';
+}
 
 // Replace version:
 
@@ -116,10 +122,5 @@ $version = $matches[1];
 $package = preg_replace("/\<release\>\d+\.\d+.\d+\<\/release\>/", '<release>' . $version . '</release>', $package);
 $package = preg_replace("/\<api\>\d+\.\d+.\d+\<\/api\>/", '<api>' . $version . '</api>', $package);
 
-
-$new_package_filename = 'package-new.xml';
-if (isset($argv[1]) && '-f' == $argv[1]) {
-    $new_package_filename = 'package.xml';
-}
 
 file_put_contents($new_package_filename, $package);

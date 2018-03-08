@@ -585,17 +585,17 @@ static PHP_METHOD(WeakReference, notifier)
 
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_ref_reference___construct, ZEND_SEND_BY_VAL, ZEND_RETURN_VALUE, 1)
-                ZEND_ARG_INFO(0, referent)
+                ZEND_ARG_TYPE_INFO(0, referent, IS_OBJECT, 0)
                 ZEND_ARG_CALLABLE_INFO(0, notify, 1)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_ref_reference_get, ZEND_SEND_BY_VAL, ZEND_RETURN_VALUE, 0)
 ZEND_END_ARG_INFO()
 
-PHP_REF_ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_ref_reference_valid, ZEND_RETURN_VALUE, 0, _IS_BOOL, 0)
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_ref_reference_valid, ZEND_RETURN_VALUE, 0, _IS_BOOL, 0)
 ZEND_END_ARG_INFO()
 
-PHP_REF_ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_ref_reference_notifier, ZEND_SEND_BY_VAL, 0, IS_CALLABLE, 1)
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_ref_reference_notifier, ZEND_SEND_BY_VAL, 0, IS_CALLABLE, 1)
                 ZEND_ARG_CALLABLE_INFO(0, notify, 1)
 ZEND_END_ARG_INFO()
 
