@@ -167,10 +167,10 @@ to add it to your project.
 
 #### OS X (homebrew)
 
-    $ brew tap homebrew/devtoo
+    $ brew tap homebrew/dupes
     $ brew tap homebrew/php
     $ brew tap pinepain/devtools
-    $ brew install php72 php72-ref
+    $ brew install php php-ref
     $ php --ri ref
 
 ### Building from sources
