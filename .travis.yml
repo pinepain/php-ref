@@ -3,21 +3,23 @@ dist: trusty
 
 language: php
 
-php:
-  - 7.2
-  - nightly
+env:
+  global:
+    - NO_INTERACTION=1
+    - TEST_TIMEOUT=120
 
 matrix:
   allow_failures:
     - php: nightly
 
-env:
-  global:
-    - NO_INTERACTION=1
-    - TEST_TIMEOUT=120
-  matrix:
-    -
-    - TEST_PHP_ARGS=-m
+  include:
+    - php: 7.2
+    - php: 7.2
+      env: TEST_PHP_ARGS=-m
+
+    - php: nightly
+#    - php: nightly
+#      env: TEST_PHP_ARGS=-m
 
 before_install:
   - phpize && ./configure && make
